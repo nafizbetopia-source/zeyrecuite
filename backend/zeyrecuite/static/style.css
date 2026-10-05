@@ -317,7 +317,8 @@ h1, h2, h3 { margin: 0; font-weight: 700; }
 .detail-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
 
 /* ---------- Applications ---------- */
-.app-row { display: grid; grid-template-columns: 1fr auto auto; gap: 16px; align-items: center; padding: 16px 20px; }
+.app-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 16px; align-items: center; padding: 16px 20px; }
+.app-stage { min-width: 150px; }
 .app-row + .app-row { border-top: 1px solid var(--border); }
 .app-row .title { font-weight: 700; font-size: 14.5px; }
 .app-row .sub { color: var(--text-2); font-size: 12.5px; margin-top: 3px; }

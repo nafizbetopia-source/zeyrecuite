@@ -202,6 +202,9 @@ class Application(Base):
     job_id: Mapped[int] = mapped_column(Integer, index=True)
     # draft → ready → submitting → submitted | failed
     status: Mapped[str] = mapped_column(String(20), default="draft", index=True)
+    # Manual application-stage tracking (no email connected).
+    # draft → ready → submitting → submitted | failed
+    application_status: Mapped[str | None] = mapped_column(String(20), nullable=True, index=True)
     resume_pdf_path: Mapped[str | None] = mapped_column(String(400), nullable=True)
     cover_letter: Mapped[str | None] = mapped_column(Text, nullable=True)
     answers: Mapped[dict | None] = mapped_column(JSON, nullable=True)
@@ -229,6 +232,7 @@ class Application(Base):
             "id": self.id,
             "job_id": self.job_id,
             "status": self.status,
+            "application_status": self.application_status,
             "resume_pdf": f"/api/jobs/{self.job_id}/resume.pdf" if self.resume_pdf_path else None,
             "cover_letter": self.cover_letter,
             "application_form": self.application_form,

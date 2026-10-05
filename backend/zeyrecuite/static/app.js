@@ -978,7 +978,10 @@
     const apps = state.jobs.filter((j) => j.status === "approved" || j.status === "new");
     el.innerHTML = `
       <div class="card">
-        ${apps.length ? apps.map((j) => `
+        ${apps.length ? apps.map((j) => {
+          const app = j.application || {};
+          const stage = app.application_status || app.submission_status || "draft";
+          return `
           <div class="app-row" data-id="${j.id}">
             <div>
               <div class="title">${esc(j.title)}</div>
@@ -988,11 +991,17 @@
               <span class="num" style="color:${confColor(j.confidence)}">${Math.round(j.confidence)}</span>
               <span class="lbl ${confClass(j.confidence_label)}">${esc(j.confidence_label)}</span>
             </div>
+            <div class="app-stage">
+              <select class="select stage-select" data-stage="${j.id}">
+                ${stageOptions(stage)}
+              </select>
+            </div>
             <div style="display:flex;gap:8px">
               <button class="btn sm" data-act="open">Open</button>
               <button class="btn sm primary" data-act="gen">Generate</button>
             </div>
-          </div>`).join("") : emptyBox("No applications yet", "Approve a job or generate materials to see them here.")}
+          </div>`;
+        }).join("") : emptyBox("No applications yet", "Approve a job or generate materials to see them here.")}
       </div>`;
     el.querySelectorAll(".app-row").forEach((row) => {
       const id = Number(row.dataset.id);
@@ -1003,7 +1012,30 @@
         try { await api(`/api/jobs/${id}/generate`, { method: "POST" }); toast("Generated"); await loadAll(); }
         catch (ex) { toast(ex.message); btn.disabled = false; btn.textContent = "Generate"; }
       });
+      const sel = row.querySelector(".stage-select");
+      if (sel) {
+        sel.addEventListener("change", async () => {
+          const original = sel.innerHTML;
+          sel.disabled = true;
+          try {
+            await api(`/api/jobs/${id}/application-status`, { method: "POST", body: { status: sel.value } });
+            toast(`Application moved to "${statusLabel(sel.value)}"`);
+            await loadAll();
+          } catch (ex) {
+            toast(ex.message);
+            sel.innerHTML = original;
+          } finally {
+            sel.disabled = false;
+          }
+        });
+      }
     });
+  }
+
+  // Options for the manual application-stage selector.
+  function stageOptions(current) {
+    const stages = ["draft", "ready", "submitting", "submitted", "failed"];
+    return stages.map((s) => `<option value="${s}" ${s === current ? "selected" : ""}>${statusLabel(s)}</option>`).join("");
   }
 
   // ---------- Search & Submit (F19) ----------

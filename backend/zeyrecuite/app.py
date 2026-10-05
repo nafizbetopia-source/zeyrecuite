@@ -745,6 +745,31 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
             session.commit()
             return _detail(job)
 
+    # ---------- Manual application status (no email connected) ----------
+    _APPLICATION_STATUSES = {"draft", "ready", "submitting", "submitted", "failed"}
+
+    @app.post("/api/jobs/{job_id}/application-status")
+    def set_application_status(job_id: int, payload: dict, user: User = Depends(current_user)):
+        """Manually move an application through its stages.
+
+        Used when no email is connected so the user can still track where each
+        application stands: draft → ready → submitting → submitted | failed.
+        """
+        status = (payload or {}).get("status")
+        if status not in _APPLICATION_STATUSES:
+            raise HTTPException(422, f"invalid status; must be one of {sorted(_APPLICATION_STATUSES)}")
+        with db.session() as session:
+            job = session.get(Job, job_id)
+            if not job:
+                raise HTTPException(404, "job not found")
+            app_record = session.query(Application).filter(Application.job_id == job_id).first()
+            if not app_record:
+                app_record = Application(job_id=job_id, status="draft")
+                session.add(app_record)
+            app_record.application_status = status
+            session.commit()
+            return _detail(job)
+
     # ---------- Application timeline (F8) ----------
     @app.get("/api/jobs/{job_id}/timeline")
     def job_timeline(job_id: int, user: User = Depends(current_user)):
