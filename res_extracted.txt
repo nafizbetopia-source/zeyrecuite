@@ -1,0 +1,62 @@
+MD NAFIZ MAHFUZ 
+Business Analyst | Data Analyst 
+Dhaka, Bangladesh   |   +880 1877 014405   |   nafizmahfuz100@gmail.com 
+PROFESSIONAL SUMMARY 
+Data-driven Business Analyst and Data Analyst with a B.Sc. in Computer Science, experienced in requirements analysis, 
+dynamic pricing, inventory optimization, and financial performance analysis. Proven ability to bridge technical teams and 
+business stakeholders across B2B2C software projects. Skilled in Python, SQL, Power BI, and Excel, with training in Safety 
+Management Systems (FAA) and Six Sigma. 
+CORE SKILLS 
+Business Analysis: Requirements Elicitation (BRD/FRD), Process Mapping, User Stories, Stakeholder Management, 
+Agile/Scrum 
+Analytics & Pricing: Yield Management, Dynamic Pricing, RASK/CASK Analysis, P&L & Variance Analysis, Demand 
+Forecasting 
+Tools: Python (Pandas, NumPy, Scikit-learn), SQL, Power BI, Excel (Advanced, VBA, Solver) 
+Systems: PROS RMS (Conceptual), Amadeus & Sabre Inventory Concepts, Fare Class Bucketing 
+PROFESSIONAL EXPERIENCE 
+Business Analyst at Betopia Limited   (Feb 2026 to Present) 
+ Software Project Analysis:  Spearhead business analysis for core enterprise platforms, including GetCover (InsurTech) 
+and ValrPro, by eliciting functional requirements, mapping process workflows, and authoring technical specifications that 
+align engineering output with strategic business objectives. 
+ Tender & Proposal Scoping: Draft comprehensive technical documentation for high-value tenders, including the EMRD 
+tender technical submission, and establish the functional project scope for the Momentum proposal. 
+ Database & System Architecture: Lead database design efforts and technical requirements engineering for PK Holdings 
+to ensure scalable data structures and seamless system implementation. 
+ Business Intelligence & Analytics: Develop and maintain executive-level Power BI and Excel dashboards to monitor key 
+performance indicators (KPIs) and revenue metrics, providing data-driven insights for leadership decision-making. 
+ Agile Management & Stakeholder Alignment:  Facilitate sprint planning, conduct stakeholder reviews, and streamline 
+cross-functional communication between software development teams and business units to ensure on-time and within-
+scope delivery. 
+Data Analyst Intern, Managing Director's Office at Walton Hi-Tech Industries PLC   (Jul 2025 to Sep 2025) 
+ Designed an executive inventory velocity and working-capital dashboard, identifying $50,000+ in slow-moving stock and 
+enabling targeted reallocation strategies. 
+ Reduced Cost Per Unit by 12% by analyzing shipment routing, vendor pricing, and volume discounts to optimize logistics 
+and supplier contracts. 
+ Built an inventory depletion forecasting model to support Just-in-Time stock levels and lower warehousing and holding 
+costs. 
+Junior Consultant Intern at Principio Holdings (Remote)   (Jan 2025 to Jun 2025) 
+ Developed data-driven pricing and market expansion cases by validating demand assumptions, cost structures, and 
+competitive dynamics across European and Asian markets. 
+ Conducted competitor and pricing analysis to identify revenue gaps and implemented reporting standards ensuring 100% 
+accuracy in client-facing deliverables. 
+KEY PROJECTS 
+Dynamic Overbooking and No-Show Prediction Model 
+● Built a Random Forest model predicting passenger no-shows (82% accuracy), supporting an overbooking strategy with a 
+modeled 4% revenue uplift. 
+Airline Network Profitability: RASK/CASK Analysis 
+● Analyzed 20 simulated international routes to identify cash-negative sectors and recommended capacity reductions to 
+improve network profitability. 
+Competitor Fare Intelligence System 
+● Automated daily fare monitoring for competitive routes (for example, DAC to DXB), enabling rapid pricing response to 
+protect yield and market share. 
+EDUCATION 
+Bachelor of Science (BSc), Computer Science and Engineering 
+BRAC University, Dhaka, Bangladesh (2020 to 2024)  
+CERTIFICATIONS AND TRAINING 
+● Scalable Safety Management Systems (SMS), Federal Aviation Administration (FAA) 
+● Six Sigma White Belt, Council for Six Sigma Certification (CSSC) 
+● Career Essentials in Data Analysis & Project Management, Microsoft & LinkedIn Learning 
+● Job Simulations: British Airways (Data Science), Accenture (Data Analytics), and PwC Switzerland (Power BI), via 
+Forage 
+LANGUAGES 
+Bangla: Native   |   English: Fluent (IELTS 7.0)   |   Chinese: Basic 

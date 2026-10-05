@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Database (local SQLite, per-user data)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Runtime output
+graphify-out/
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+!.vscode/settings.json
+
+# Local data (job scrapes, exports, etc.)
+backend/data/

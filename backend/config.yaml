@@ -1,0 +1,48 @@
+# ZEYRECUITE configuration (local-first, $0).
+# No API keys are required: Remotive is a public API and Greenhouse uses public board tokens.
+
+database_url: "sqlite:///./zeyrecuite.db"
+data_dir: "data"
+
+role: "Business Analyst"
+min_salary: null
+daily_cap: 10
+
+# Path to your master resume PDF (optional). If set, the app can pre-fill the profile.
+resume_path: null
+
+location:
+  current: "Bangladesh"
+  # Hard deny set for employer/job ORIGIN (ISO alpha-2 or names). Remote jobs from
+  # these countries are excluded even if labeled remote.
+  excluded_countries:
+    - Bangladesh
+    - India
+    - Pakistan
+    - Sri Lanka
+    - Nepal
+    - Bhutan
+    - Maldives
+    - Afghanistan
+  # Worldwide remote roles are allowed, including those open to South Asian applicants,
+  # as long as the employer/job origin is outside the excluded set.
+  remote_applicant_policy: "allow_worldwide_exclude_south_asian_job_origins"
+
+sources:
+  remotive:
+    enabled: true
+    polls_per_day: 4
+    max_per_minute: 2
+  greenhouse:
+    enabled: true
+    # Public Greenhouse board tokens (one per line). Add the companies you care about.
+    boards:
+      - "stripe"
+      - "datadog"
+      - "airtable"
+
+# F17: automatic periodic scans. Off by default (local-first). Set enabled: true
+# to have the app run a full scan on the interval below while it is running.
+scheduler:
+  enabled: false
+  interval_hours: 24

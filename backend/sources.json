@@ -1,0 +1,12 @@
+{
+  "_comment": "ZEYRECUITE source registry (F15). Set enabled=true and fill in slugs/keys to turn a source on. Company career pages (lever/ashby/workable/smartrecruiters/workday) need at least one slug. Adzuna needs a free api_key + api_id. The Muse needs a search query.",
+  "remoteok": { "enabled": true },
+  "weworkremotely": { "enabled": true },
+  "themuse": { "enabled": true, "query": "business analyst" },
+  "lever": { "enabled": false, "companies": [] },
+  "ashby": { "enabled": false, "orgs": [] },
+  "workable": { "enabled": false, "accounts": [] },
+  "smartrecruiters": { "enabled": false, "companies": [] },
+  "workday": { "enabled": false, "tenants": [] },
+  "adzuna": { "enabled": false, "api_key": "", "api_id": "" }
+}
