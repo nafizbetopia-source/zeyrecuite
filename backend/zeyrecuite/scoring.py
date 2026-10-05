@@ -363,8 +363,16 @@ def assess_job(
     posted_date: str | None = None,
     application_url: str | None = None,
     preferred_remote: bool = True,
+    learning=None,
 ) -> Assessment:
-    """Produce the full, explainable assessment for a single job."""
+    """Produce the full, explainable assessment for a single job.
+
+    ``learning`` is an optional :class:`~zeyrecuite.learning.LearningWeights`
+    carrying additive reweights derived from the user's feedback history. When
+    present, the base fit score and confidence are rescaled by those
+    multipliers (bounded, never destructive). The core assessment stays
+    deterministic; learning is purely additive on top.
+    """
     c = _fit_components(
         title=title,
         description=description,
@@ -430,6 +438,15 @@ def assess_job(
     reasons.append(company_detail)
     reasons.append(fresh_detail)
 
+    # --- Learning loop (additive, bounded) --------------------------------
+    # Fold the user's feedback-derived multipliers onto the base fit score and
+    # confidence. The core assessment is untouched; learning is purely
+    # additive on top so a single signal can never dominate or destroy it.
+    if learning is not None:
+        fit = _clamp(round(fit * learning.fit_mult, 2))
+        confidence = _clamp(round(confidence * learning.confidence_mult, 1))
+        confidence, label = _label(confidence)
+
     return Assessment(
         fit_score=fit,
         confidence=confidence,
@@ -448,6 +465,7 @@ def assess_job(
             "must_have": round(c["must_score"], 1),
             "matched_skills": sorted(c["matched"]),
             "factors": {f.key: round(f.value, 1) for f in factors},
+            "learning": learning.to_dict() if learning is not None else None,
         },
     )
 

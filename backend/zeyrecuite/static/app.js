@@ -123,13 +123,14 @@
 
   // ---------- Data loading ----------
   async function loadAll() {
-    const [stats, jobs, runs, top, filters, variants] = await Promise.all([
+    const [stats, jobs, runs, top, filters, variants, learning] = await Promise.all([
       api("/api/stats"),
       api("/api/jobs"),
       api("/api/runs?limit=8"),
       api("/api/top?limit=10"),
       api("/api/profile/filters").catch(() => ({ filters: [] })),
       api("/api/profile/resume-variants").catch(() => ({ variants: [] })),
+      api("/api/learning/insights").catch(() => ({ has_data: false })),
     ]);
     state.stats = stats;
     state.jobs = jobs;
@@ -137,6 +138,7 @@
     state.top = top;
     state.savedFilters = filters.filters || [];
     state.resumeVariants = variants.variants || [];
+    state.learning = learning;
     renderSidebar();
     renderCurrent();
   }
@@ -162,6 +164,7 @@
     jobs: ["Jobs", "Review, score, and act on every posting"],
     pipeline: ["Pipeline", "Drag jobs through your review stages"],
     applications: ["Applications", "Tailored resumes, cover letters, and prep"],
+    search: ["Search &amp; Submit", "Find jobs and send your tailored applications"],
     analytics: ["Analytics", "Submission tracking and performance insights"],
     profile: ["Profile", "Your details power the tailoring"],
   };
@@ -181,6 +184,7 @@
     else if (state.view === "jobs") renderJobs();
     else if (state.view === "pipeline") renderPipeline();
     else if (state.view === "applications") renderApplications();
+    else if (state.view === "search") renderSearch();
     else if (state.view === "analytics") renderAnalytics();
     else if (state.view === "profile") renderProfile();
   }
@@ -710,6 +714,13 @@
         <button class="btn ok" id="dApprove">✓ Approve &amp; submit</button>
         <button class="btn danger" id="dReject">✕ Reject</button>
         ${j.application && j.application.submitted_at ? `<button class="btn" id="dFollowup">✉ Follow up</button>` : ""}
+      </div>
+      <div class="feedback-bar" data-feedback-job="${j.id}">
+        <span class="muted feedback-label">Help the app learn</span>
+        <button class="btn sm ok fb-btn" data-signal="approve" title="I like this kind of job — score similar jobs higher">👍 Like</button>
+        <button class="btn sm fb-btn" data-signal="select" title="Selected — strong signal, weight it heavily">⭐ Selected</button>
+        <button class="btn sm danger fb-btn" data-signal="reject" title="I don't like this kind — score similar jobs lower">👎 Dislike</button>
+        <span class="fb-status muted"></span>
       </div>`;
   }
 
@@ -898,6 +909,35 @@
     });
     const fu = $("#dFollowup");
     if (fu) fu.addEventListener("click", () => openFollowup(j.id));
+
+    // Learning loop feedback buttons.
+    const fbBar = document.querySelector(`.feedback-bar[data-feedback-job="${j.id}"]`);
+    if (fbBar) {
+      const statusEl = fbBar.querySelector(".fb-status");
+      fbBar.querySelectorAll(".fb-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const signal = btn.dataset.signal;
+          const original = btn.textContent;
+          btn.disabled = true;
+          btn.innerHTML = '<span class="spinner"></span>';
+          try {
+            const res = await api(`/api/jobs/${j.id}/feedback`, {
+              method: "POST",
+              body: { signal, source: "manual" },
+            });
+            // Reflect the learning contribution on the hero confidence.
+            const ring = fbBar.closest(".modal-card").querySelector(".conf-ring .num, .conf-ring");
+            toast(`Learned from “${signal}” — ${res.learning.approved} liked · ${res.learning.rejected} disliked`);
+            // Reopen to reflect updated score.
+            await openJob(j.id);
+            await loadAll();
+          } catch (e) {
+            toast(e.message);
+            btn.disabled = false; btn.textContent = original;
+          }
+        });
+      });
+    }
   }
 
   function closeJob() { $("#jobModal").classList.add("hidden"); }
@@ -964,6 +1004,136 @@
         catch (ex) { toast(ex.message); btn.disabled = false; btn.textContent = "Generate"; }
       });
     });
+  }
+
+  // ---------- Search & Submit (F19) ----------
+  async function renderSearch() {
+    const el = $("#view-search");
+    const insights = state.learning || {};
+    el.innerHTML = `
+      <div class="card card-pad">
+        <div class="section-title">Search &amp; submit applications</div>
+        <p class="muted" style="font-size:13px;margin-bottom:14px">
+          Search every job you've collected, pick the ones you want, and submit your
+          tailored application package. Each job with a direct apply link opens the
+          employer's application page; others are marked ready to submit.
+        </p>
+        <div class="toolbar">
+          <input class="search" id="searchBox" placeholder="Search title, company, or skill…" value="${esc(state.search)}" />
+          <select class="select" id="searchStatus">
+            <option value="all">All statuses</option>
+            <option value="new">Eligible</option>
+            <option value="review">Needs review</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+          <select class="select" id="searchSort">
+            <option value="confidence" ${state.sort === "confidence" ? "selected" : ""}>Confidence</option>
+            <option value="score" ${state.sort === "score" ? "selected" : ""}>Fit score</option>
+            <option value="company" ${state.sort === "company" ? "selected" : ""}>Company rating</option>
+          </select>
+        </div>
+        <div class="job-list" id="searchList"></div>
+      </div>
+      <div class="card card-pad" style="margin-top:18px">
+        <div class="section-title">What the app has learned <span class="muted">from your feedback</span></div>
+        ${learningInsightsHTML(insights)}
+      </div>`;
+
+    const box = $("#searchBox");
+    if (box) box.addEventListener("input", (e) => { state.search = e.target.value; renderSearchList(); });
+    const st = $("#searchStatus");
+    if (st) st.addEventListener("change", (e) => { state.filter = e.target.value; renderSearchList(); });
+    const so = $("#searchSort");
+    if (so) so.addEventListener("change", (e) => { state.sort = e.target.value; renderSearchList(); });
+    renderSearchList();
+  }
+
+  function renderSearchList() {
+    const list = filteredJobs();
+    const box = $("#searchList");
+    if (!box) return;
+    box.innerHTML = list.length ? list.map(searchJobRow).join("") : emptyBox("No jobs match", "Run a scan to collect jobs, then search and submit here.");
+    bindSearchRows(box);
+  }
+
+  function searchJobRow(j) {
+    const elig = j.eligibility != null ? Math.round(j.eligibility) : null;
+    const applyable = !!(j.application_url && (j.application_method === "direct" || j.application_method === "easy" || j.application_method === "apply_link"));
+    return `<div class="card job-card" data-id="${j.id}">
+      <div class="job-main">
+        <div class="job-title-row">
+          <span class="job-title">${esc(j.title)}</span>
+          <span class="badge ${j.status}">${statusLabel(j.status)}</span>
+        </div>
+        <div class="job-company"><b>${esc(j.company)}</b><span class="sep">·</span>${esc(j.location || "Remote")}
+          <span class="sep">·</span><span class="muted">${esc(j.source)}</span></div>
+        <div class="job-tags">${(j.confidence_breakdown && j.confidence_breakdown.matched_skills || []).slice(0, 4).map((s) => `<span class="tag skill match">${esc(s)}</span>`).join("")}</div>
+      </div>
+      <div class="job-side">
+        <div class="confidence">
+          <span class="num" style="color:${confColor(j.confidence)}">${Math.round(j.confidence)}</span>
+          <span class="lbl ${confClass(j.confidence_label)}">${esc(j.confidence_label)}</span>
+        </div>
+        ${elig != null ? `<div class="elig-mini">Eligible <b style="color:${confColor(elig)}">${elig}%</b></div>` : ""}
+        <div class="submit-actions">
+          <button class="btn sm primary" data-submit="${j.id}">Submit application</button>
+          <span class="muted submit-hint">${applyable ? "Direct apply link" : "Ready to submit"}</span>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function bindSearchRows(scope) {
+    scope.querySelectorAll(".job-card").forEach((c) => {
+      c.addEventListener("click", (e) => {
+        const submitBtn = e.target.closest("[data-submit]");
+        if (submitBtn) { e.stopPropagation(); submitApplication(Number(submitBtn.dataset.submit)); }
+        else openJob(Number(c.dataset.id));
+      });
+    });
+  }
+
+  async function submitApplication(jobId) {
+    const btn = document.querySelector(`[data-submit="${jobId}"]`);
+    if (!btn) return;
+    const original = btn.textContent;
+    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+    try {
+      const res = await api(`/api/jobs/${jobId}/submit`, { method: "POST" });
+      const sub = res.submission || {};
+      if (sub.submission_url) {
+        window.open(sub.submission_url, "_blank", "noopener");
+      }
+      toast(sub.submission_status === "submitted" ? "Application submitted — link opened" : "Marked ready to submit");
+      await loadAll();
+      renderSearch();
+    } catch (e) {
+      toast(e.message);
+      btn.disabled = false; btn.textContent = original;
+    }
+  }
+
+  function learningInsightsHTML(l) {
+    if (!l.has_data) {
+      return `<p class="muted" style="font-size:13px">No feedback yet. Tap 👍 / ⭐ / 👎 on any job to teach the app what you like — scores adapt automatically on your next scan.</p>`;
+    }
+    const rows = [
+      ["Approved", l.approved, "var(--green)"],
+      ["Selected", l.selected, "var(--violet)"],
+      ["Disliked", l.rejected, "var(--red)"],
+    ];
+    const rowsHtml = rows.map(([label, val, color]) =>
+      `<div class="rating-row"><span class="name">${esc(label)}</span><span class="val" style="color:${color};font-weight:700">${val}</span></div>`).join("");
+    const skills = (l.top_skills || []).length ? `<div class="skill-group" style="margin-top:10px"><div class="skill-group-label">Skills you like</div><div class="job-tags">${l.top_skills.map((s) => `<span class="tag skill match">${esc(s)}</span>`).join("")}</div></div>` : "";
+    const companies = (l.top_companies || []).length ? `<div class="skill-group" style="margin-top:10px"><div class="skill-group-label">Companies you like</div><div class="job-tags">${l.top_companies.map((c) => `<span class="tag skill match">${esc(c)}</span>`).join("")}</div></div>` : "";
+    const sources = (l.top_sources || []).length ? `<div class="skill-group" style="margin-top:10px"><div class="skill-group-label">Sources you like</div><div class="job-tags">${l.top_sources.map((s) => `<span class="tag skill match">${esc(s)}</span>`).join("")}</div></div>` : "";
+    const modes = (l.top_work_modes || []).length ? `<div class="skill-group" style="margin-top:10px"><div class="skill-group-label">Work modes you like</div><div class="job-tags">${l.top_work_modes.map((m) => `<span class="tag skill match">${esc(m)}</span>`).join("")}</div></div>` : "";
+    return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <span class="badge approved" style="font-size:12px">Learning active</span>
+        <span class="muted" style="font-size:12.5px">fit ×${l.fit_mult} · confidence ×${l.confidence_mult}</span>
+      </div>
+      ${rowsHtml}${skills}${companies}${sources}${modes}`;
   }
 
   // ---------- Analytics ----------

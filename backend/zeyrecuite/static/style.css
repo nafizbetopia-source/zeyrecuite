@@ -372,6 +372,16 @@ h1, h2, h3 { margin: 0; font-weight: 700; }
 .sub-msg { font-size: 12.5px; color: var(--text-2); margin-top: 4px; }
 .sub-panel .btn { margin-top: 10px; }
 
+/* ---------- Feedback bar (learning loop) ---------- */
+.feedback-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 16px; padding: 14px 16px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.feedback-label { font-size: 12.5px; font-weight: 600; }
+.fb-btn { min-width: 90px; }
+.fb-status { font-size: 12px; margin-left: 4px; }
+
+/* ---------- Submit actions (Search & Submit view) ---------- */
+.submit-actions { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.submit-hint { font-size: 11.5px; color: var(--muted); }
+
 /* ---------- Loading ---------- */
 .loading { display: flex; align-items: center; gap: 10px; padding: 40px; justify-content: center; color: var(--text-2); }
 

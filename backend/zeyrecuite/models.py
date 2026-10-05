@@ -261,6 +261,22 @@ class ScrapeRun(Base):
     avg_eligibility: Mapped[float | None] = mapped_column(Float, nullable=True)
 
 
+class Feedback(Base):
+    """User feedback signal used to power the learning loop.
+
+    Records approve / reject / select signals on a job. The learning engine
+    aggregates these into skill / company / source / work-mode preferences and
+    applies them as additive reweights during scoring.
+    """
+    __tablename__ = "feedback"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    job_id: Mapped[int] = mapped_column(Integer, index=True)
+    signal: Mapped[str] = mapped_column(String(20))  # approve | reject | select
+    source: Mapped[str | None] = mapped_column(String(40), nullable=True)  # manual | approve-btn | reject-btn | select
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+
 class User(Base):
     __tablename__ = "users"
 

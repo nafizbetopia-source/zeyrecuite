@@ -18,7 +18,8 @@ from .config import AppConfig
 from .database import Database
 from .dedup import fingerprint
 from .location_policy import DecisionStatus, evaluate_location
-from .models import Job, Profile, ScrapeRun
+from .learning import compute_learning_weights
+from .models import Feedback, Job, Profile, ScrapeRun
 from .scoring import assess_job
 
 
@@ -83,6 +84,10 @@ def run_source(
 
     current_country, profile_skills = _profile_context(db)
     seen = _existing_fingerprints(db)
+    # Compute learning multipliers once per run from the user's feedback
+    # history so every job in this scan is scored with the same additive
+    # reweights derived from what the user has approved / rejected / selected.
+    learning = _learning_weights(db)
     summary.fetched = len(raw_jobs)
     run_confidences: list[float] = []
     run_eligibilities: list[float] = []
@@ -115,6 +120,7 @@ def run_source(
                 posted_date=raw.get("posted_date"),
                 application_url=raw.get("application_url"),
                 preferred_remote=True,
+                learning=learning,
             )
             job = Job(
                 fingerprint=fp,
@@ -167,6 +173,33 @@ def run_source(
 
     _finish_run(db, run_id, summary, run_confidences, run_eligibilities)
     return summary
+
+
+def _learning_weights(db: Database):
+    """Build additive learning multipliers from the user's feedback history.
+
+    Returns ``None`` when there is no feedback yet (scoring is unchanged), so
+    the collector path stays byte-for-byte identical for fresh installs.
+    """
+    with db.session() as session:
+        rows = session.query(Feedback).all()
+        if not rows:
+            return None
+        jobs_by_id = {j.id: j for j in session.query(Job).all()}
+        return compute_learning_weights(
+            (
+                {
+                    "job_id": r.job_id,
+                    "signal": r.signal,
+                    "skills": jobs_by_id[r.job_id].skills,
+                    "company": jobs_by_id[r.job_id].company,
+                    "source": jobs_by_id[r.job_id].source,
+                    "work_mode": jobs_by_id[r.job_id].work_mode,
+                }
+                for r in rows
+            ),
+            jobs_by_id=jobs_by_id,
+        )
 
 
 def _finish_run(

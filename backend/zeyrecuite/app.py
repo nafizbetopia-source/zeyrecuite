@@ -26,7 +26,8 @@ from .config import AppConfig, load_config
 from .database import build_database
 from .dedup import fingerprint
 from .enrich import enrich_company, normalize_skills
-from .models import Application, Job, Profile, ScrapeRun, User
+from .learning import compute_learning_weights
+from .models import Application, Feedback, Job, Profile, ScrapeRun, User
 from .questions import generate_questions
 from .resume import ResumeData, render_pdf, tailor_resume
 from .scheduler import build_scheduler
@@ -354,6 +355,24 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
             profile = session.get(Profile, 1)
             profile_skills = list(profile.skills or []) if profile else []
             jobs = session.query(Job).all()
+            job_map = {j.id: j for j in jobs}
+            # Compute additive learning multipliers from feedback history so a
+            # re-score reflects what the user has approved / rejected / selected.
+            feedback_rows = session.query(Feedback).all()
+            learning = compute_learning_weights(
+                (
+                    {
+                        "job_id": f.job_id,
+                        "signal": f.signal,
+                        "skills": job_map[f.job_id].skills,
+                        "company": job_map[f.job_id].company,
+                        "source": job_map[f.job_id].source,
+                        "work_mode": job_map[f.job_id].work_mode,
+                    }
+                    for f in feedback_rows
+                ),
+                jobs_by_id=job_map,
+            ) if feedback_rows else None
             updated = 0
             for job in jobs:
                 company_overall = get_company_info(job.company).overall
@@ -371,6 +390,7 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
                     posted_date=job.posted_date,
                     application_url=job.application_url,
                     preferred_remote=True,
+                    learning=learning,
                 )
                 job.score = assessment.fit_score
                 job.score_breakdown = assessment.breakdown
@@ -396,6 +416,95 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
         # reflect the latest real data.
         prepared = _auto_generate_top(db, limit=10, force=True)
         return {"rescored": updated, "prepared_top": prepared}
+
+    # ---------- Learning loop (F19) ----------
+    @app.post("/api/jobs/{job_id}/feedback")
+    def submit_feedback(job_id: int, body: dict, user: User = Depends(current_user)):
+        """Record an approve / reject / select signal on a job.
+
+        The signal feeds the learning loop: feedback is aggregated into skill /
+        company / source / work-mode preferences and applied as additive
+        reweights on every subsequent scan and re-score.
+        """
+        with db.session() as session:
+            job = session.get(Job, job_id)
+            if job is None:
+                raise HTTPException(status_code=404, detail="Job not found")
+            signal = (body.get("signal") or "").lower()
+            if signal not in ("approve", "reject", "select"):
+                raise HTTPException(
+                    status_code=422,
+                    detail="signal must be one of: approve, reject, select",
+                )
+            feedback = Feedback(
+                job_id=job_id,
+                signal=signal,
+                source=body.get("source", "manual"),
+            )
+            session.add(feedback)
+            session.commit()
+
+            learning = compute_learning_weights(
+                (
+                    {
+                        "job_id": f.job_id,
+                        "signal": f.signal,
+                        "skills": j.skills,
+                        "company": j.company,
+                        "source": j.source,
+                        "work_mode": j.work_mode,
+                    }
+                    for f in session.query(Feedback).all()
+                    for j in (session.get(Job, f.job_id),)
+                    if j is not None
+                ),
+                jobs_by_id={j.id: j for j in session.query(Job).all()},
+            )
+            return {
+                "recorded": signal,
+                "job_id": job_id,
+                "learning": learning.to_dict(),
+            }
+
+    @app.get("/api/learning/insights")
+    def learning_insights(user: User = Depends(current_user)):
+        """Return the current learning state and derived preferences.
+
+        Surfaced on the Search / Learn view so the user can see what the app
+        has learned from their approve / reject / select history.
+        """
+        with db.session() as session:
+            feedback_rows = session.query(Feedback).all()
+            if not feedback_rows:
+                return {
+                    "has_data": False,
+                    "approved": 0,
+                    "rejected": 0,
+                    "selected": 0,
+                    "top_skills": [],
+                    "top_companies": [],
+                    "top_sources": [],
+                    "top_work_modes": [],
+                    "fit_mult": 1.0,
+                    "confidence_mult": 1.0,
+                    "pref_mult": 1.0,
+                }
+            job_map = {j.id: j for j in session.query(Job).all()}
+            learning = compute_learning_weights(
+                (
+                    {
+                        "job_id": f.job_id,
+                        "signal": f.signal,
+                        "skills": job_map[f.job_id].skills,
+                        "company": job_map[f.job_id].company,
+                        "source": job_map[f.job_id].source,
+                        "work_mode": job_map[f.job_id].work_mode,
+                    }
+                    for f in feedback_rows
+                ),
+                jobs_by_id=job_map,
+            )
+            return learning.to_dict()
 
     # ---------- Enrichment ----------
     def _company_payload(job: Job) -> dict:
@@ -535,6 +644,23 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
 
     @app.post("/api/jobs/{job_id}/resubmit")
     def resubmit_job(job_id: int, user: User = Depends(current_user)):
+        with db.session() as session:
+            job = session.get(Job, job_id)
+            if not job:
+                raise HTTPException(404, "job not found")
+            result = _submit_application(db, job)
+        return {"job": _detail(job), "submission": result}
+
+    # ---------- Submit application (F19) ----------
+    @app.post("/api/jobs/{job_id}/submit")
+    def submit_application(job_id: int, user: User = Depends(current_user)):
+        """Run the submission pipeline for a job from the Search & Submit view.
+
+        Prepares the tailored resume + cover letter, records a verifiable
+        submission record, and returns the status plus any direct apply link
+        so the UI can open the employer's application page. The MVP never
+        auto-fills third-party ATS forms.
+        """
         with db.session() as session:
             job = session.get(Job, job_id)
             if not job:
