@@ -12,15 +12,16 @@ import csv
 import io
 from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Any
 
-from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi import Body, Depends, FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from . import auth, models  # noqa: F401  (register models)
-from .collector import run_all
+from .collector import _clean_raw, _clean_skills, run_all
 from .companies import get_company_info
 from .config import AppConfig, load_config
 from .database import build_database
@@ -45,6 +46,23 @@ from .scoring import (
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 DATA_DIR = BASE_DIR.parent / "data"
+
+
+def _is_valid_score(value: Any) -> bool:
+    """True when ``value`` is a usable numeric score (not None/empty/garbage)."""
+    if value is None:
+        return False
+    if isinstance(value, bool):
+        return False
+    if isinstance(value, (int, float)):
+        return True
+    if isinstance(value, str):
+        try:
+            float(value)
+            return True
+        except (TypeError, ValueError):
+            return False
+    return False
 
 
 # ---------- Request schemas (module-level so FastAPI resolves type hints) ----------
@@ -88,6 +106,8 @@ class ProfileIn(BaseModel):
     preferred_work_mode: str | None = None
     target_companies: list[str] | None = None
     deal_breakers: list[str] | None = None
+    weekly_goal: int | None = None
+    kpi_state: dict | None = None
     standard_answers: dict | None = None
 
 
@@ -121,6 +141,17 @@ def _is_fake_seed(profile: Profile) -> bool:
     )
     has_fake_name = profile.name in (None, "", "Your Name")
     return has_fake_company or (has_fake_name and not exps)
+
+
+def _pct(sorted_vals: list[float], p: float) -> float:
+    """Linear-interpolation percentile over an already-sorted list."""
+    if not sorted_vals:
+        return 0.0
+    k = (len(sorted_vals) - 1) * (p / 100.0)
+    lo = int(k)
+    hi = min(lo + 1, len(sorted_vals) - 1)
+    frac = k - lo
+    return sorted_vals[lo] * (1 - frac) + sorted_vals[hi] * frac
 
 
 def _blank_profile(profile: Profile) -> None:
@@ -287,6 +318,172 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
             profile.resume_variants = variants
             session.commit()
             return {"variants": profile.resume_variants}
+
+    # ---------- Application goals / KPI (v2.4) ----------
+    @app.get("/api/kpi")
+    def kpi_status(user: User = Depends(current_user)):
+        """Weekly application goals + progress, derived from the applications table.
+
+        Returns the configured weekly target, how many applications were
+        submitted this week, the current streak, and the per-stage breakdown.
+        """
+        import logging
+        logger = logging.getLogger(__name__)
+        try:
+            from datetime import datetime, timedelta, timezone
+            from sqlalchemy import func
+
+            with db.session() as session:
+                profile = session.get(Profile, 1)
+                weekly_goal = profile.weekly_goal if profile else None
+                kpi_state = profile.kpi_state if profile else None
+
+                apps = session.query(Application).all()
+                submitted = [
+                    a for a in apps
+                    if a.status == "submitted" and a.submitted_at
+                ]
+                now = datetime.now(timezone.utc)
+                week_ago = now - timedelta(days=7)
+
+                this_week = 0
+                for a in submitted:
+                    ts = a.submitted_at
+                    if ts.tzinfo is None:
+                        ts = ts.replace(tzinfo=timezone.utc)
+                    if ts >= week_ago:
+                        this_week += 1
+
+                # Streak: consecutive calendar days (up to 7) ending today with >=1
+                # submission. Computed server-side and cached in kpi_state.
+                streak = kpi_state.get("streak") if isinstance(kpi_state, dict) else None
+                if streak not in (0, None):
+                    last_day = (kpi_state.get("streak_end") or "").split("T")[0] if kpi_state else None
+                    if last_day:
+                        try:
+                            from datetime import date
+                            d = date.fromisoformat(last_day)
+                            if (now.date() - d).days > 1:
+                                streak = None
+                        except ValueError:
+                            streak = None
+
+                stages = dict(
+                    session.query(Application.status, func.count(Application.id))
+                    .group_by(Application.status).all()
+                )
+                total_apps = len(apps)
+                submitted_total = stages.get("submitted", 0)
+
+                progress = round((this_week / weekly_goal) * 100, 1) if weekly_goal else 0.0
+                progress = min(progress, 100.0)
+
+                return {
+                    "weekly_goal": weekly_goal,
+                    "submitted_this_week": this_week,
+                    "progress": progress,
+                    "streak": streak,
+                    "streak_end": (kpi_state.get("streak_end") if isinstance(kpi_state, dict) else None),
+                    "stages": stages,
+                    "total_apps": total_apps,
+                    "submitted_total": submitted_total,
+                }
+        except Exception as e:
+            logger.exception("KPI status error")
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.put("/api/kpi")
+    def kpi_update(payload: dict, user: User = Depends(current_user)):
+        """Persist weekly goal and/or KPI progress state."""
+        with db.session() as session:
+            profile = session.get(Profile, 1)
+            if not profile:
+                raise HTTPException(404, "profile not found")
+
+            goal = (payload or {}).get("weekly_goal")
+            if goal is not None:
+                try:
+                    goal = int(goal)
+                except (TypeError, ValueError):
+                    raise HTTPException(422, "weekly_goal must be an integer")
+                if goal < 0:
+                    raise HTTPException(422, "weekly_goal must be >= 0")
+            profile.weekly_goal = goal
+
+            state = (payload or {}).get("kpi_state")
+            if state is not None and not isinstance(state, dict):
+                raise HTTPException(422, "kpi_state must be an object")
+            profile.kpi_state = state
+
+            session.commit()
+            return {
+                "weekly_goal": profile.weekly_goal,
+                "kpi_state": profile.kpi_state,
+            }
+
+    # ---------- Company intel (v2.4) ----------
+    @app.get("/api/company/{company}")
+    def company_intel(company: str, user: User = Depends(current_user)):
+        """Aggregate everything known about a company into one research panel.
+
+        Combines jobs, salary range, sources, application statuses, and
+        enrichment facts for the given company name.
+        """
+        from sqlalchemy import func
+
+        with db.session() as session:
+            rows = (
+                session.query(Job)
+                .filter(func.lower(Job.company) == func.lower(company))
+                .all()
+            )
+
+        jobs = []
+        salaries = []
+        sources: dict[str, int] = {}
+        stages: dict[str, int] = {}
+        for j in rows:
+            jobs.append(_list_item(j))
+            sources[j.source] = sources.get(j.source, 0) + 1
+            v = _salary_value(j.salary)
+            if v is not None:
+                salaries.append(v)
+            app = session.query(Application).filter(Application.job_id == j.id).first()
+            if app:
+                stages[app.status] = stages.get(app.status, 0) + 1
+
+        info = get_company_info(company)
+        facts = {
+            "name": info.name,
+            "has_data": info.has_data,
+            "overall": info.overall,
+            "ratings": info.ratings,
+            "flags": info.flags,
+            "warnings": info.warnings,
+            "size": info.size,
+            "founded": info.founded,
+            "remote_policy": info.remote_policy,
+        }
+
+        salary_range = None
+        if salaries:
+            sv = sorted(salaries)
+            salary_range = {
+                "min": round(sv[0], 1),
+                "median": round(_pct(sv, 50), 1),
+                "max": round(sv[-1], 1),
+                "count": len(sv),
+            }
+
+        return {
+            "company": company,
+            "job_count": len(jobs),
+            "jobs": jobs,
+            "sources": sources,
+            "application_stages": stages,
+            "salary_range": salary_range,
+            "company_info": facts,
+        }
 
     # ---------- Scan ----------
     @app.post("/api/scan")
@@ -521,13 +718,22 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
             "remote_policy": info.remote_policy,
         }
 
-    def _list_item(job: Job, materials: set | None = None) -> dict:
+    def _list_item(job: Job, materials: set | None = None, app_record=None) -> dict:
         info = get_company_info(job.company)
         item = job.to_dict()
         item["company_overall"] = info.overall if info.has_data else None
         item["company_has_data"] = info.has_data
         item["company_flags"] = info.flags[:2]
         item["materials_ready"] = bool(materials and job.id in materials)
+        # Application dates for the Applications view (starting / last / submission).
+        if app_record:
+            item["app_start"] = app_record.created_at.isoformat() if app_record.created_at else None
+            item["app_last"] = app_record.last_attempt_at.isoformat() if app_record.last_attempt_at else (app_record.updated_at.isoformat() if app_record.updated_at else None)
+            item["app_submitted"] = app_record.submitted_at.isoformat() if app_record.submitted_at else None
+        else:
+            item["app_start"] = item.get("created_at")
+            item["app_last"] = item.get("created_at")
+            item["app_submitted"] = None
         return item
 
     def _detail(job: Job) -> dict:
@@ -610,7 +816,10 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
                 else_=3,
             )
             jobs = query.order_by(status_rank.asc(), Job.score.desc()).all()
-            return [_list_item(j) for j in jobs]
+            # Batch-fetch all application records in one query instead of one
+            # session per job (avoids an N+1 query across hundreds of jobs).
+            app_records = {r.job_id: r for r in session.query(Application).all()}
+            return [_list_item(j, app_record=app_records.get(j.id)) for j in jobs]
 
     @app.get("/api/jobs/{job_id}")
     def get_job(job_id: int, user: User = Depends(current_user)):
@@ -1186,6 +1395,129 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
             "by_source": _group(lambda j: j.source or "unknown"),
         }
 
+    # ---------- Salary negotiation assistant (v2.4) ----------
+    @app.api_route("/api/negotiation", methods=["GET", "PUT"])
+    def salary_negotiation(
+        offer: float | None = None,
+        role: str | None = None,
+        work_mode: str | None = None,
+        payload: dict = Body(None),
+        user: User = Depends(current_user),
+    ):
+        """Turn market salary data into a negotiation range + talking points.
+
+        ``offer`` is the candidate's stated ask (thousands). When omitted it
+        defaults to the profile's expected salary. The recommended range is
+        derived from the market distribution: a floor at the user's ask and a
+        stretch target near the 60th–75th percentile of comparable offers.
+
+        Accepts GET (offer as a query param) or PUT (offer in a JSON body) so
+        the negotiation assistant can recalculate when the user edits their ask.
+        """
+        # PUT sends the offer in a JSON body; GET sends it as a query param.
+        if offer is None and isinstance(payload, dict):
+            offer = payload.get("offer")
+        with db.session() as session:
+            query = session.query(Job)
+            if role:
+                query = query.filter(Job.title.ilike(f"%{role}%"))
+            if work_mode:
+                query = query.filter(Job.work_mode == work_mode)
+            jobs = query.all()
+            profile = session.get(Profile, 1)
+
+        values = []
+        for job in jobs:
+            v = _salary_value(job.salary)
+            if v is not None:
+                values.append(v)
+
+        if not values:
+            return {
+                "count": 0,
+                "market": None,
+                "recommendation": None,
+                "talking_points": [],
+                "market_context": "No salary data in your jobs yet. Scanning more roles will improve the recommendation.",
+            }
+
+        sv = sorted(values)
+        median = round(_pct(sv, 50), 1)
+        p25 = round(_pct(sv, 25), 1)
+        p75 = round(_pct(sv, 75), 1)
+        p60 = round(_pct(sv, 60), 1)
+        p90 = round(_pct(sv, 90), 1)
+        mean = round(sum(values) / len(values), 1)
+
+        # Determine the user's ask.
+        ask = offer
+        if ask is None and profile:
+            ask = _salary_value(profile.expected_salary) or _salary_value(profile.min_salary)
+        ask = round(ask, 1) if ask is not None else None
+
+        # Build the recommended range.
+        recommendation = None
+        talking_points = []
+        if ask is not None:
+            floor = ask
+            stretch = round(max(p75, p60, ask * 1.12), 1)
+            if stretch <= floor:
+                stretch = round(floor * 1.12, 1)
+            mid = round((floor + stretch) / 2, 1)
+            recommendation = {
+                "floor": floor,
+                "target": mid,
+                "stretch": stretch,
+                "ask": ask,
+            }
+            # Talking points — data-backed, tailored to the ask vs. market.
+            if ask < median:
+                talking_points.append(
+                    f"Market data shows comparable roles median around ${median}k; "
+                    f"your ask of ${ask}k sits below that, so there's room to aim higher."
+                )
+            elif ask > p90:
+                talking_points.append(
+                    f"Your ask of ${ask}k is above the 90th percentile (${p90}k) — "
+                    "lead with your specific, differentiated value and concrete achievements."
+                )
+            else:
+                talking_points.append(
+                    f"Your ask of ${ask}k aligns with the market median of ${median}k; "
+                    "anchor there and let them name a number first."
+                )
+            talking_points.append(
+                f"Comparable offers in your data range from ${sv[0]:.0f}k to "
+                f"${sv[-1]:.0f}k, with the 75th percentile at ${p75}k."
+            )
+            talking_points.append(
+                "Frame the range, not a single number: present the floor as your "
+                "comfortable number and the stretch as your target for the right scope."
+            )
+            talking_points.append(
+                "Consider total compensation — equity, PTO, remote flexibility, and "
+                "growth — if the base number can't move as much as you'd like."
+            )
+
+        return {
+            "count": len(values),
+            "offer": ask,
+            "market": {
+                "p25": p25,
+                "median": median,
+                "p50": median,
+                "mean": mean,
+                "p60": p60,
+                "p75": p75,
+                "p90": p90,
+                "min": round(sv[0], 1),
+                "max": round(sv[-1], 1),
+            },
+            "recommendation": recommendation,
+            "talking_points": talking_points,
+            "market_context": "Recommendation based on live salary data from your scanned jobs.",
+        }
+
     # ---------- Analytics: skill gap (F3) ----------
     @app.get("/api/analytics/skills")
     def skill_gap(
@@ -1405,51 +1737,101 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
         errors: list[str] = []
         with db.session() as session:
             existing = {row[0] for row in session.query(Job.fingerprint).all()}
+            profile = session.get(Profile, 1)
+            profile_skills = list(profile.skills or []) if profile else []
             for i, item in enumerate(jobs_in):
                 if not isinstance(item, dict):
                     skipped += 1
                     errors.append(f"row {i}: not an object")
                     continue
-                title = (item.get("title") or "").strip()
-                company = (item.get("company") or "").strip()
-                url = (item.get("url") or "").strip()
+                # Normalise the raw record: unescape entities, repair mojibake,
+                # strip HTML to text, and clean the skills field.
+                raw = _clean_raw(item)
+                title = (raw.get("title") or "").strip()
+                company = (raw.get("company") or "").strip()
+                url = (raw.get("url") or "").strip()
                 if not title or not company:
                     skipped += 1
                     errors.append(f"row {i}: missing title or company")
                     continue
-                fp = item.get("fingerprint") or fingerprint(title, company, url)
+                fp = raw.get("fingerprint") or fingerprint(title, company, url)
                 if fp in existing:
                     skipped += 1
                     continue
                 existing.add(fp)
+
+                # Score the job if the export did not carry a valid score.
+                confidence_val = raw.get("confidence")
+                eligibility_val = raw.get("eligibility")
+                if not _is_valid_score(confidence_val) or not _is_valid_score(eligibility_val):
+                    assessment = assess_job(
+                        title=title,
+                        description=raw.get("description"),
+                        job_skills=raw.get("skills"),
+                        profile_skills=profile_skills,
+                        target_role=config.role,
+                        location_status=raw.get("location_status") or "eligible",
+                        work_mode=raw.get("work_mode") or "remote",
+                        salary=raw.get("salary"),
+                        min_salary=config.min_salary,
+                        company_overall=get_company_info(company).overall,
+                        posted_date=raw.get("posted_date"),
+                        application_url=raw.get("application_url"),
+                        preferred_remote=True,
+                    )
+                    confidence_val = assessment.confidence
+                    eligibility_val = assessment.eligibility
+                    score_val = assessment.fit_score
+                    score_breakdown = assessment.breakdown
+                    confidence_breakdown = {
+                        "factors": [
+                            {"key": f.key, "label": f.label, "value": f.value,
+                             "weight": f.weight, "detail": f.detail}
+                            for f in assessment.factors
+                        ],
+                        "matched_skills": assessment.matched_skills,
+                        "missing_skills": assessment.missing_skills,
+                        "must_have_present": assessment.must_have_present,
+                        "must_have_missing": assessment.must_have_missing,
+                        "reasons": assessment.reasons,
+                    }
+                    confidence_label = assessment.confidence_label
+                    eligibility_label = assessment.eligibility_label
+                else:
+                    score_val = raw.get("score")
+                    score_breakdown = raw.get("score_breakdown")
+                    confidence_breakdown = raw.get("confidence_breakdown")
+                    confidence_label = raw.get("confidence_label")
+                    eligibility_label = raw.get("eligibility_label")
+
                 session.add(Job(
                     fingerprint=fp,
                     title=title,
                     company=company,
-                    location=item.get("location"),
-                    work_mode=item.get("work_mode") or "remote",
-                    employer_country=item.get("employer_country"),
-                    job_country=item.get("job_country"),
-                    candidate_required_location=item.get("candidate_required_location"),
-                    worldwide_remote=bool(item.get("worldwide_remote")),
-                    salary=item.get("salary"),
-                    description=item.get("description"),
-                    skills=item.get("skills"),
+                    location=raw.get("location"),
+                    work_mode=raw.get("work_mode") or "remote",
+                    employer_country=raw.get("employer_country"),
+                    job_country=raw.get("job_country"),
+                    candidate_required_location=raw.get("candidate_required_location"),
+                    worldwide_remote=bool(raw.get("worldwide_remote")),
+                    salary=raw.get("salary"),
+                    description=raw.get("description"),
+                    skills=raw.get("skills"),
                     url=url,
-                    source=item.get("source") or "import",
-                    posted_date=item.get("posted_date"),
-                    application_url=item.get("application_url"),
-                    application_method=item.get("application_method"),
-                    location_status=item.get("location_status") or "eligible",
-                    location_reason=item.get("location_reason"),
-                    score=item.get("score"),
-                    score_breakdown=item.get("score_breakdown"),
-                    confidence=item.get("confidence"),
-                    confidence_label=item.get("confidence_label"),
-                    eligibility=item.get("eligibility"),
-                    eligibility_label=item.get("eligibility_label"),
-                    confidence_breakdown=item.get("confidence_breakdown"),
-                    status=item.get("status") or "new",
+                    source=raw.get("source") or "import",
+                    posted_date=raw.get("posted_date"),
+                    application_url=raw.get("application_url"),
+                    application_method=raw.get("application_method"),
+                    location_status=raw.get("location_status") or "eligible",
+                    location_reason=raw.get("location_reason"),
+                    score=score_val,
+                    score_breakdown=score_breakdown,
+                    confidence=confidence_val,
+                    confidence_label=confidence_label,
+                    eligibility=eligibility_val,
+                    eligibility_label=eligibility_label,
+                    confidence_breakdown=confidence_breakdown,
+                    status=raw.get("status") or "new",
                 ))
                 imported += 1
             session.commit()

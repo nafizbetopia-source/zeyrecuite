@@ -164,8 +164,9 @@
     jobs: ["Jobs", "Review, score, and act on every posting"],
     pipeline: ["Pipeline", "Drag jobs through your review stages"],
     applications: ["Applications", "Tailored resumes, cover letters, and prep"],
-    search: ["Search &amp; Submit", "Find jobs and send your tailored applications"],
+    search: ["Search & Submit", "Find jobs and send your tailored applications"],
     analytics: ["Analytics", "Submission tracking and performance insights"],
+    goals: ["Goals", "Weekly application targets, progress & streak"],
     profile: ["Profile", "Your details power the tailoring"],
   };
 
@@ -186,6 +187,7 @@
     else if (state.view === "applications") renderApplications();
     else if (state.view === "search") renderSearch();
     else if (state.view === "analytics") renderAnalytics();
+    else if (state.view === "goals") renderGoals();
     else if (state.view === "profile") renderProfile();
   }
 
@@ -299,6 +301,7 @@
           <option value="confidence" ${state.sort === "confidence" ? "selected" : ""}>Sort: Confidence</option>
           <option value="score" ${state.sort === "score" ? "selected" : ""}>Sort: Fit score</option>
           <option value="company" ${state.sort === "company" ? "selected" : ""}>Sort: Company rating</option>
+          <option value="date" ${state.sort === "date" ? "selected" : ""}>Sort: Newest first</option>
         </select>
         <button class="btn" id="saveFilterBtn" title="Save the current search + filter as a reusable chip">＋ Save filter</button>
       </div>
@@ -315,7 +318,7 @@
     $("#jobSearch").addEventListener("input", (e) => { state.search = e.target.value; renderJobList(); });
     $("#jobSort").addEventListener("change", (e) => { state.sort = e.target.value; renderJobList(); });
     $("#saveFilterBtn").addEventListener("click", saveCurrentFilter);
-    el.querySelectorAll(".chip[data-status]").forEach((c) => c.addEventListener("click", () => { state.filter = c.dataset.status; state.search = ""; renderJobs(); }));
+    el.querySelectorAll(".chip[data-status]").forEach((c) => c.addEventListener("click", () => { state.filter = c.dataset.status; state.search = ""; renderJobList(); }));
     el.querySelectorAll(".filter-chip[data-apply]").forEach((c) => c.addEventListener("click", () => applySavedFilter(c.dataset.apply)));
     el.querySelectorAll(".filter-chip[data-rmfilter]").forEach((c) => c.addEventListener("click", (e) => { e.stopPropagation(); removeSavedFilter(c.dataset.rmfilter); }));
     renderJobList();
@@ -390,6 +393,11 @@
     list.sort((a, b) => {
       if (state.sort === "company") return (b.company_overall || 0) - (a.company_overall || 0);
       if (state.sort === "score") return (b.score || 0) - (a.score || 0);
+      if (state.sort === "date") {
+        const da = a.posted_date || a.created_at || "";
+        const db = b.posted_date || b.created_at || "";
+        return db.localeCompare(da);
+      }
       return (b.confidence || 0) - (a.confidence || 0);
     });
     return list;
@@ -595,6 +603,10 @@
     // Load the resume scorecard and timeline (v2.3).
     try { detail.scorecard = await api(`/api/jobs/${id}/scorecard`); } catch (e) { /* optional */ }
     try { detail.timeline = await api(`/api/jobs/${id}/timeline`); } catch (e) { /* optional */ }
+    // v2.4 — company intel (keyword gap is provided by the scorecard panel above).
+    if (detail.company) {
+      try { detail.companyIntel = await api(`/api/company/${encodeURIComponent(detail.company)}`); } catch (e) { /* optional */ }
+    }
     $("#jobDetail").innerHTML = jobDetailHTML(detail);
     $("#jobModal").classList.remove("hidden");
     bindDetail(detail);
@@ -699,6 +711,7 @@
             ` : `<p class="muted" style="font-size:13px">No rating data for this company yet. Ratings are curated benchmarks for known remote employers.</p>`}
           </div>
           ${companyFactsPanel(j)}
+          ${companyIntelPanel(j)}
           <div class="panel">
             <h4>Interview prep · ${(j.questions || []).length} questions</h4>
             <ol class="q-list">${questions}</ol>
@@ -738,6 +751,44 @@
       <div class="panel">
         <h4>Company facts <span class="muted">Wikidata</span></h4>
         ${rows || '<p class="muted" style="font-size:13px">No facts found.</p>'}
+      </div>`;
+  }
+
+  // ---------- Company intel panel (v2.4) ----------
+  function companyIntelPanel(j) {
+    const ci = j.companyIntel;
+    if (!ci || !ci.job_count) return "";
+    const info = ci.company_info || {};
+    const ratingRows = Object.entries(info.ratings || {}).map(([k, v]) => {
+      const label = ({ work_life_balance: "Work-life balance", culture: "Culture", management: "Management", compensation: "Compensation", career_growth: "Career growth", environment: "Work environment" }[k]) || k;
+      return `<div class="rating-row"><span class="name">${esc(label)}</span><div class="bar"><span style="width:${(v / 5) * 100}%"></span></div><span class="val">${v.toFixed(1)}</span></div>`;
+    }).join("");
+    const srcRows = Object.entries(ci.sources || {}).map(([name, n]) =>
+      `<div class="rating-row"><span class="name">${esc(name)}</span><span class="val">${n}</span></div>`).join("");
+    const stageRows = Object.entries(ci.application_stages || {}).map(([stage, n]) =>
+      `<div class="rating-row"><span class="name">${esc(statusLabel(stage))}</span><span class="val">${n}</span></div>`).join("");
+    const sal = ci.salary_range;
+    const salRow = sal
+      ? `<div class="rating-row"><span class="name">Salary range</span><span class="val">${sal.min}–${sal.max}k</span></div>`
+      : "";
+    const jobs = (ci.jobs || []).slice(0, 5).map((jj) =>
+      `<div class="rating-row"><span class="name" style="width:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(jj.title)}</span><span class="muted" style="font-size:11px">${esc(jj.source || "")}</span></div>`).join("");
+    return `
+      <div class="panel">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <h4 style="margin:0">Company intel</h4>
+          <span class="muted" style="font-size:11px">${ci.job_count} job${ci.job_count === 1 ? "" : "s"}</span>
+        </div>
+        ${info.overall != null ? `<div style="display:flex;align-items:center;gap:8px;margin:12px 0">
+          <span style="font-size:26px;font-weight:800">${info.overall.toFixed(1)}</span>
+          <span class="stars" style="color:var(--amber)">${stars(info.overall)}</span>
+          <span class="muted" style="font-size:12px">${esc(info.remote_policy || "")} · ${esc(info.size || "")}</span>
+        </div>` : ""}
+        ${salRow}
+        ${ratingRows}
+        ${srcRows ? `<div class="skill-group" style="margin-top:12px"><div class="skill-group-label">Jobs by source</div>${srcRows}</div>` : ""}
+        ${stageRows ? `<div class="skill-group" style="margin-top:12px"><div class="skill-group-label">Application stages</div>${stageRows}</div>` : ""}
+        ${jobs ? `<div class="skill-group" style="margin-top:12px"><div class="skill-group-label">Your jobs</div>${jobs}</div>` : ""}
       </div>`;
   }
 
@@ -975,17 +1026,31 @@
   // ---------- Applications ----------
   function renderApplications() {
     const el = $("#view-applications");
-    const apps = state.jobs.filter((j) => j.status === "approved" || j.status === "new");
+    let apps = state.jobs.filter((j) => j.status === "approved" || j.status === "new" || j.status === "review");
+    // Sort by submission date (newest first), then last activity, then start date.
+    apps.sort((a, b) => {
+      const da = a.app_submitted || a.app_last || a.app_start || "";
+      const db = b.app_submitted || b.app_last || b.app_start || "";
+      return db.localeCompare(da);
+    });
     el.innerHTML = `
       <div class="card">
         ${apps.length ? apps.map((j) => {
           const app = j.application || {};
           const stage = app.application_status || app.submission_status || "draft";
+          const posted = j.posted_date ? new Date(j.posted_date).toLocaleDateString() : "—";
+          const last = j.app_last ? new Date(j.app_last).toLocaleDateString() : "—";
+          const submitted = j.app_submitted ? new Date(j.app_submitted).toLocaleDateString() : "—";
           return `
           <div class="app-row" data-id="${j.id}">
             <div>
               <div class="title">${esc(j.title)}</div>
               <div class="sub">${esc(j.company)} · ${esc(j.location || "Remote")}</div>
+              <div class="app-dates">
+                <span class="app-date" title="When this job was posted">🗂️ Posted ${esc(posted)}</span>
+                <span class="app-date updated" title="Last time anything changed on this application">🕐 Updated ${esc(last)}</span>
+                <span class="app-date ${j.app_submitted ? 'submitted' : ''}" title="When you submitted this application">✅ Submitted ${esc(submitted)}</span>
+              </div>
             </div>
             <div class="confidence" style="align-items:center">
               <span class="num" style="color:${confColor(j.confidence)}">${Math.round(j.confidence)}</span>
@@ -1244,6 +1309,10 @@
         <div class="section-title">Fit trend <span class="muted">how your match quality is moving</span></div>
         <div class="loading"><span class="spinner"></span> Loading…</div>
       </div>
+      <div class="card card-pad" id="negotiationCard" style="margin-top:18px">
+        <div class="section-title">Salary negotiation assistant <span class="muted">market data → your offer</span></div>
+        <div class="loading"><span class="spinner"></span> Loading…</div>
+      </div>
       <div class="grid cols-2" style="margin-top:18px">
         <div class="card card-pad" id="schedulerCard">
           <div class="section-title">Auto-scan scheduler <span class="muted">background</span></div>
@@ -1255,7 +1324,70 @@
         </div>
       </div>`;
 
-    await Promise.all([renderSalary(), renderSkills(), renderSources(), renderTrend(), renderScheduler(), renderRegistry()]);
+    await Promise.all([renderSalary(), renderSkills(), renderSources(), renderTrend(), renderScheduler(), renderRegistry(), renderNegotiation()]);
+  }
+
+  // ---------- Salary negotiation assistant (v2.4) ----------
+  async function renderNegotiation() {
+    const card = $("#negotiationCard");
+    let n;
+    try { n = await api("/api/negotiation"); } catch (e) { card.innerHTML = `<div class="section-title">Salary negotiation assistant</div>` + emptyBox("Unavailable", e.message); return; }
+    const rec = n.recommendation || {};
+    const floor = rec.floor ?? 0, target = rec.target ?? 0, stretch = rec.stretch ?? 0;
+    const market = n.market || {};
+    const p25 = market.p25 ?? 0, p50 = market.p50 ?? 0, p75 = market.p75 ?? 0;
+    const offer = n.offer ?? 0;
+
+    // Build a visual range bar: floor..stretch, with offer + market markers.
+    const lo = Math.max(0, Math.min(floor, target, stretch, p25, p50, p75, offer));
+    const hi = Math.max(floor, target, stretch, p25, p50, p75, offer) || 1;
+    const span = (hi - lo) || 1;
+    const pos = (v) => Math.max(0, Math.min(100, ((v - lo) / span) * 100));
+    const fmt = (v) => v ? `$${v}k` : "—";
+
+    const markers = [
+      { at: pos(floor), label: "Floor", color: "var(--primary)" },
+      { at: pos(target), label: "Target", color: "var(--teal)" },
+      { at: pos(stretch), label: "Stretch", color: "var(--violet)" },
+      { at: pos(offer), label: "Your offer", color: "var(--amber)" },
+    ].map((m) => `<div class="neg-marker" style="left:${m.at}%;border-color:${m.color}"><span class="neg-dot" style="background:${m.color}"></span><span class="neg-lbl" style="color:${m.color}">${esc(m.label)}</span></div>`).join("");
+
+    const points = (n.talking_points || []).map((p) => `<li>${esc(p)}</li>`).join("");
+
+    card.innerHTML = `
+      <div class="section-title">Salary negotiation assistant <span class="muted">market data → your offer</span></div>
+      <div class="neg-grid">
+        <div class="neg-input">
+          <label class="neg-lbl-inline">Your offer (k)</label>
+          <input id="negOffer" type="number" min="0" value="${offer}" style="flex:1" />
+          <button class="btn primary sm" id="negRecalc">Recalculate</button>
+        </div>
+        <div class="neg-range">
+          <div class="neg-bar">
+            <div class="neg-track"><span class="neg-fill" style="background:linear-gradient(90deg,var(--primary),var(--teal),var(--violet))"></span></div>
+            ${markers}
+          </div>
+          <div class="neg-values">
+            <div><span class="neg-lbl-inline">Floor</span> <b>${fmt(floor)}</b></div>
+            <div><span class="neg-lbl-inline">Target</span> <b>${fmt(target)}</b></div>
+            <div><span class="neg-lbl-inline">Stretch</span> <b>${fmt(stretch)}</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="neg-market">
+        <div class="neg-mkt-item"><span class="neg-lbl-inline">Market p25</span> <b>${fmt(p25)}</b></div>
+        <div class="neg-mkt-item"><span class="neg-lbl-inline">Market p50</span> <b>${fmt(p50)}</b></div>
+        <div class="neg-mkt-item"><span class="neg-lbl-inline">Market p75</span> <b>${fmt(p75)}</b></div>
+      </div>
+      ${n.talking_points && n.talking_points.length ? `
+        <div class="skill-group" style="margin-top:14px"><div class="skill-group-label">Talking points</div><ul class="suggestion-list">${points}</ul></div>` : ""}
+      <p class="muted" style="font-size:12px;margin-top:12px">Recommendation is derived from market data across your scanned jobs, your expected salary, and your experience. Adjust your offer above to recalculate.</p>`;
+
+    const rc = $("#negRecalc");
+    if (rc) rc.addEventListener("click", async () => {
+      const val = Number($("#negOffer").value) || 0;
+      try { await api("/api/negotiation", { method: "PUT", body: { offer: val } }); renderNegotiation(); } catch (e) { toast(e.message); }
+    });
   }
 
   // ---------- Analytics: scheduler + registry (F17/F15) ----------
@@ -1492,6 +1624,96 @@
         <span class="hbar-val">${v}</span>
       </div>`).join("");
     return `<div class="hbar-list">${rows}</div>`;
+  }
+
+  // ---------- Goals / KPI (v2.4) ----------
+  async function renderGoals() {
+    const el = $("#view-goals");
+    el.innerHTML = `<div class="loading"><span class="spinner"></span> Loading goals…</div>`;
+    let k;
+    try { k = await api("/api/kpi"); } catch (e) { el.innerHTML = emptyBox("Goals unavailable", e.message); return; }
+
+    const goal = k.weekly_goal || 0;
+    const done = k.submitted_this_week || 0;
+    const pct = Math.min(100, Math.round((done / goal) * 100));
+    const goalPct = goal ? pct : 0;
+    const ringBg = goalPct >= 100 ? "var(--green)" : goalPct >= 50 ? "var(--amber)" : "var(--primary)";
+    const circumference = 2 * Math.PI * 54;
+    const dash = goal ? (goalPct / 100) * circumference : 0;
+
+    const stageRows = Object.entries(k.stages || {}).map(([stage, n]) =>
+      `<div class="rating-row"><span class="name">${esc(statusLabel(stage))}</span><span class="val">${n}</span></div>`).join("");
+
+    const goalInput = goal
+      ? `<div class="card card-pad" style="margin-top:18px">
+           <div class="section-title">Weekly application target</div>
+           <div style="display:flex;align-items:center;gap:12px;max-width:320px">
+             <input id="goalInput" type="number" min="0" value="${goal}" style="flex:1" />
+             <button class="btn primary" id="goalSave">Save</button>
+           </div>
+           <p class="muted" style="font-size:12px;margin-top:8px">Applications submitted this week count toward this target.</p>
+         </div>`
+      : `<div class="card card-pad" style="margin-top:18px">
+           <div class="section-title">Set your weekly target</div>
+           <div style="display:flex;align-items:center;gap:12px;max-width:320px">
+             <input id="goalInput" type="number" min="0" value="5" style="flex:1" />
+             <button class="btn primary" id="goalSave">Set target</button>
+           </div>
+         </div>`;
+
+    el.innerHTML = `
+      <div class="grid cols-3" style="margin-bottom:18px">
+        <div class="card card-pad" style="align-items:center;display:flex;flex-direction:column;gap:4px;text-align:center">
+          <div class="label" style="font-size:12.5px;color:var(--text-2);font-weight:600;margin-bottom:6px">Weekly progress</div>
+          <div style="position:relative;width:120px;height:120px">
+            <svg viewBox="0 0 120 120" style="width:120px;height:120px;transform:rotate(-90deg)">
+              <circle cx="60" cy="60" r="54" fill="none" stroke="var(--border)" stroke-width="10"/>
+              <circle cx="60" cy="60" r="54" fill="none" stroke="${ringBg}" stroke-width="10"
+                stroke-dasharray="${dash} ${circumference}" stroke-linecap="round"
+                style="transition:stroke-dasharray .5s ease"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+              <span style="font-size:28px;font-weight:800;color:${ringBg}">${done}<span style="font-size:14px;color:var(--muted)">/${goal}</span></span>
+              <span style="font-size:11px;color:var(--muted)">this week</span>
+            </div>
+          </div>
+        </div>
+        <div class="card card-pad">
+          <div class="label" style="font-size:12.5px;color:var(--text-2);font-weight:600">Applications submitted</div>
+          <div class="value" style="font-size:40px;font-weight:800;margin-top:6px">${k.submitted_total || 0}</div>
+          <div class="sub" style="color:var(--muted);font-size:12.5px;margin-top:4px">all time</div>
+          <div style="margin-top:14px">${stageRows || '<p class="muted" style="font-size:12.5px">No applications yet</p>'}</div>
+        </div>
+        <div class="card card-pad">
+          <div class="label" style="font-size:12.5px;color:var(--text-2);font-weight:600">Streak</div>
+          <div class="value" style="font-size:40px;font-weight:800;margin-top:6px">${k.streak || 0}<span style="font-size:16px;color:var(--muted)">🔥</span></div>
+          <div class="sub" style="color:var(--muted);font-size:12.5px;margin-top:4px">consecutive days with submissions</div>
+          <div style="margin-top:16px">
+            ${[0,1,2,3,4,5,6].map((i) =>
+              `<span class="dot" style="width:22px;height:22px;border-radius:6px;display:inline-block;margin:2px;background:${(k.streak && i < k.streak) ? "var(--amber)" : "var(--surface-2)"}"></span>`
+            ).join("")}
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-pad">
+        <div class="section-title">How it works</div>
+        <p class="muted" style="font-size:13px;line-height:1.6;margin:0">
+          Set a weekly application target. Every application you mark <b>submitted</b> counts toward this week's goal.
+          Keep a submission on <b>consecutive days</b> to build your streak. Progress resets each week — aim for 100% and don't break the chain.
+        </p>
+      </div>
+      ${goalInput}`;
+
+    const gs = $("#goalSave");
+    if (gs) gs.addEventListener("click", async () => {
+      const val = Number($("#goalInput").value) || 0;
+      try {
+        await api("/api/kpi", { method: "PUT", body: { weekly_goal: val } });
+        toast("Goal saved");
+        renderGoals();
+      } catch (e) { toast(e.message); }
+    });
   }
 
   // ---------- Profile ----------
@@ -1827,7 +2049,19 @@
     $("#compareModal").addEventListener("click", (e) => { if (e.target.id === "compareModal") closeCompare(); });
     $("#closeFollowup").addEventListener("click", closeFollowup);
     $("#followupModal").addEventListener("click", (e) => { if (e.target.id === "followupModal") closeFollowup(); });
-    document.querySelectorAll(".nav-item").forEach((n) => n.addEventListener("click", () => setView(n.dataset.view)));
+    document.querySelectorAll(".nav-item").forEach((n) => n.addEventListener("click", () => { setView(n.dataset.view); closeSidebar(); }));
+    // Mobile sidebar toggle.
+    const hamburger = $("#hamburgerBtn");
+    const overlay = $("#sidebarOverlay");
+    const closeSidebar = () => {
+      document.body.classList.remove("sidebar-open");
+      overlay.classList.add("hidden");
+    };
+    if (hamburger) hamburger.addEventListener("click", () => {
+      const open = document.body.classList.toggle("sidebar-open");
+      overlay.classList.toggle("hidden", !open);
+    });
+    if (overlay) overlay.addEventListener("click", closeSidebar);
 
     if (state.token) {
       api("/api/auth/me")

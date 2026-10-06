@@ -152,6 +152,9 @@ class Profile(Base):
     # v2.3 — saved job filters (F10) and resume variants (F12).
     saved_filters: Mapped[list | None] = mapped_column(JSON, nullable=True)
     resume_variants: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    # v2.4 — application goals / KPI tracking.
+    weekly_goal: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    kpi_state: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
     )
@@ -192,6 +195,8 @@ class Profile(Base):
             "resume_path": self.resume_path,
             "saved_filters": self.saved_filters,
             "resume_variants": self.resume_variants,
+            "weekly_goal": self.weekly_goal,
+            "kpi_state": self.kpi_state,
         }
 
 

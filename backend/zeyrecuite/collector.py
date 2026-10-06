@@ -6,6 +6,8 @@ database. Eligible jobs are scored and stored; review jobs are stored with a
 """
 from __future__ import annotations
 
+import html as html_module
+import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any
@@ -32,6 +34,150 @@ class RunSummary:
     review: int
     duplicates: int
     error: str | None = None
+
+
+# ---------------------------------------------------------------------------
+# Data-cleanup helpers.
+#
+# Raw job records arrive from a mix of sources in inconsistent shapes: some
+# carry real HTML descriptions, some carry already-escaped text, and a few
+# carry mojibake (UTF-8 bytes decoded as Latin-1). Before a record is scored
+# and persisted we normalise it so the database never stores corrupted text.
+# ---------------------------------------------------------------------------
+
+_MOJIBAKE_REPLACEMENTS = {
+    "â": "'", "â": '"', "â": '"', "â": "-", "â": "-",
+    "â¦": "...", "Â": "", "â": "'", "â": "'", "Â°": "°",
+    "Â­": "", "Â¡": "¡", "Â£": "£", "Â¥": "¥", "Â©": "©",
+    "Â®": "®", "â¢": "™", "â": "", "â": "", "Ââ": '"',
+}
+
+
+def _unescape(text: str) -> str:
+    """Decode HTML entities (``&amp;`` -> ``&``) that were stored literally."""
+    if not text:
+        return text
+    return html_module.unescape(text)
+
+
+def _fix_mojibake(text: str) -> str:
+    """Repair UTF-8-as-Latin-1 mojibake.
+
+    Two complementary cases are handled:
+
+    1. **General 2-byte sequences.** A UTF-8 byte pair ``0xC2/0xC3`` +
+       ``0x80-0xBF`` decoded as Latin-1 renders as ``Â/Ã`` followed by a
+       character in ``0xB0-0xBF`` (e.g. ``MecÃ¡nico`` -> ``Mecánico``,
+       ``Ã©`` -> ``é``). We re-encode those pairs back to UTF-8.
+    2. **Known mojibake literals** (smart quotes, dashes, ellipsis) from
+       ``_MOJIBAKE_REPLACEMENTS``.
+
+    Any residual lone ``Â`` (from ``°``, ``­``, etc.) is stripped.
+    """
+    if not text:
+        return text
+
+    # Case 1: re-encode the general 2-byte UTF-8-as-Latin-1 sequences.
+    # The first byte is U+00C2 (Â) or U+00C3 (Ã); the second is U+0080–U+00BF.
+    def _reencode(m: "re.Match[str]") -> str:
+        hi = ord(m.group(1))
+        lo = ord(m.group(2))
+        try:
+            return bytes([hi, lo]).decode("utf-8")
+        except UnicodeDecodeError:
+            return m.group(0)
+
+    # Case 1b: 3-byte UTF-8-as-Latin-1 sequences. A 3-byte UTF-8 char
+    # (U+0800-U+FFFF) decoded as Latin-1 becomes U+00C2-U+00EF followed by
+    # two bytes in U+0080-U+00BF. Re-encode those triples back to UTF-8.
+    # Run BEFORE the 2-byte pass so the shared first byte isn't consumed first.
+    def _reencode3(m: "re.Match[str]") -> str:
+        b1 = ord(m.group(1))
+        b2 = ord(m.group(2))
+        b3 = ord(m.group(3))
+        try:
+            return bytes([b1, b2, b3]).decode("utf-8")
+        except UnicodeDecodeError:
+            return m.group(0)
+
+    text = re.sub(r"([\u00c2-\u00ef])([\x80-\xbf])([\x80-\xbf])", _reencode3, text)
+
+    # Case 1a: re-encode the general 2-byte UTF-8-as-Latin-1 sequences.
+    text = re.sub(r"([\u00c2-\u00df])([\x80-\xbf])", _reencode, text)
+
+    # Case 2: known mojibake literals.
+    for mojibake, fixed in _MOJIBAKE_REPLACEMENTS.items():
+        if mojibake in text:
+            text = text.replace(mojibake, fixed)
+
+    # Strip any residual lone Â (from °, ­, ¡, £, etc. that were single-byte
+    # in the original and only got the Â prefix from a partial decode).
+    text = text.replace("Â", "")
+    return text
+
+
+def _clean_text(value: str | None) -> str | None:
+    """Unescape entities, repair mojibake, and strip HTML to plain text.
+
+    Handles both real HTML (``<p>Hi</p>``) and HTML-escaped content
+    (``&lt;p&gt;Hi&lt;/p&gt;``) by unescaping first, then stripping tags.
+    """
+    if not value:
+        return value
+    text = _unescape(value)
+    text = _fix_mojibake(text)
+    try:
+        from bs4 import BeautifulSoup
+
+        soup = BeautifulSoup(text, "html.parser")
+        for tag in soup(["script", "style"]):
+            tag.decompose()
+        text = soup.get_text(separator=" ")
+    except Exception:  # noqa: BLE001 - fall back to a regex strip
+        text = re.sub(r"<[^>]+>", " ", text)
+    # Strip any dangling tags left by truncation (e.g. a cut-off "<br" with no
+    # closing ">") so no raw markup survives.
+    text = re.sub(r"<[a-zA-Z/][^<>]*$", " ", text)
+    text = re.sub(r"<[a-zA-Z/]", " ", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _clean_skills(skills: Any) -> list[str] | None:
+    """Normalise a skills field into a clean list of non-empty strings.
+
+    Guards against the import path storing a single string (which SQLite/JSON
+    then serialises as a list of characters) and against generic filler values.
+    """
+    if skills is None:
+        return None
+    if isinstance(skills, str):
+        # A bare string was stored as a list of characters; recover the words.
+        words = re.findall(r"[A-Za-z0-9+./-]+(?:\s+[A-Za-z0-9+./-]+)*", skills)
+        skills = words if words else []
+    if not isinstance(skills, list):
+        return None
+    cleaned = []
+    for s in skills:
+        if not isinstance(s, str):
+            continue
+        s = s.strip().lower()
+        if not s:
+            continue
+        cleaned.append(s)
+    return cleaned or None
+
+
+def _clean_raw(raw: dict[str, Any]) -> dict[str, Any]:
+    """Apply data-cleanup to a raw job record before scoring/persistence."""
+    raw = dict(raw)
+    for field in ("title", "company", "location"):
+        if raw.get(field):
+            raw[field] = _fix_mojibake(_unescape(str(raw[field])))
+    if raw.get("description"):
+        raw["description"] = _clean_text(raw.get("description"))
+    if raw.get("skills") is not None:
+        raw["skills"] = _clean_skills(raw.get("skills"))
+    return raw
 
 
 def _profile_context(db: Database) -> tuple[str, list[str]]:
@@ -94,6 +240,7 @@ def run_source(
 
     with db.session() as session:
         for raw in raw_jobs:
+            raw = _clean_raw(raw)
             fp = fingerprint(raw.get("title"), raw.get("company"), raw.get("url"))
             if fp in seen:
                 summary.duplicates += 1
