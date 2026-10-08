@@ -446,6 +446,20 @@ def assess_job(
         fit = _clamp(round(fit * learning.fit_mult, 2))
         confidence = _clamp(round(confidence * learning.confidence_mult, 1))
         confidence, label = _label(confidence)
+        # Rebase the displayed factor rows by the same multiplier so the
+        # weighted sum of the rows still reconciles with the headline
+        # confidence after feedback shifts it.
+        if learning.confidence_mult != 1.0:
+            factors = [
+                FactorScore(
+                    f.key,
+                    f.label,
+                    _clamp(round(f.value * learning.confidence_mult, 1)),
+                    f.weight,
+                    f.detail,
+                )
+                for f in factors
+            ]
 
     return Assessment(
         fit_score=fit,

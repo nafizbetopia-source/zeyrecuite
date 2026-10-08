@@ -1,0 +1,20 @@
+{
+  "jobs": [
+    {
+      "title": "UAT Probe Role",
+      "company": "UAT Probe Co",
+      "url": "https://example.com/uat-probe-role",
+      "location": "Remote",
+      "source": "uat_probe",
+      "description": "Synthetic job used by uat_headed.py to exercise the JSON import flow."
+    },
+    {
+      "title": "UAT Probe Role Duplicate",
+      "company": "UAT Probe Co",
+      "url": "https://example.com/uat-probe-role",
+      "location": "Remote",
+      "source": "uat_probe",
+      "description": "Same URL as the first row - exercises fingerprint dedup (should be skipped)."
+    }
+  ]
+}

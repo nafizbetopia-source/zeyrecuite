@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import re
+import time
 from typing import Any, Callable
 
 import httpx
@@ -165,11 +166,46 @@ class BaseAdapter:
         raise NotImplementedError
 
 
+# Remotive pacing budget, shared across adapter instances: each scan rebuilds
+# the adapter list, so the budget must live at module scope to span scans.
+# Timestamps are epoch seconds for this UTC day only (pruned on admission).
+# Lives as long as the server process; a restart resets the budget.
+_remotive_poll_times: list[float] = []
+
+
 class RemotiveAdapter(BaseAdapter):
     name = "remotive"
     URL = "https://remotive.com/api/remote-jobs?limit=100"
 
+    def __init__(self, *, polls_per_day: int | None = None, max_per_minute: int | None = None):
+        # config.yaml sources.remotive.polls_per_day / .max_per_minute.
+        # None or <= 0 disables the corresponding limit.
+        self.polls_per_day = polls_per_day if polls_per_day and polls_per_day > 0 else None
+        self.max_per_minute = max_per_minute if max_per_minute and max_per_minute > 0 else None
+
+    def _admit_poll(self) -> bool:
+        """Honour the configured rate limits before hitting the network.
+
+        Returns False when today's ``polls_per_day`` budget is already spent
+        (the poll is skipped entirely). Otherwise waits until the
+        ``max_per_minute`` window frees a slot and records this poll.
+        """
+        while True:
+            now = time.time()
+            day = int(now // 86400)  # UTC day index
+            _remotive_poll_times[:] = [t for t in _remotive_poll_times if int(t // 86400) == day]
+            if self.polls_per_day and len(_remotive_poll_times) >= self.polls_per_day:
+                return False
+            in_window = [t for t in _remotive_poll_times if now - t < 60.0]
+            if self.max_per_minute and len(in_window) >= self.max_per_minute:
+                time.sleep(min(60.0 - (now - min(in_window)), 60.0))
+                continue
+            _remotive_poll_times.append(now)
+            return True
+
     def fetch(self, *, client: httpx.Client | None = None) -> list[dict[str, Any]]:
+        if not self._admit_poll():
+            return []
         data = http_get_json(self.URL, client=client)
         jobs = data.get("jobs", []) if isinstance(data, dict) else []
         out: list[dict[str, Any]] = []
@@ -724,7 +760,12 @@ def build_adapters(config) -> list[BaseAdapter]:
 
     adapters: list[BaseAdapter] = []
     if config.sources.remotive_enabled:
-        adapters.append(RemotiveAdapter())
+        adapters.append(
+            RemotiveAdapter(
+                polls_per_day=getattr(config.sources, "remotive_polls_per_day", None),
+                max_per_minute=getattr(config.sources, "remotive_max_per_minute", None),
+            )
+        )
     if config.sources.greenhouse_enabled and config.sources.greenhouse_boards:
         adapters.append(GreenhouseAdapter(config.sources.greenhouse_boards))
 
@@ -749,4 +790,279 @@ def build_adapters(config) -> list[BaseAdapter]:
         entry = source_entry(registry, "adzuna")
         if entry.get("api_key") and entry.get("api_id"):
             adapters.append(AdzunaAdapter(entry["api_key"], entry["api_id"]))
+    if source_enabled(registry, "companysite") and source_entry(registry, "companysite").get("sites"):
+        adapters.append(CompanySiteAdapter(source_entry(registry, "companysite")["sites"]))
     return adapters
+
+
+# ---------------------------------------------------------------------------
+# Company career pages (Phase 4): discovery targets a company's own careers
+# page, detects the ATS behind it, and reuses the matching adapter — or falls
+# back to scraping the page's own job links when it is hand-rolled HTML.
+# ---------------------------------------------------------------------------
+from urllib.parse import urljoin  # noqa: E402
+
+# (ats name, markers found in the page/URL, regexes extracting the org token
+# the matching adapter needs). Order matters: first marker hit wins.
+ATS_SIGNATURES: tuple[tuple[str, tuple[str, ...], tuple[str, ...]], ...] = (
+    (
+        "greenhouse",
+        ("job-boards.greenhouse.io", "boards.greenhouse.io", "boards-api.greenhouse.io"),
+        (
+            r"job-boards\.greenhouse\.io/embed\?b=([a-z0-9\-_]+)",
+            r"boards\.greenhouse\.io/embed\?b=([a-z0-9\-_]+)",
+            r"boards-api\.greenhouse\.io/v1/boards/([a-z0-9\-_]+)",
+            r"job-boards\.greenhouse\.io/([a-z0-9\-_]+)",
+            r"boards\.greenhouse\.io/([a-z0-9\-_]+)",
+        ),
+    ),
+    (
+        "lever",
+        ("jobs.lever.co", "api.lever.co"),
+        (r"jobs\.lever\.co/([a-z0-9\-_]+)", r"api\.lever\.co/v0/postings/([a-z0-9\-_]+)"),
+    ),
+    ("ashby", ("jobs.ashbyhq.com", "api.ashbyhq.com"), (r"jobs\.ashbyhq\.com/([a-z0-9\-_]+)",)),
+    ("workable", ("apply.workable.com",), (r"apply\.workable\.com/(?:api/v1/accounts/)?([a-z0-9\-]+)",)),
+    (
+        "smartrecruiters",
+        ("jobs.smartrecruiters.com", "api.smartrecruiters.com"),
+        (r"jobs\.smartrecruiters\.com/([a-z0-9\-_]+)",),
+    ),
+    ("workday", ("myworkdayjobs.com",), (r"([a-z0-9][a-z0-9.\-]*\.myworkdayjobs\.com)",)),
+)
+
+# Path fragments that are route words, not org tokens (e.g. /embed widgets).
+_BAD_TOKENS = {"embed", "jobs", "job_widget", "api", "careers"}
+
+
+def detect_ats(html: str, url: str = "") -> dict | None:
+    """Detect the ATS behind a company's careers page (Phase 4).
+
+    Returns ``{"ats": <name>, "token": <org id or None>}`` or ``None`` when no
+    known ATS is present. Best-effort on static HTML (no JS rendering); a wrong
+    or missing token only means the ATS fetch returns nothing and callers fall
+    back to scraping the page's own links — never raises.
+    """
+    haystack = f"{html or ''} {url or ''}"
+    low = haystack.lower()
+    for ats, markers, patterns in ATS_SIGNATURES:
+        if any(marker in low for marker in markers):
+            token = None
+            for pattern in patterns:
+                m = re.search(pattern, haystack, re.I)
+                if m:
+                    token = m.group(1)
+                    break
+            if token and token.lower() in _BAD_TOKENS:
+                token = None
+            return {"ats": ats, "token": token}
+    return None
+
+
+# Fragment patterns that look like individual job postings on a careers page.
+# The keyword must be followed by a real path segment — so the listing page
+# itself ("/careers", "/jobs?team=eng") never counts as an individual job.
+_JOB_LINK_HINTS = re.compile(
+    r"/(jobs?|careers?|positions?|openings?|roles?|vacanc(?:y|ies)|graduate[s]?|"
+    r"intern(?:ship)?s?)(?:/[^/?#]+|[-_][^/?#]+)",
+    re.I,
+)
+# Anchor text that is clearly a nav/index label, not a posting title.
+_INDEX_TITLE = re.compile(
+    r"(careers?|jobs?|openings?|roles?|vacanc(?:y|ies)|see all jobs|view all jobs)",
+    re.I,
+)
+
+
+def _scrape_jobs_html(html: str, base_url: str, company: str | None = None) -> list[dict]:
+    """Best-effort job extraction from a careers page's own links (Phase 4).
+
+    Pure function over static HTML — no network, no exceptions on malformed
+    markup: same-site links whose path looks like a posting become jobs, shaped
+    minimally-but-validly for the collector's gate/scoring pipeline. Deliberately
+    conservative (same registrable host, posting-like path) so footer/social
+    links never turn into phantom jobs.
+    """
+    out: list[dict] = []
+    if not html or not base_url:
+        return out
+    seen: set[str] = set()
+    anchor_re = re.compile(r"<a\b[^>]*href=[\"']([^\"'#]+)[\"'][^>]*>(.*?)</a>", re.I | re.S)
+    for m in anchor_re.finditer(html):
+        href, inner = m.group(1).strip(), m.group(2)
+        if re.search(r"<[^>]+>", inner):  # nested markup → take its visible text
+            inner = re.sub(r"<[^>]+>", " ", inner)
+        title = re.sub(r"\s+", " ", inner).strip()
+        full = urljoin(base_url, href)
+        if not title or len(title) < 6 or not full.startswith(("http://", "https://")):
+            continue
+        if _INDEX_TITLE.fullmatch(title):
+            continue  # "Careers" / "See all jobs" nav label, not a posting
+        host = re.match(r"https?://([^/]+)", full)
+        base_host = re.match(r"https?://([^/]+)", base_url)
+        if not host or not base_host or host.group(1).lower() != base_host.group(1).lower():
+            continue  # offsite (LinkedIn, X, Glassdoor, …) — not one of our jobs
+        path = re.sub(r"https?://[^/]+", "", full).lower()
+        if not _JOB_LINK_HINTS.search(path):
+            continue
+        if full in seen:
+            continue
+        seen.add(full)
+        remote = bool(re.search(r"\bremote\b|work from anywhere|\bwfh\b", title, re.I))
+        out.append(
+            {
+                "title": title[:200],
+                "company": company or "",
+                "location": "Remote" if remote else None,
+                "work_mode": "remote" if remote else "onsite",
+                "employer_country": None,
+                "job_country": None,
+                "candidate_required_location": None,
+                "worldwide_remote": remote,
+                "salary": None,
+                "description": title,
+                "skills": [],
+                "url": full,
+                "source": "companysite",
+                "ats": "html",
+                "posted_date": None,
+                "application_url": full,
+                "application_method": "web",
+            }
+        )
+        if len(out) >= 60:
+            break
+    return out
+
+import logging  # noqa: E402
+
+logger = logging.getLogger(__name__)
+
+
+class CompanySiteAdapter(BaseAdapter):
+    """Discovery over a company's own careers page (Phase 4).
+
+    For each configured site: fetch the careers page once, detect the ATS behind
+    it (Greenhouse/Lever/Ashby/Workable/SmartRecruiters/Workday) and delegate
+    to that adapter with the extracted org token — so jobs come from the same
+    feed the company itself uses. When no ATS is detected (or the ATS fetch
+    yields nothing), scrape the page's own job links from the static HTML
+    instead. Never raises: a dead site is skipped with a log line.
+
+    Network I/O goes through ``fetcher`` (defaults to ``http_get_text``) so
+    tests can inject pages and run fully offline.
+    """
+
+    name = "companysite"
+
+    def __init__(self, sites: list[dict], *, fetcher: Callable[..., str] | None = None):
+        self.sites = [s for s in (sites or []) if isinstance(s, dict) and s.get("careers_url")]
+        self._fetcher = fetcher
+        self._pages: dict[str, str] = {}
+
+    def _fetch_page(self, url: str, client: httpx.Client | None = None) -> str:
+        if url in self._pages:
+            return self._pages[url]
+        html = (self._fetcher or http_get_text)(url, client=client)
+        self._pages[url] = html
+        return html
+
+    def fetch(self, *, client: httpx.Client | None = None) -> list[dict[str, Any]]:
+        out: list[dict[str, Any]] = []
+        for site in self.sites:
+            url = str(site.get("careers_url") or "").strip()
+            company = str(site.get("name") or "").strip() or None
+            if not url:
+                continue
+            try:
+                html = self._fetch_page(url, client)
+            except Exception as exc:  # noqa: BLE001 — one dead site ≠ failed scan
+                logger.warning("companysite: failed to fetch %s (%s)", url, exc)
+                continue
+            jobs = self._via_ats(html, url, client)
+            if not jobs:
+                jobs = _scrape_jobs_html(html, url, company)
+            for job in jobs:
+                if company and not job.get("company"):
+                    job["company"] = company
+                out.append(job)
+        return out
+
+    def _via_ats(self, html: str, url: str, client: httpx.Client | None) -> list[dict[str, Any]]:
+        """Delegate to the detected ATS adapter; [] when unknown/unavailable."""
+        det = detect_ats(html, url)
+        if not det:
+            return []
+        ats, token = det.get("ats"), det.get("token")
+        adapter: BaseAdapter | None = None
+        if ats == "greenhouse" and token:
+            adapter = GreenhouseAdapter([token])
+        elif ats == "lever" and token:
+            adapter = LeverAdapter([token])
+        elif ats == "ashby" and token:
+            adapter = AshbyAdapter([token])
+        elif ats == "workable" and token:
+            adapter = WorkableAdapter([token])
+        elif ats == "smartrecruiters" and token:
+            adapter = SmartRecruitersAdapter([token])
+        elif ats == "workday" and token:
+            adapter = WorkdayAdapter([token])
+        if adapter is None:
+            return []
+        try:
+            jobs = adapter.fetch(client=client)
+        except Exception as exc:  # noqa: BLE001 — fall back to scraping below
+            logger.warning("companysite: %s fetch failed (%s); scraping page instead", ats, exc)
+            return []
+        for job in jobs:
+            job["source"] = "companysite"
+            job["ats"] = ats
+        return jobs
+
+
+# ---------------------------------------------------------------------------
+# Probe endpoint support: inspect one careers page without writing anything.
+# ---------------------------------------------------------------------------
+
+_PROBE_CACHE: dict[str, dict[str, Any]] = {}
+
+
+def clear_probe_cache() -> None:
+    """Drop cached probe results (tests; also freshens the UI's re-probe)."""
+    _PROBE_CACHE.clear()
+
+
+def probe_careers_page(url: str, *, fetcher: Callable[..., str] | None = None) -> dict[str, Any]:
+    """Inspect a company careers page (Phase 4).
+
+    Returns ``{url, ats, token, jobs, sample, error}``: the detected ATS + org
+    token, how many jobs a scan would pick up, and up to 5 sample titles.
+    Results are cached until restart so the UI can poll freely; network/parse
+    failures come back as ``error`` — this helper never raises.
+    """
+    key = (url or "").strip()
+    cached = _PROBE_CACHE.get(key)
+    if cached is not None:
+        return cached
+    out: dict[str, Any] = {
+        "url": key, "ats": None, "token": None, "jobs": 0,
+        "sample": [], "error": None,
+    }
+    adapter = CompanySiteAdapter([{"careers_url": key}], fetcher=fetcher)
+    try:
+        page_html = adapter._fetch_page(key)
+    except Exception as exc:  # noqa: BLE001
+        out["error"] = f"{type(exc).__name__}: {exc}"
+        _PROBE_CACHE[key] = out
+        return out
+    det = detect_ats(page_html, key)
+    out["ats"] = det["ats"] if det else "html"
+    out["token"] = det.get("token") if det else None
+    try:
+        jobs = adapter.fetch()
+        out["jobs"] = len(jobs)
+        out["sample"] = [str(j.get("title") or "") for j in jobs[:5]]
+    except Exception as exc:  # noqa: BLE001 - defensive; fetch() already never raises
+        out["error"] = f"{type(exc).__name__}: {exc}"
+    _PROBE_CACHE[key] = out
+    return out

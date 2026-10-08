@@ -18,7 +18,7 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass, field
-from typing import Iterable, Optional
+from typing import Any, Iterable, Optional
 
 # --- Tuning knobs -----------------------------------------------------------
 # Each multiplier is clamped to [MIN_MULT, MAX_MULT] so feedback is additive
@@ -77,8 +77,20 @@ def _signal_weight(signal: str) -> float:
     return {"select": 2.0, "approve": 1.0, "reject": -1.0}.get(signal, 0.0)
 
 
+def _field(row: Any, key: str, default: Any = None) -> Any:
+    """Read ``key`` from a feedback row given as a dict *or* an ORM object.
+
+    Callers may pass plain dicts or live ``Feedback`` rows; both shapes
+    expose the same logical fields. A missing key / attribute yields
+    ``default``, so orphaned feedback (its job was deleted) never raises.
+    """
+    if isinstance(row, dict):
+        return row.get(key, default)
+    return getattr(row, key, default)
+
+
 def compute_learning_weights(
-    feedback_rows: Iterable[dict],
+    feedback_rows: Iterable[Any],
     jobs_by_id: Optional[dict] = None,
 ) -> LearningWeights:
     """Compute additive reweights from feedback rows.
@@ -86,10 +98,11 @@ def compute_learning_weights(
     Parameters
     ----------
     feedback_rows:
-        Iterable of dicts with keys ``job_id``, ``signal``, and optional
-        ``source``. Each row must be able to resolve a job via
-        ``jobs_by_id`` (or the caller passes richer dicts that already include
-        job attributes).
+        Iterable of rows exposing ``job_id`` and ``signal`` — either plain
+        dicts (with optional job attributes such as ``source``) or ORM
+        ``Feedback`` objects. Each row resolves its job via ``jobs_by_id``
+        when present; a row whose job is missing still counts its signal but
+        contributes no job-derived attributes.
     jobs_by_id:
         Optional mapping ``job_id -> job-like object`` exposing ``skills``,
         ``company``, ``source``, and ``work_mode``. When provided, feedback is
@@ -108,7 +121,7 @@ def compute_learning_weights(
     workmode_scores: Counter = Counter()
 
     for row in feedback_rows:
-        signal = (row.get("signal") or "").lower()
+        signal = (_field(row, "signal") or "").lower()
         if signal not in ("approve", "reject", "select"):
             continue
         w = _signal_weight(signal)
@@ -119,7 +132,7 @@ def compute_learning_weights(
         elif signal == "select":
             selected += 1
 
-        job = jobs_by_id.get(row.get("job_id")) if jobs_by_id else None
+        job = jobs_by_id.get(_field(row, "job_id")) if jobs_by_id else None
         if job is None:
             # Fall back to a row that already carries job attributes.
             job = row
@@ -196,7 +209,9 @@ def apply_learning_to_assessment(
     base_fit = assessment.get("fit_score", 0.0)
     base_conf = assessment.get("confidence", 0.0)
     new_fit = _clamp(base_fit * weights.fit_mult, 0.0, 100.0)
-    new_conf = _clamp(base_conf * weights.confidence_mult, 0.0, 1.0)
+    # Confidence lives on the 0-100 scale (see scoring.assess_job); clamping
+    # it to 0-1 here would cap every learned confidence at 1/100.
+    new_conf = _clamp(base_conf * weights.confidence_mult, 0.0, 100.0)
     out = dict(assessment)
     out["fit_score"] = round(new_fit, 2)
     out["confidence"] = round(new_conf, 4)

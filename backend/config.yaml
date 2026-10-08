@@ -8,6 +8,12 @@ role: "Business Analyst"
 min_salary: null
 daily_cap: 10
 
+# Phase 4 — submit applications through the browser on the company's own site:
+# Playwright fills the form from your profile, uploads the tailored resume PDF,
+# submits, and saves a proof screenshot. Set to false to only prepare materials
+# and hand you the apply link.
+auto_submit: true
+
 # Path to your master resume PDF (optional). If set, the app can pre-fill the profile.
 resume_path: null
 
@@ -46,3 +52,33 @@ sources:
 scheduler:
   enabled: false
   interval_hours: 24
+
+# Daily auto-submit: once a day at `at` (local time), ZEYRECUITE picks the
+# highest-scoring job that passed the location gate, has a direct apply link,
+# and has not been submitted yet — approves it — and runs the same Phase 4
+# browser submission (still respecting auto_submit and daily_cap). The outcome
+# is posted to discord_webhook_url below (including "nothing to submit" days).
+# Off by default; set enabled: true to let it submit on its own every day.
+daily_auto_submit:
+  enabled: false
+  at: "09:00"
+
+# Auto-apply-only gate (default ON): Playwright can only submit jobs that
+# carry a direct application_url. When true, scans/imports skip link-less
+# jobs, the jobs list hides them, and legacy link-less rows (plus their
+# feedback/application history) are purged at startup. Set false to keep
+# browsing link-less listings.
+auto_apply_only: true
+
+# Weekly Discord progress report: once a week at `day` + `at` (local time),
+# post a 7-day digest to discord_webhook_url — applications by day, progress
+# vs weekly_goal, top interview-likely picks, and the learning summary.
+# Off by default; set enabled: true to receive it automatically.
+weekly_report:
+  enabled: false
+  day: "sun"
+  at: "18:00"
+
+# Discord webhook for notifications: Discord Server Settings → Integrations →
+# Webhooks → New Webhook → Copy Webhook URL. null disables notifications.
+discord_webhook_url: null

@@ -42,6 +42,16 @@
   // ---------- Utilities ----------
   const $ = (sel) => document.querySelector(sel);
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  // Only allow http(s) URLs (including same-origin relative paths once
+  // resolved); blocks javascript:, data:, etc. anywhere a URL is rendered.
+  function safeUrl(u) {
+    if (!u) return null;
+    try {
+      const url = new URL(u, window.location.href);
+      if (url.protocol === "http:" || url.protocol === "https:") return url.href;
+    } catch (e) { /* invalid URL */ }
+    return null;
+  }
   function toast(msg) {
     const t = $("#toast");
     t.textContent = msg;
@@ -51,7 +61,7 @@
   }
   function stars(v) {
     if (v == null) return "";
-    const full = Math.round(v);
+    const full = Math.max(0, Math.min(5, Math.round(v)));
     return "★".repeat(full) + "☆".repeat(5 - full);
   }
   function confClass(label) {
@@ -106,10 +116,11 @@
       setView("dashboard");
       loadAll();
     } catch (ex) {
-      if (ex.message !== "unauthorized") {
-        err.textContent = "Invalid username or password.";
-        err.classList.remove("hidden");
-      }
+      const msg = String((ex && ex.message) || "");
+      err.textContent = /fetch|network/i.test(msg)
+        ? "Could not reach the server. Please try again."
+        : (msg && msg !== "unauthorized" ? msg : "Invalid username or password.");
+      err.classList.remove("hidden");
     } finally {
       btn.disabled = false;
       btn.textContent = "Sign in";
@@ -123,24 +134,35 @@
 
   // ---------- Data loading ----------
   async function loadAll() {
-    const [stats, jobs, runs, top, filters, variants, learning] = await Promise.all([
-      api("/api/stats"),
-      api("/api/jobs"),
-      api("/api/runs?limit=8"),
-      api("/api/top?limit=10"),
-      api("/api/profile/filters").catch(() => ({ filters: [] })),
-      api("/api/profile/resume-variants").catch(() => ({ variants: [] })),
-      api("/api/learning/insights").catch(() => ({ has_data: false })),
-    ]);
-    state.stats = stats;
-    state.jobs = jobs;
-    state.runs = runs;
-    state.top = top;
-    state.savedFilters = filters.filters || [];
-    state.resumeVariants = variants.variants || [];
-    state.learning = learning;
-    renderSidebar();
-    renderCurrent();
+    try {
+      const [stats, jobs, runs, top, filters, variants, learning, profile] = await Promise.all([
+        api("/api/stats"),
+        api("/api/jobs"),
+        api("/api/runs?limit=8"),
+        api("/api/top?limit=10"),
+        api("/api/profile/filters").catch(() => ({ filters: [] })),
+        api("/api/profile/resume-variants").catch(() => ({ variants: [] })),
+        api("/api/learning/insights").catch(() => ({ has_data: false })),
+        api("/api/profile").catch(() => null),
+      ]);
+      state.stats = stats;
+      state.jobs = jobs;
+      state.runs = runs;
+      state.top = top;
+      state.savedFilters = filters.filters || [];
+      state.resumeVariants = variants.variants || [];
+      state.learning = learning;
+      state.profile = profile;
+      renderSidebar();
+      renderCurrent();
+    } catch (err) {
+      // A transient failure (server hiccup, offline) must never log the user
+      // out — api() already calls showLogin() itself on a real 401.
+      console.error("loadAll failed:", err);
+      if (String(err && err.message) !== "unauthorized") {
+        toast("Some dashboard data failed to load.");
+      }
+    }
   }
 
   function renderSidebar() {
@@ -155,6 +177,7 @@
     if (state.user) {
       $("#userName").textContent = state.user.display_name || state.user.username;
       $("#userAvatar").textContent = (state.user.display_name || state.user.username || "U").charAt(0).toUpperCase();
+      $("#userRole").textContent = (state.profile && state.profile.role) || "Member";
     }
   }
 
@@ -244,7 +267,11 @@
     if (!cfg) return;
     try {
       const res = await fetch(cfg.url, { headers: { Authorization: "Bearer " + state.token } });
-      if (!res.ok) throw new Error("Export failed");
+      if (res.status === 401) {
+        showLogin();
+        throw new Error("Session expired — please sign in again.");
+      }
+      if (!res.ok) throw new Error("Export failed (" + res.status + ")");
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -286,7 +313,7 @@
         <span class="muted" style="font-size:12px">${timeAgo(r.started_at)}</span>
       </div>
       <div style="font-size:12.5px;color:var(--text-2);margin-top:6px">
-        ${r.fetched} fetched · <span style="color:var(--green);font-weight:600">${r.eligible} eligible</span> · ${r.review} review · ${r.rejected} rejected
+        ${r.fetched} fetched · <span style="color:var(--green);font-weight:600">${r.eligible} eligible</span> · ${r.review} review · ${r.rejected} rejected${r.skipped ? ` · ${r.skipped} skipped (no apply link)` : ""}
       </div>
     </div>`;
   }
@@ -643,8 +670,9 @@
     const letter = app && app.cover_letter
       ? `<div class="panel"><h4>Cover letter ${clScore}</h4><div class="letter-box">${esc(app.cover_letter)}</div></div>`
       : "";
-    const resumeLink = app && app.resume_pdf
-      ? `<a class="btn sm" href="${app.resume_pdf}" target="_blank">⬇ Download resume PDF</a>`
+    const resumePdf = app && app.resume_pdf ? safeUrl(app.resume_pdf) : null;
+    const resumeLink = resumePdf
+      ? `<a class="btn sm" href="${esc(resumePdf)}" target="_blank" rel="noopener">⬇ Download resume PDF</a>`
       : "";
     const subPanel = submissionPanel(app, j);
 
@@ -658,7 +686,7 @@
             <span class="badge ${j.status}">${statusLabel(j.status)}</span>
           </div>
         </div>
-        <a class="btn sm" href="${esc(j.url)}" target="_blank" rel="noopener">Open listing ↗</a>
+        <a class="btn sm" href="${esc(safeUrl(j.url) || "#")}" target="_blank" rel="noopener">Open listing ↗</a>
       </div>
       <div class="detail-grid">
         <div class="detail-col">
@@ -827,11 +855,15 @@
 
   function submissionPanel(app, j) {
     if (!app) return "";
-    const status = app.submission_status || app.status;
+    const status = app.application_status || app.submission_status || app.status;
     const icon = { submitted: "✅", ready: "📦", failed: "⚠️", submitting: "⏳" }[status] || "📄";
     const cls = { submitted: "ok", ready: "info", failed: "warn", submitting: "info" }[status] || "info";
-    const link = app.submission_url
-      ? `<a class="btn sm" href="${esc(app.submission_url)}" target="_blank" rel="noopener">Open apply link ↗</a>`
+    const applyUrl = app.submission_url ? safeUrl(app.submission_url) : null;
+    const link = applyUrl
+      ? `<a class="btn sm" href="${esc(applyUrl)}" target="_blank" rel="noopener">Open apply link ↗</a>`
+      : "";
+    const shot = app.screenshot
+      ? `<a class="btn sm" href="${esc(app.screenshot)}" target="_blank" rel="noopener">Proof screenshot 📸</a>`
       : "";
     const when = app.submitted_at ? ` · ${timeAgo(app.submitted_at)}` : "";
     return `<div class="panel sub-panel ${cls}">
@@ -840,6 +872,7 @@
         <div class="sub-msg">${esc(app.submission_message || "")}</div></div>
       </div>
       ${link}
+      ${shot}
     </div>`;
   }
 
@@ -1118,11 +1151,11 @@
         <div class="toolbar">
           <input class="search" id="searchBox" placeholder="Search title, company, or skill…" value="${esc(state.search)}" />
           <select class="select" id="searchStatus">
-            <option value="all">All statuses</option>
-            <option value="new">Eligible</option>
-            <option value="review">Needs review</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
+            <option value="all" ${state.filter === "all" ? "selected" : ""}>All statuses</option>
+            <option value="new" ${state.filter === "new" ? "selected" : ""}>Eligible</option>
+            <option value="review" ${state.filter === "review" ? "selected" : ""}>Needs review</option>
+            <option value="approved" ${state.filter === "approved" ? "selected" : ""}>Approved</option>
+            <option value="rejected" ${state.filter === "rejected" ? "selected" : ""}>Rejected</option>
           </select>
           <select class="select" id="searchSort">
             <option value="confidence" ${state.sort === "confidence" ? "selected" : ""}>Confidence</option>
@@ -1156,7 +1189,7 @@
 
   function searchJobRow(j) {
     const elig = j.eligibility != null ? Math.round(j.eligibility) : null;
-    const applyable = !!(j.application_url && (j.application_method === "direct" || j.application_method === "easy" || j.application_method === "apply_link"));
+    const applyable = !!j.application_url;
     return `<div class="card job-card" data-id="${j.id}">
       <div class="job-main">
         <div class="job-title-row">
@@ -1199,8 +1232,9 @@
     try {
       const res = await api(`/api/jobs/${jobId}/submit`, { method: "POST" });
       const sub = res.submission || {};
-      if (sub.submission_url) {
-        window.open(sub.submission_url, "_blank", "noopener");
+      const applyUrl = sub.submission_url ? safeUrl(sub.submission_url) : null;
+      if (applyUrl) {
+        window.open(applyUrl, "_blank", "noopener");
       }
       toast(sub.submission_status === "submitted" ? "Application submitted — link opened" : "Marked ready to submit");
       await loadAll();
@@ -1243,7 +1277,9 @@
 
     const app = a.applications || {};
     const submitted = app.submitted || 0, ready = app.ready || 0, draft = app.draft || 0;
-    const totalApps = submitted + ready + draft;
+    // Manual stages (submitting/failed) may add keys beyond the big three.
+    const other = Math.max(0, Object.values(app).reduce((s, v) => s + (Number(v) || 0), 0) - (submitted + ready + draft));
+    const totalApps = submitted + ready + draft + other;
     const conv = totalApps ? Math.round((submitted / totalApps) * 100) : 0;
 
     el.innerHTML = `
@@ -1256,13 +1292,17 @@
       <div class="grid cols-2">
         <div class="card card-pad">
           <div class="section-title">Application pipeline</div>
-          ${donutChart([{ label: "Submitted", value: submitted, color: "var(--teal)" },
+          ${donutChart([
+                        { label: "Submitted", value: submitted, color: "var(--teal)" },
                         { label: "Ready", value: ready, color: "var(--violet)" },
-                        { label: "Draft", value: draft, color: "var(--border)" }])}
+                        { label: "Draft", value: draft, color: "var(--border)" },
+                        ...(other ? [{ label: "In progress", value: other, color: "var(--amber)" }] : []),
+                      ])}
           <div class="legend">
             <span><i style="background:var(--teal)"></i>Submitted ${submitted}</span>
             <span><i style="background:var(--violet)"></i>Ready ${ready}</span>
             <span><i style="background:var(--border)"></i>Draft ${draft}</span>
+            ${other ? `<span><i style="background:var(--amber)"></i>In progress ${other}</span>` : ""}
             <span class="muted">Conversion ${conv}%</span>
           </div>
         </div>

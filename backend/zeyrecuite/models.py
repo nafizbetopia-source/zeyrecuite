@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from sqlalchemy import JSON, Boolean, DateTime, Float, Integer, String, Text
+from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .database import Base
@@ -41,6 +41,9 @@ class Job(Base):
 
     url: Mapped[str] = mapped_column(String(600))
     source: Mapped[str] = mapped_column(String(40), default="unknown")
+    # ATS behind the company's careers page (greenhouse/lever/ashby/… or
+    # "html" when the page was scraped directly). Phase 4.
+    ats: Mapped[str | None] = mapped_column(String(40), nullable=True)
     posted_date: Mapped[str | None] = mapped_column(String(40), nullable=True)
     application_url: Mapped[str | None] = mapped_column(String(600), nullable=True)
     application_method: Mapped[str | None] = mapped_column(String(40), nullable=True)
@@ -88,6 +91,7 @@ class Job(Base):
             "skills": self.skills,
             "url": self.url,
             "source": self.source,
+            "ats": self.ats,
             "posted_date": self.posted_date,
             "application_url": self.application_url,
             "application_method": self.application_method,
@@ -204,7 +208,7 @@ class Application(Base):
     __tablename__ = "applications"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    job_id: Mapped[int] = mapped_column(Integer, index=True)
+    job_id: Mapped[int] = mapped_column(ForeignKey("jobs.id", ondelete="CASCADE"), index=True)
     # draft → ready → submitting → submitted | failed
     status: Mapped[str] = mapped_column(String(20), default="draft", index=True)
     # Manual application-stage tracking (no email connected).
@@ -224,6 +228,8 @@ class Application(Base):
     submission_url: Mapped[str | None] = mapped_column(String(600), nullable=True)
     submission_status: Mapped[str | None] = mapped_column(String(20), nullable=True)
     submission_message: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # Proof screenshot captured when the browser submitted this application.
+    screenshot_path: Mapped[str | None] = mapped_column(Text, nullable=True)
     attempts: Mapped[int] = mapped_column(Integer, default=0)
     last_attempt_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
@@ -240,6 +246,7 @@ class Application(Base):
             "application_status": self.application_status,
             "resume_pdf": f"/api/jobs/{self.job_id}/resume.pdf" if self.resume_pdf_path else None,
             "cover_letter": self.cover_letter,
+            "answers": self.answers,
             "application_form": self.application_form,
             "personalization_score": self.personalization_score,
             "submitted_at": self.submitted_at.isoformat() if self.submitted_at else None,
@@ -247,6 +254,9 @@ class Application(Base):
             "submission_url": self.submission_url,
             "submission_status": self.submission_status,
             "submission_message": self.submission_message,
+            "screenshot": (
+                f"/api/jobs/{self.job_id}/screenshot" if self.screenshot_path else None
+            ),
             "attempts": self.attempts,
             "last_attempt_at": self.last_attempt_at.isoformat() if self.last_attempt_at else None,
         }
@@ -278,9 +288,13 @@ class Feedback(Base):
     applies them as additive reweights during scoring.
     """
     __tablename__ = "feedback"
+    # One feedback row per job: re-sending a signal upserts this row instead of
+    # appending a duplicate (duplicate rows would double-count in
+    # compute_learning_weights and skew every future scan score).
+    __table_args__ = (Index("uq_feedback_job_id", "job_id", unique=True),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    job_id: Mapped[int] = mapped_column(Integer, index=True)
+    job_id: Mapped[int] = mapped_column(ForeignKey("jobs.id", ondelete="CASCADE"))
     signal: Mapped[str] = mapped_column(String(20))  # approve | reject | select
     source: Mapped[str | None] = mapped_column(String(40), nullable=True)  # manual | approve-btn | reject-btn | select
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
@@ -302,6 +316,6 @@ class Session(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     token: Mapped[str] = mapped_column(String(120), unique=True, index=True)
-    user_id: Mapped[int] = mapped_column(Integer, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)

@@ -246,9 +246,13 @@ class ApiFeatureTests(unittest.TestCase):
         self.assertTrue(sub["submission_url"])
 
     def test_approve_no_link_ready(self):
+        # The auto-apply-only gate hides link-less jobs from the list view…
         r = self.client.get("/api/jobs", headers=self.h)
-        barista = next(j for j in r.json() if j["title"] == "Barista")
-        r = self.client.post(f"/api/jobs/{barista['id']}/approve", headers=self.h)
+        self.assertFalse(any(j["title"] == "Barista" for j in r.json()))
+        # …but approving one directly still degrades honestly to "ready".
+        with self.app.state.db.session() as s:
+            barista_id = s.query(Job).filter(Job.title == "Barista").one().id
+        r = self.client.post(f"/api/jobs/{barista_id}/approve", headers=self.h)
         self.assertEqual(r.status_code, 200)
         sub = r.json()["submission"]
         self.assertEqual(sub["status"], "ready")

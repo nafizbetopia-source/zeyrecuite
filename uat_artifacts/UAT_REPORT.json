@@ -1,0 +1,498 @@
+{
+  "run": "2026-10-06 19:08:24",
+  "steps": [
+    {
+      "name": "Open login page",
+      "status": "ok",
+      "notes": [],
+      "shot": null
+    },
+    {
+      "name": "Negative: wrong password rejected",
+      "status": "ok",
+      "notes": [
+        "error shown: \"Invalid username or password\""
+      ],
+      "shot": null
+    },
+    {
+      "name": "Login (valid credentials)",
+      "status": "ok",
+      "notes": [],
+      "shot": null
+    },
+    {
+      "name": "Topbar: Refresh",
+      "status": "ok",
+      "notes": [
+        "data refreshed"
+      ],
+      "shot": null
+    },
+    {
+      "name": "Topbar: Re-score",
+      "status": "ok",
+      "notes": [
+        "toast: \"Re-scored 611 jobs\""
+      ],
+      "shot": null
+    },
+    {
+      "name": "Topbar: Enrich",
+      "status": "ok",
+      "notes": [
+        "toast: \"Enriched 4 job(s)\""
+      ],
+      "shot": null
+    },
+    {
+      "name": "View: Dashboard",
+      "status": "fail",
+      "notes": [
+        "EXCEPTION: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-view=\\\"dashboard\\\"]\")\n    - locator resolved to <a data-view=\"dashboard\" class=\"nav-item active\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n"
+      ],
+      "shot": null
+    },
+    {
+      "name": "Dashboard: export jobs/applications/analytics",
+      "status": "fail",
+      "notes": [
+        "EXCEPTION: ElementHandle.click: Timeout 3000ms exceeded.\nCall log:\n  - attempting click action\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <div class=\"detail-col\">…</div> from <div id=\"jobModal\" class=\"modal\">…</div> subtree intercepts pointer events\n  - retrying click action"
+      ],
+      "shot": null
+    },
+    {
+      "name": "Dashboard: import jobs (JSON probe)",
+      "status": "ok",
+      "notes": [
+        "toast: \"Imported 0, skipped 2\""
+      ],
+      "shot": null
+    },
+    {
+      "name": "Dashboard: remaining buttons sweep",
+      "status": "ok",
+      "notes": [],
+      "shot": null
+    },
+    {
+      "name": "View: Jobs",
+      "status": "ok",
+      "notes": [],
+      "shot": null
+    },
+    {
+      "name": "Jobs: search / sort / chips / save+remove filter",
+      "status": "ok",
+      "notes": [
+        "\"business\" -> 21 cards",
+        "toast: \"Filter saved\""
+      ],
+      "shot": null
+    },
+    {
+      "name": "Jobs: open job detail modal",
+      "status": "ok",
+      "notes": [
+        "opened job id=506"
+      ],
+      "shot": null
+    },
+    {
+      "name": "Job detail: feedback (Like)",
+      "status": "fail",
+      "notes": [
+        "EXCEPTION: Page.wait_for_function: Timeout 10000ms exceeded."
+      ],
+      "shot": null
+    },
+    {
+      "name": "Job detail: Generate resume + letter",
+      "status": "ok",
+      "notes": [
+        "toast: \"Resume + cover letter generated\""
+      ],
+      "shot": null
+    },
+    {
+      "name": "Job detail: download resume PDF (ctrl+click)",
+      "status": "ok",
+      "notes": [
+        "resume link found: ⬇ Download resume PDF"
+      ],
+      "shot": null
+    },
+    {
+      "name": "Job detail: Approve & submit",
+      "status": "fail",
+      "notes": [
+        "EXCEPTION: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#dApprove\")\n    - locator resolved to <button id=\"dApprove\" class=\"btn ok\">✓ Approve & submit</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, en"
+      ],
+      "shot": null
+    },
+    {
+      "name": "Jobs: compare two jobs (FAB + modal)",
+      "status": "fail",
+      "notes": [
+        "611 compare checkboxes available",
+        "EXCEPTION: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#closeCompare\")\n    - locator resolved to <button id=\"closeCompare\" class=\"modal-close\">×</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enable"
+      ],
+      "shot": null
+    },
+    {
+      "name": "View: Pipeline (kanban + open card)",
+      "status": "ok",
+      "notes": [],
+      "shot": null
+    },
+    {
+      "name": "Pipeline: drag card (same-lane, no mutation)",
+      "status": "ok",
+      "notes": [
+        "dragged card onto its own 'new' lane (status unchanged)"
+      ],
+      "shot": null
+    },
+    {
+      "name": "View: Applications",
+      "status": "ok",
+      "notes": [],
+      "shot": null
+    },
+    {
+      "name": "Applications: open / generate / stage change",
+      "status": "ok",
+      "notes": [
+        "toast: \"Generated\"",
+        "toast: \"Application moved to \"Ready to submit\"\"",
+        "toast: \"Application moved to \"draft\"\"",
+        "stage transition tested: draft -> ready -> draft"
+      ],
+      "shot": null
+    },
+    {
+      "name": "View: Search & Submit",
+      "status": "ok",
+      "notes": [],
+      "shot": null
+    },
+    {
+      "name": "Search: filters + submit application + sweep",
+      "status": "ok",
+      "notes": [
+        "filter select #0: all -> new",
+        "filter select #1: confidence -> score",
+        "toast: \"Application submitted — link opened\""
+      ],
+      "shot": null
+    },
+    {
+      "name": "View: Analytics",
+      "status": "ok",
+      "notes": [],
+      "shot": null
+    },
+    {
+      "name": "Analytics: button sweep",
+      "status": "ok",
+      "notes": [
+        "clicked: + Add to my skills"
+      ],
+      "shot": null
+    },
+    {
+      "name": "View: Goals",
+      "status": "ok",
+      "notes": [],
+      "shot": null
+    },
+    {
+      "name": "Goals: save weekly target",
+      "status": "ok",
+      "notes": [
+        "toast: \"Goal saved\"",
+        "weekly target saved: 10"
+      ],
+      "shot": null
+    },
+    {
+      "name": "View: Profile",
+      "status": "ok",
+      "notes": [],
+      "shot": null
+    },
+    {
+      "name": "Profile: dynamic block add/remove (cert/project/exp/edu)",
+      "status": "ok",
+      "notes": [
+        "cert: add/remove ok (baseline 0)",
+        "project: add/remove ok (baseline 0)",
+        "exp: add/remove ok (baseline 0)",
+        "edu: add/remove ok (baseline 0)"
+      ],
+      "shot": null
+    },
+    {
+      "name": "Profile: resume variant add/remove",
+      "status": "ok",
+      "notes": [
+        "resume variant add/remove tested (baseline 1)"
+      ],
+      "shot": null
+    },
+    {
+      "name": "Profile: Save (PUT profile + re-score)",
+      "status": "ok",
+      "notes": [
+        "toast: \"Profile saved — re-scoring…\"",
+        "profile saved and jobs re-scored"
+      ],
+      "shot": null
+    },
+    {
+      "name": "Profile: change password (same value)",
+      "status": "ok",
+      "notes": [
+        "toast: \"Password updated\"",
+        "password change result: Password updated"
+      ],
+      "shot": null
+    },
+    {
+      "name": "Job detail: Reject a job",
+      "status": "ok",
+      "notes": [
+        "toast: \"Rejected\"",
+        "job rejected"
+      ],
+      "shot": null
+    },
+    {
+      "name": "Applications: follow-up modal lifecycle",
+      "status": "ok",
+      "notes": [
+        "no submitted application with Follow up button found"
+      ],
+      "shot": null
+    },
+    {
+      "name": "Topbar: Scan now (full collector run)",
+      "status": "ok",
+      "notes": [
+        "toast: \"Scan complete\"",
+        "scan cycle finished"
+      ],
+      "shot": null
+    },
+    {
+      "name": "Logout",
+      "status": "ok",
+      "notes": [],
+      "shot": null
+    },
+    {
+      "name": "[mobile] login",
+      "status": "ok",
+      "notes": [],
+      "shot": null
+    },
+    {
+      "name": "[mobile] hamburger menu opens",
+      "status": "fail",
+      "notes": [
+        "EXCEPTION: ElementHandle.click: Timeout 30000ms exceeded.\nCall log:\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"sidebarOverlay\" class=\"sidebar-overlay\"></div> intercepts pointer events\n    - retrying click action\n    - waiting 20"
+      ],
+      "shot": null
+    },
+    {
+      "name": "[mobile] visit all views + overflow audit",
+      "status": "fail",
+      "notes": [
+        "EXCEPTION: ElementHandle.click: Timeout 30000ms exceeded.\nCall log:\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"sidebarOverlay\" class=\"sidebar-overlay\"></div> intercepts pointer events\n    - retrying click action\n    - waiting 20"
+      ],
+      "shot": null
+    },
+    {
+      "name": "[mobile] logout",
+      "status": "fail",
+      "notes": [
+        "EXCEPTION: ElementHandle.click: Timeout 30000ms exceeded.\nCall log:\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"sidebarOverlay\" class=\"sidebar-overlay\"></div> intercepts pointer events\n    - retrying click action\n    - waiting 20"
+      ],
+      "shot": null
+    }
+  ],
+  "issues": [
+    {
+      "step": "Open login page",
+      "kind": "JS console error",
+      "detail": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "expected": false,
+      "time": "19:08:30",
+      "shot": "../screenshots/002_ISSUE_JS_console_error_Open_login_page.png"
+    },
+    {
+      "step": "View: Dashboard",
+      "kind": "Step failed",
+      "detail": "View: Dashboard: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-view=\\\"dashboard\\\"]\")\n    - locator resolved to <a data-view=\"dashboard\" class=\"nav-item active\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"jobModal\" class=\"modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"jobModal\" class=\"modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    56 × waiting for element to be visible, enabled and stable\n       - eleme",
+      "expected": false,
+      "time": "19:10:44",
+      "shot": "../screenshots/007_ISSUE_Step_failed_View_Dashboard.png"
+    },
+    {
+      "step": "Dashboard: export jobs/applications/analytics",
+      "kind": "Step failed",
+      "detail": "Dashboard: export jobs/applications/analytics: ElementHandle.click: Timeout 3000ms exceeded.\nCall log:\n  - attempting click action\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <div class=\"detail-col\">…</div> from <div id=\"jobModal\" class=\"modal\">…</div> subtree intercepts pointer events\n  - retrying click action\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <div class=\"desc-box\">Who we are Financial Crimes Compliance Risk Overs…</div> from <div id=\"jobModal\" class=\"modal\">…</div> subtree intercepts pointer events\n  - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, e",
+      "expected": false,
+      "time": "19:10:48",
+      "shot": "../screenshots/008_ISSUE_Step_failed_Dashboard_export_jobs_applications.png"
+    },
+    {
+      "step": "Job detail: feedback (Like)",
+      "kind": "Step failed",
+      "detail": "Job detail: feedback (Like): Page.wait_for_function: Timeout 10000ms exceeded.",
+      "expected": false,
+      "time": "19:11:24",
+      "shot": "../screenshots/011_ISSUE_Step_failed_Job_detail_feedback_Like.png"
+    },
+    {
+      "step": "Job detail: Approve & submit",
+      "kind": "Step failed",
+      "detail": "Job detail: Approve & submit: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#dApprove\")\n    - locator resolved to <button id=\"dApprove\" class=\"btn ok\">✓ Approve & submit</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    54 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n",
+      "expected": false,
+      "time": "19:12:07",
+      "shot": "../screenshots/012_ISSUE_Step_failed_Job_detail_Approve_submit.png"
+    },
+    {
+      "step": "Jobs: compare two jobs (FAB + modal)",
+      "kind": "Step failed",
+      "detail": "Jobs: compare two jobs (FAB + modal): Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#closeCompare\")\n    - locator resolved to <button id=\"closeCompare\" class=\"modal-close\">×</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    56 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n",
+      "expected": false,
+      "time": "19:12:59",
+      "shot": null
+    },
+    {
+      "step": "Analytics: button sweep",
+      "kind": "Uncaught page error",
+      "detail": "Cannot set properties of null (setting 'innerHTML')",
+      "expected": false,
+      "time": "19:13:51",
+      "shot": "../screenshots/019_ISSUE_Uncaught_page_error_Analytics_button_sweep.png"
+    },
+    {
+      "step": "Profile: dynamic block add/remove (cert/project/exp/edu)",
+      "kind": "UI state",
+      "detail": "cert: remove did not restore card count (0 -> 1)",
+      "expected": false,
+      "time": "19:14:05",
+      "shot": "../screenshots/022_ISSUE_UI_state_Profile_dynamic_block_add_remove_cert.png"
+    },
+    {
+      "step": "Profile: dynamic block add/remove (cert/project/exp/edu)",
+      "kind": "UI state",
+      "detail": "project: remove did not restore card count (0 -> 1)",
+      "expected": false,
+      "time": "19:14:09",
+      "shot": "../screenshots/023_ISSUE_UI_state_Profile_dynamic_block_add_remove_cert.png"
+    },
+    {
+      "step": "Profile: dynamic block add/remove (cert/project/exp/edu)",
+      "kind": "UI state",
+      "detail": "exp: remove did not restore card count (0 -> 1)",
+      "expected": false,
+      "time": "19:14:14",
+      "shot": "../screenshots/024_ISSUE_UI_state_Profile_dynamic_block_add_remove_cert.png"
+    },
+    {
+      "step": "Profile: dynamic block add/remove (cert/project/exp/edu)",
+      "kind": "UI state",
+      "detail": "edu: remove did not restore card count (0 -> 1)",
+      "expected": false,
+      "time": "19:14:18",
+      "shot": "../screenshots/025_ISSUE_UI_state_Profile_dynamic_block_add_remove_cert.png"
+    },
+    {
+      "step": "[mobile] hamburger menu opens",
+      "kind": "Step failed",
+      "detail": "[mobile] hamburger menu opens: ElementHandle.click: Timeout 30000ms exceeded.\nCall log:\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"sidebarOverlay\" class=\"sidebar-overlay\"></div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"sidebarOverlay\" class=\"sidebar-overlay\"></div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    56 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scr",
+      "expected": false,
+      "time": "19:15:50",
+      "shot": "../screenshots/028_ISSUE_Step_failed_mobile_hamburger_menu_opens.png"
+    },
+    {
+      "step": "[mobile] visit all views + overflow audit",
+      "kind": "Step failed",
+      "detail": "[mobile] visit all views + overflow audit: ElementHandle.click: Timeout 30000ms exceeded.\nCall log:\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"sidebarOverlay\" class=\"sidebar-overlay\"></div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"sidebarOverlay\" class=\"sidebar-overlay\"></div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    56 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n     ",
+      "expected": false,
+      "time": "19:16:20",
+      "shot": "../screenshots/029_ISSUE_Step_failed_mobile_visit_all_views_overflow_au.png"
+    },
+    {
+      "step": "[mobile] logout",
+      "kind": "Step failed",
+      "detail": "[mobile] logout: ElementHandle.click: Timeout 30000ms exceeded.\nCall log:\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"sidebarOverlay\" class=\"sidebar-overlay\"></div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"sidebarOverlay\" class=\"sidebar-overlay\"></div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    56 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       ",
+      "expected": false,
+      "time": "19:16:50",
+      "shot": "../screenshots/030_ISSUE_Step_failed_mobile_logout.png"
+    }
+  ],
+  "expected": [
+    {
+      "step": "Negative: wrong password rejected",
+      "kind": "Expected error (negative test)",
+      "detail": "wrong password rejected: Invalid username or password",
+      "expected": true,
+      "time": "19:08:30",
+      "shot": "../screenshots/003_NEG_Expected_error_negative_test_Negative_wrong_pa.png"
+    },
+    {
+      "step": "Negative: wrong password rejected",
+      "kind": "HTTP 401",
+      "detail": "POST /api/auth/login",
+      "expected": true,
+      "time": "19:08:31",
+      "shot": "../screenshots/004_NEG_HTTP_401_Negative_wrong_password_rejected.png"
+    },
+    {
+      "step": "Negative: wrong password rejected",
+      "kind": "JS console error",
+      "detail": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "expected": true,
+      "time": "19:08:31",
+      "shot": "../screenshots/005_NEG_JS_console_error_Negative_wrong_password_rejec.png"
+    }
+  ],
+  "info": [
+    {
+      "step": "Topbar: Enrich",
+      "kind": "Popup opened",
+      "detail": "https://stripe.com/careers/listing/u-s-banking-regulatory-compliance-lead/8188323?gh_jid=8188323",
+      "expected": false,
+      "time": "19:10:14",
+      "shot": null
+    },
+    {
+      "step": "Topbar: Enrich",
+      "kind": "Popup opened",
+      "detail": "https://stripe.com/careers/listing/fraud-operations-manager/8175832?gh_jid=8175832",
+      "expected": false,
+      "time": "19:10:14",
+      "shot": null
+    },
+    {
+      "step": "Topbar: Enrich",
+      "kind": "Popup opened",
+      "detail": "https://stripe.com/careers/listing/crypto-controls-and-compliance-lead/8188326?gh_jid=8188326",
+      "expected": false,
+      "time": "19:10:14",
+      "shot": null
+    },
+    {
+      "step": "Search: filters + submit application + sweep",
+      "kind": "Popup opened",
+      "detail": "https://remoteok.com/remote-jobs/remote-brand-protection-marketplace-compliance-analyst-multiplymii-1136687",
+      "expected": false,
+      "time": "19:13:42",
+      "shot": null
+    }
+  ]
+}

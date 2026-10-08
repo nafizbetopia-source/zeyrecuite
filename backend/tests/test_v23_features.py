@@ -216,8 +216,10 @@ class ExportImportTests(Base):
     def test_import_jobs(self):
         payload = {"jobs": [
             {"title": "Data Analyst", "company": "Acme", "url": "https://a/1",
-             "skills": ["SQL"], "source": "import"},
-            {"title": "PM", "company": "Beta", "url": "https://b/1"},
+             "skills": ["SQL"], "source": "import",
+             "application_url": "https://a/1/apply"},
+            {"title": "PM", "company": "Beta", "url": "https://b/1",
+             "application_url": "https://b/1/apply"},
         ]}
         r = self.client.post("/api/import/jobs", headers=self.h, json=payload)
         self.assertEqual(r.status_code, 200)
@@ -230,7 +232,8 @@ class ExportImportTests(Base):
         payload = {"jobs": [
             {"title": "Senior Business Analyst", "company": "Stripe",
              "url": "https://x/1", "fingerprint": "fp1"},
-            {"title": "New Role", "company": "Gamma", "url": "https://g/1"},
+            {"title": "New Role", "company": "Gamma", "url": "https://g/1",
+             "application_url": "https://g/1/apply"},
         ]}
         r = self.client.post("/api/import/jobs", headers=self.h, json=payload)
         body = r.json()
@@ -240,7 +243,8 @@ class ExportImportTests(Base):
     def test_import_skips_bad_rows(self):
         payload = {"jobs": [
             {"title": "", "company": "NoTitle", "url": "https://n/1"},
-            {"title": "Good", "company": "Ok", "url": "https://o/1"},
+            {"title": "Good", "company": "Ok", "url": "https://o/1",
+             "application_url": "https://o/1/apply"},
         ]}
         r = self.client.post("/api/import/jobs", headers=self.h, json=payload)
         body = r.json()

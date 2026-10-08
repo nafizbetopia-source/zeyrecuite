@@ -2215,1469 +2215,1445 @@ cards on Analytics).
 | TC-02160 | API | Desktop app | Insufficient role | GET /api/desktop?empty | 403 Forbidden |
 ### F19 — Application submission pipeline
 
-| TC-02161 | API | Application submission pipeline | Logged in | POST /api/submit/{job_id} | 200 + valid data |
-| TC-02162 | API | Application submission pipeline | Logged in | POST /api/submit/{job_id} with invalid input | 400/422 + error message |
-| TC-02163 | API | Application submission pipeline | Edge case | POST /api/submit/{job_id} at boundary value | Correct boundary handling |
-| TC-02164 | API | Application submission pipeline | No auth token | POST /api/submit/{job_id} | 401 Unauthorized |
-| TC-02165 | frontend-UAT | Application submission pipeline | Logged in | Open submit application in UI | UI renders correctly |
-| TC-02166 | frontend-UAT | Application submission pipeline | No data | Open submit application with no data | No-data state shown |
-| TC-02167 | API | Application submission pipeline | Expired token | POST /api/submit/{job_id} | 401 Unauthorized |
-| TC-02168 | API | Application submission pipeline | Insufficient role | POST /api/submit/{job_id} | 403 Forbidden |
-| TC-02169 | API | Application submission pipeline | Logged in | GET /api/submissions/{id}/url | 200 + valid data |
-| TC-02170 | API | Application submission pipeline | Logged in | GET /api/submissions/{id}/url with invalid input | 400/422 + error message |
-| TC-02171 | API | Application submission pipeline | Edge case | GET /api/submissions/{id}/url at boundary value | Correct boundary handling |
-| TC-02172 | API | Application submission pipeline | No auth token | GET /api/submissions/{id}/url | 401 Unauthorized |
-| TC-02173 | frontend-UAT | Application submission pipeline | Logged in | Open submission URL in UI | UI renders correctly |
-| TC-02174 | frontend-UAT | Application submission pipeline | No data | Open submission URL with no data | No-data state shown |
-| TC-02175 | API | Application submission pipeline | Expired token | GET /api/submissions/{id}/url | 401 Unauthorized |
-| TC-02176 | API | Application submission pipeline | Insufficient role | GET /api/submissions/{id}/url | 403 Forbidden |
-| TC-02177 | API | Application submission pipeline | Logged in | POST /api/submit/{job_id}?retry | 200 + valid data |
-| TC-02178 | API | Application submission pipeline | Logged in | POST /api/submit/{job_id}?retry with invalid input | 400/422 + error message |
-| TC-02179 | API | Application submission pipeline | Edge case | POST /api/submit/{job_id}?retry at boundary value | Correct boundary handling |
-| TC-02180 | API | Application submission pipeline | No auth token | POST /api/submit/{job_id}?retry | 401 Unauthorized |
-| TC-02181 | frontend-UAT | Application submission pipeline | Logged in | Open retry submission in UI | UI renders correctly |
-| TC-02182 | frontend-UAT | Application submission pipeline | No data | Open retry submission with no data | No-data state shown |
-| TC-02183 | API | Application submission pipeline | Expired token | POST /api/submit/{job_id}?retry | 401 Unauthorized |
-| TC-02184 | API | Application submission pipeline | Insufficient role | POST /api/submit/{job_id}?retry | 403 Forbidden |
-| TC-02185 | API | Application submission pipeline | Logged in | GET /api/submissions/{id}/attempts | 200 + valid data |
-| TC-02186 | API | Application submission pipeline | Logged in | GET /api/submissions/{id}/attempts with invalid input | 400/422 + error message |
-| TC-02187 | API | Application submission pipeline | Edge case | GET /api/submissions/{id}/attempts at boundary value | Correct boundary handling |
-| TC-02188 | API | Application submission pipeline | No auth token | GET /api/submissions/{id}/attempts | 401 Unauthorized |
-| TC-02189 | frontend-UAT | Application submission pipeline | Logged in | Open attempt count in UI | UI renders correctly |
-| TC-02190 | frontend-UAT | Application submission pipeline | No data | Open attempt count with no data | No-data state shown |
-| TC-02191 | API | Application submission pipeline | Expired token | GET /api/submissions/{id}/attempts | 401 Unauthorized |
-| TC-02192 | API | Application submission pipeline | Insufficient role | GET /api/submissions/{id}/attempts | 403 Forbidden |
-| TC-02193 | API | Application submission pipeline | Logged in | POST /api/submit/{job_id}?fail | 200 + valid data |
-| TC-02194 | API | Application submission pipeline | Logged in | POST /api/submit/{job_id}?fail with invalid input | 400/422 + error message |
-| TC-02195 | API | Application submission pipeline | Edge case | POST /api/submit/{job_id}?fail at boundary value | Correct boundary handling |
-| TC-02196 | API | Application submission pipeline | No auth token | POST /api/submit/{job_id}?fail | 401 Unauthorized |
-| TC-02197 | frontend-UAT | Application submission pipeline | Logged in | Open submission fails in UI | UI renders correctly |
-| TC-02198 | frontend-UAT | Application submission pipeline | No data | Open submission fails with no data | No-data state shown |
-| TC-02199 | API | Application submission pipeline | Expired token | POST /api/submit/{job_id}?fail | 401 Unauthorized |
-| TC-02200 | API | Application submission pipeline | Insufficient role | POST /api/submit/{job_id}?fail | 403 Forbidden |
-| TC-02201 | API | Application submission pipeline | Logged in | GET /api/submissions/{id}/method | 200 + valid data |
-| TC-02202 | API | Application submission pipeline | Logged in | GET /api/submissions/{id}/method with invalid input | 400/422 + error message |
-| TC-02203 | API | Application submission pipeline | Edge case | GET /api/submissions/{id}/method at boundary value | Correct boundary handling |
-| TC-02204 | API | Application submission pipeline | No auth token | GET /api/submissions/{id}/method | 401 Unauthorized |
-| TC-02205 | frontend-UAT | Application submission pipeline | Logged in | Open submission method in UI | UI renders correctly |
-| TC-02206 | frontend-UAT | Application submission pipeline | No data | Open submission method with no data | No-data state shown |
-| TC-02207 | API | Application submission pipeline | Expired token | GET /api/submissions/{id}/method | 401 Unauthorized |
-| TC-02208 | API | Application submission pipeline | Insufficient role | GET /api/submissions/{id}/method | 403 Forbidden |
-| TC-02209 | API | Application submission pipeline | Logged in | POST /api/submit/bulk | 200 + valid data |
-| TC-02210 | API | Application submission pipeline | Logged in | POST /api/submit/bulk with invalid input | 400/422 + error message |
-| TC-02211 | API | Application submission pipeline | Edge case | POST /api/submit/bulk at boundary value | Correct boundary handling |
-| TC-02212 | API | Application submission pipeline | No auth token | POST /api/submit/bulk | 401 Unauthorized |
-| TC-02213 | frontend-UAT | Application submission pipeline | Logged in | Open bulk submission in UI | UI renders correctly |
-| TC-02214 | frontend-UAT | Application submission pipeline | No data | Open bulk submission with no data | No-data state shown |
-| TC-02215 | API | Application submission pipeline | Expired token | POST /api/submit/bulk | 401 Unauthorized |
-| TC-02216 | API | Application submission pipeline | Insufficient role | POST /api/submit/bulk | 403 Forbidden |
-| TC-02217 | API | Application submission pipeline | Logged in | GET /api/submissions/queue | 200 + valid data |
-| TC-02218 | API | Application submission pipeline | Logged in | GET /api/submissions/queue with invalid input | 400/422 + error message |
-| TC-02219 | API | Application submission pipeline | Edge case | GET /api/submissions/queue at boundary value | Correct boundary handling |
-| TC-02220 | API | Application submission pipeline | No auth token | GET /api/submissions/queue | 401 Unauthorized |
-| TC-02221 | frontend-UAT | Application submission pipeline | Logged in | Open submission queue in UI | UI renders correctly |
-| TC-02222 | frontend-UAT | Application submission pipeline | No data | Open submission queue with no data | No-data state shown |
-| TC-02223 | API | Application submission pipeline | Expired token | GET /api/submissions/queue | 401 Unauthorized |
-| TC-02224 | API | Application submission pipeline | Insufficient role | GET /api/submissions/queue | 403 Forbidden |
-| TC-02225 | API | Application submission pipeline | Logged in | DELETE /api/submissions/{id} | 200 + valid data |
-| TC-02226 | API | Application submission pipeline | Logged in | DELETE /api/submissions/{id} with invalid input | 400/422 + error message |
-| TC-02227 | API | Application submission pipeline | Edge case | DELETE /api/submissions/{id} at boundary value | Correct boundary handling |
-| TC-02228 | API | Application submission pipeline | No auth token | DELETE /api/submissions/{id} | 401 Unauthorized |
-| TC-02229 | frontend-UAT | Application submission pipeline | Logged in | Open cancel submission in UI | UI renders correctly |
-| TC-02230 | frontend-UAT | Application submission pipeline | No data | Open cancel submission with no data | No-data state shown |
-| TC-02231 | API | Application submission pipeline | Expired token | DELETE /api/submissions/{id} | 401 Unauthorized |
-| TC-02232 | API | Application submission pipeline | Insufficient role | DELETE /api/submissions/{id} | 403 Forbidden |
-| TC-02233 | API | Application submission pipeline | Logged in | GET /api/submissions/{id}/receipt | 200 + valid data |
-| TC-02234 | API | Application submission pipeline | Logged in | GET /api/submissions/{id}/receipt with invalid input | 400/422 + error message |
-| TC-02235 | API | Application submission pipeline | Edge case | GET /api/submissions/{id}/receipt at boundary value | Correct boundary handling |
-| TC-02236 | API | Application submission pipeline | No auth token | GET /api/submissions/{id}/receipt | 401 Unauthorized |
-| TC-02237 | frontend-UAT | Application submission pipeline | Logged in | Open submission receipt in UI | UI renders correctly |
-| TC-02238 | frontend-UAT | Application submission pipeline | No data | Open submission receipt with no data | No-data state shown |
-| TC-02239 | API | Application submission pipeline | Expired token | GET /api/submissions/{id}/receipt | 401 Unauthorized |
-| TC-02240 | API | Application submission pipeline | Insufficient role | GET /api/submissions/{id}/receipt | 403 Forbidden |
-| TC-02241 | API | Application submission pipeline | Logged in | GET /api/submissions?job | 200 + valid data |
-| TC-02242 | API | Application submission pipeline | Logged in | GET /api/submissions?job with invalid input | 400/422 + error message |
-| TC-02243 | API | Application submission pipeline | Edge case | GET /api/submissions?job at boundary value | Correct boundary handling |
-| TC-02244 | API | Application submission pipeline | No auth token | GET /api/submissions?job | 401 Unauthorized |
-| TC-02245 | frontend-UAT | Application submission pipeline | Logged in | Open submission by job in UI | UI renders correctly |
-| TC-02246 | frontend-UAT | Application submission pipeline | No data | Open submission by job with no data | No-data state shown |
-| TC-02247 | API | Application submission pipeline | Expired token | GET /api/submissions?job | 401 Unauthorized |
-| TC-02248 | API | Application submission pipeline | Insufficient role | GET /api/submissions?job | 403 Forbidden |
-| TC-02249 | API | Application submission pipeline | Logged in | GET /api/submissions?status | 200 + valid data |
-| TC-02250 | API | Application submission pipeline | Logged in | GET /api/submissions?status with invalid input | 400/422 + error message |
-| TC-02251 | API | Application submission pipeline | Edge case | GET /api/submissions?status at boundary value | Correct boundary handling |
-| TC-02252 | API | Application submission pipeline | No auth token | GET /api/submissions?status | 401 Unauthorized |
-| TC-02253 | frontend-UAT | Application submission pipeline | Logged in | Open submission by status in UI | UI renders correctly |
-| TC-02254 | frontend-UAT | Application submission pipeline | No data | Open submission by status with no data | No-data state shown |
-| TC-02255 | API | Application submission pipeline | Expired token | GET /api/submissions?status | 401 Unauthorized |
-| TC-02256 | API | Application submission pipeline | Insufficient role | GET /api/submissions?status | 403 Forbidden |
-| TC-02257 | API | Application submission pipeline | Logged in | GET /api/submissions?date | 200 + valid data |
-| TC-02258 | API | Application submission pipeline | Logged in | GET /api/submissions?date with invalid input | 400/422 + error message |
-| TC-02259 | API | Application submission pipeline | Edge case | GET /api/submissions?date at boundary value | Correct boundary handling |
-| TC-02260 | API | Application submission pipeline | No auth token | GET /api/submissions?date | 401 Unauthorized |
-| TC-02261 | frontend-UAT | Application submission pipeline | Logged in | Open submission by date in UI | UI renders correctly |
-| TC-02262 | frontend-UAT | Application submission pipeline | No data | Open submission by date with no data | No-data state shown |
-| TC-02263 | API | Application submission pipeline | Expired token | GET /api/submissions?date | 401 Unauthorized |
-| TC-02264 | API | Application submission pipeline | Insufficient role | GET /api/submissions?date | 403 Forbidden |
-| TC-02265 | API | Application submission pipeline | Logged in | GET /api/submissions?source | 200 + valid data |
-| TC-02266 | API | Application submission pipeline | Logged in | GET /api/submissions?source with invalid input | 400/422 + error message |
-| TC-02267 | API | Application submission pipeline | Edge case | GET /api/submissions?source at boundary value | Correct boundary handling |
-| TC-02268 | API | Application submission pipeline | No auth token | GET /api/submissions?source | 401 Unauthorized |
-| TC-02269 | frontend-UAT | Application submission pipeline | Logged in | Open submission by source in UI | UI renders correctly |
-| TC-02270 | frontend-UAT | Application submission pipeline | No data | Open submission by source with no data | No-data state shown |
-| TC-02271 | API | Application submission pipeline | Expired token | GET /api/submissions?source | 401 Unauthorized |
-| TC-02272 | API | Application submission pipeline | Insufficient role | GET /api/submissions?source | 403 Forbidden |
-| TC-02273 | API | Application submission pipeline | Logged in | GET /api/submissions?empty | 200 + valid data |
-| TC-02274 | API | Application submission pipeline | Logged in | GET /api/submissions?empty with invalid input | 400/422 + error message |
-| TC-02275 | API | Application submission pipeline | Edge case | GET /api/submissions?empty at boundary value | Correct boundary handling |
-| TC-02276 | API | Application submission pipeline | No auth token | GET /api/submissions?empty | 401 Unauthorized |
-| TC-02277 | frontend-UAT | Application submission pipeline | Logged in | Open no-data state in UI | UI renders correctly |
-| TC-02278 | frontend-UAT | Application submission pipeline | No data | Open no-data state with no data | No-data state shown |
-| TC-02279 | API | Application submission pipeline | Expired token | GET /api/submissions?empty | 401 Unauthorized |
-| TC-02280 | API | Application submission pipeline | Insufficient role | GET /api/submissions?empty | 403 Forbidden |
+| TC-02161 | API | Application submission pipeline | Logged in | POST /api/jobs/{job_id}/generate | 200 + valid data |
+| TC-02162 | API | Application submission pipeline | Logged in | POST /api/jobs/{job_id}/generate with invalid input | 400/422 + error message |
+| TC-02163 | API | Application submission pipeline | Edge case | POST /api/jobs/{job_id}/generate at boundary value | Correct boundary handling |
+| TC-02164 | API | Application submission pipeline | No auth token | POST /api/jobs/{job_id}/generate | 401 Unauthorized |
+| TC-02165 | frontend-UAT | Application submission pipeline | Logged in | Open generate application package in UI | UI renders correctly |
+| TC-02166 | frontend-UAT | Application submission pipeline | No data | Open generate application package with no data | No-data state shown |
+| TC-02167 | API | Application submission pipeline | Expired token | POST /api/jobs/{job_id}/generate | 401 Unauthorized |
+| TC-02168 | API | Application submission pipeline | Insufficient role | POST /api/jobs/{job_id}/generate | 403 Forbidden |
+| TC-02169 | API | Application submission pipeline | Logged in | POST /api/jobs/{job_id}/approve | 200 + valid data |
+| TC-02170 | API | Application submission pipeline | Logged in | POST /api/jobs/{job_id}/approve with invalid input | 400/422 + error message |
+| TC-02171 | API | Application submission pipeline | Edge case | POST /api/jobs/{job_id}/approve at boundary value | Correct boundary handling |
+| TC-02172 | API | Application submission pipeline | No auth token | POST /api/jobs/{job_id}/approve | 401 Unauthorized |
+| TC-02173 | frontend-UAT | Application submission pipeline | Logged in | Open approve + start submission in UI | UI renders correctly |
+| TC-02174 | frontend-UAT | Application submission pipeline | No data | Open approve + start submission with no data | No-data state shown |
+| TC-02175 | API | Application submission pipeline | Expired token | POST /api/jobs/{job_id}/approve | 401 Unauthorized |
+| TC-02176 | API | Application submission pipeline | Insufficient role | POST /api/jobs/{job_id}/approve | 403 Forbidden |
+| TC-02177 | API | Application submission pipeline | Logged in | POST /api/jobs/{job_id}/submit | 200 + valid data |
+| TC-02178 | API | Application submission pipeline | Logged in | POST /api/jobs/{job_id}/submit with invalid input | 400/422 + error message |
+| TC-02179 | API | Application submission pipeline | Edge case | POST /api/jobs/{job_id}/submit at boundary value | Correct boundary handling |
+| TC-02180 | API | Application submission pipeline | No auth token | POST /api/jobs/{job_id}/submit | 401 Unauthorized |
+| TC-02181 | frontend-UAT | Application submission pipeline | Logged in | Open submit application in UI | UI renders correctly |
+| TC-02182 | frontend-UAT | Application submission pipeline | No data | Open submit application with no data | No-data state shown |
+| TC-02183 | API | Application submission pipeline | Expired token | POST /api/jobs/{job_id}/submit | 401 Unauthorized |
+| TC-02184 | API | Application submission pipeline | Insufficient role | POST /api/jobs/{job_id}/submit | 403 Forbidden |
+| TC-02185 | API | Application submission pipeline | Logged in | POST /api/jobs/{job_id}/resubmit | 200 + valid data |
+| TC-02186 | API | Application submission pipeline | Logged in | POST /api/jobs/{job_id}/resubmit with invalid input | 400/422 + error message |
+| TC-02187 | API | Application submission pipeline | Edge case | POST /api/jobs/{job_id}/resubmit at boundary value | Correct boundary handling |
+| TC-02188 | API | Application submission pipeline | No auth token | POST /api/jobs/{job_id}/resubmit | 401 Unauthorized |
+| TC-02189 | frontend-UAT | Application submission pipeline | Logged in | Open resubmit application in UI | UI renders correctly |
+| TC-02190 | frontend-UAT | Application submission pipeline | No data | Open resubmit application with no data | No-data state shown |
+| TC-02191 | API | Application submission pipeline | Expired token | POST /api/jobs/{job_id}/resubmit | 401 Unauthorized |
+| TC-02192 | API | Application submission pipeline | Insufficient role | POST /api/jobs/{job_id}/resubmit | 403 Forbidden |
+| TC-02193 | API | Application submission pipeline | Logged in | GET /api/jobs/{job_id} | 200 + valid data |
+| TC-02194 | API | Application submission pipeline | Logged in | GET /api/jobs/{job_id} with invalid input | 400/422 + error message |
+| TC-02195 | API | Application submission pipeline | Edge case | GET /api/jobs/{job_id} at boundary value | Correct boundary handling |
+| TC-02196 | API | Application submission pipeline | No auth token | GET /api/jobs/{job_id} | 401 Unauthorized |
+| TC-02197 | frontend-UAT | Application submission pipeline | Logged in | Open submission + application state in UI | UI renders correctly |
+| TC-02198 | frontend-UAT | Application submission pipeline | No data | Open submission + application state with no data | No-data state shown |
+| TC-02199 | API | Application submission pipeline | Expired token | GET /api/jobs/{job_id} | 401 Unauthorized |
+| TC-02200 | API | Application submission pipeline | Insufficient role | GET /api/jobs/{job_id} | 403 Forbidden |
+| TC-02201 | API | Application submission pipeline | Logged in | GET /api/jobs/{job_id}/timeline | 200 + valid data |
+| TC-02202 | API | Application submission pipeline | Logged in | GET /api/jobs/{job_id}/timeline with invalid input | 400/422 + error message |
+| TC-02203 | API | Application submission pipeline | Edge case | GET /api/jobs/{job_id}/timeline at boundary value | Correct boundary handling |
+| TC-02204 | API | Application submission pipeline | No auth token | GET /api/jobs/{job_id}/timeline | 401 Unauthorized |
+| TC-02205 | frontend-UAT | Application submission pipeline | Logged in | Open submission timeline in UI | UI renders correctly |
+| TC-02206 | frontend-UAT | Application submission pipeline | No data | Open submission timeline with no data | No-data state shown |
+| TC-02207 | API | Application submission pipeline | Expired token | GET /api/jobs/{job_id}/timeline | 401 Unauthorized |
+| TC-02208 | API | Application submission pipeline | Insufficient role | GET /api/jobs/{job_id}/timeline | 403 Forbidden |
+| TC-02209 | API | Application submission pipeline | Logged in | GET /api/jobs/{job_id}/application-form | 200 + valid data |
+| TC-02210 | API | Application submission pipeline | Logged in | GET /api/jobs/{job_id}/application-form with invalid input | 400/422 + error message |
+| TC-02211 | API | Application submission pipeline | Edge case | GET /api/jobs/{job_id}/application-form at boundary value | Correct boundary handling |
+| TC-02212 | API | Application submission pipeline | No auth token | GET /api/jobs/{job_id}/application-form | 401 Unauthorized |
+| TC-02213 | frontend-UAT | Application submission pipeline | Logged in | Open prefilled form in UI | UI renders correctly |
+| TC-02214 | frontend-UAT | Application submission pipeline | No data | Open prefilled form with no data | No-data state shown |
+| TC-02215 | API | Application submission pipeline | Expired token | GET /api/jobs/{job_id}/application-form | 401 Unauthorized |
+| TC-02216 | API | Application submission pipeline | Insufficient role | GET /api/jobs/{job_id}/application-form | 403 Forbidden |
+| TC-02217 | API | Application submission pipeline | Logged in | PUT /api/jobs/{job_id}/application-form | 200 + valid data |
+| TC-02218 | API | Application submission pipeline | Logged in | PUT /api/jobs/{job_id}/application-form with invalid input | 400/422 + error message |
+| TC-02219 | API | Application submission pipeline | Edge case | PUT /api/jobs/{job_id}/application-form at boundary value | Correct boundary handling |
+| TC-02220 | API | Application submission pipeline | No auth token | PUT /api/jobs/{job_id}/application-form | 401 Unauthorized |
+| TC-02221 | frontend-UAT | Application submission pipeline | Logged in | Open save edited form in UI | UI renders correctly |
+| TC-02222 | frontend-UAT | Application submission pipeline | No data | Open save edited form with no data | No-data state shown |
+| TC-02223 | API | Application submission pipeline | Expired token | PUT /api/jobs/{job_id}/application-form | 401 Unauthorized |
+| TC-02224 | API | Application submission pipeline | Insufficient role | PUT /api/jobs/{job_id}/application-form | 403 Forbidden |
+| TC-02225 | API | Application submission pipeline | Logged in | GET /api/jobs/{job_id}/resume.pdf | 200 + valid data |
+| TC-02226 | API | Application submission pipeline | Logged in | GET /api/jobs/{job_id}/resume.pdf with invalid input | 400/422 + error message |
+| TC-02227 | API | Application submission pipeline | Edge case | GET /api/jobs/{job_id}/resume.pdf at boundary value | Correct boundary handling |
+| TC-02228 | API | Application submission pipeline | No auth token | GET /api/jobs/{job_id}/resume.pdf | 401 Unauthorized |
+| TC-02229 | frontend-UAT | Application submission pipeline | Logged in | Open tailored resume PDF in UI | UI renders correctly |
+| TC-02230 | frontend-UAT | Application submission pipeline | No data | Open tailored resume PDF with no data | No-data state shown |
+| TC-02231 | API | Application submission pipeline | Expired token | GET /api/jobs/{job_id}/resume.pdf | 401 Unauthorized |
+| TC-02232 | API | Application submission pipeline | Insufficient role | GET /api/jobs/{job_id}/resume.pdf | 403 Forbidden |
+| TC-02233 | API | Application submission pipeline | Logged in | POST /api/jobs/{job_id}/application-status | 200 + valid data |
+| TC-02234 | API | Application submission pipeline | Logged in | POST /api/jobs/{job_id}/application-status with invalid input | 400/422 + error message |
+| TC-02235 | API | Application submission pipeline | Edge case | POST /api/jobs/{job_id}/application-status at boundary value | Correct boundary handling |
+| TC-02236 | API | Application submission pipeline | No auth token | POST /api/jobs/{job_id}/application-status | 401 Unauthorized |
+| TC-02237 | frontend-UAT | Application submission pipeline | Logged in | Open manual stage move in UI | UI renders correctly |
+| TC-02238 | frontend-UAT | Application submission pipeline | No data | Open manual stage move with no data | No-data state shown |
+| TC-02239 | API | Application submission pipeline | Expired token | POST /api/jobs/{job_id}/application-status | 401 Unauthorized |
+| TC-02240 | API | Application submission pipeline | Insufficient role | POST /api/jobs/{job_id}/application-status | 403 Forbidden |
+| TC-02241 | API | Application submission pipeline | Logged in | GET /api/jobs/{job_id}/followup | 200 + valid data |
+| TC-02242 | API | Application submission pipeline | Logged in | GET /api/jobs/{job_id}/followup with invalid input | 400/422 + error message |
+| TC-02243 | API | Application submission pipeline | Edge case | GET /api/jobs/{job_id}/followup at boundary value | Correct boundary handling |
+| TC-02244 | API | Application submission pipeline | No auth token | GET /api/jobs/{job_id}/followup | 401 Unauthorized |
+| TC-02245 | frontend-UAT | Application submission pipeline | Logged in | Open follow-up email draft in UI | UI renders correctly |
+| TC-02246 | frontend-UAT | Application submission pipeline | No data | Open follow-up email draft with no data | No-data state shown |
+| TC-02247 | API | Application submission pipeline | Expired token | GET /api/jobs/{job_id}/followup | 401 Unauthorized |
+| TC-02248 | API | Application submission pipeline | Insufficient role | GET /api/jobs/{job_id}/followup | 403 Forbidden |
+| TC-02249 | API | Application submission pipeline | Logged in | GET /api/jobs?status | 200 + valid data |
+| TC-02250 | API | Application submission pipeline | Logged in | GET /api/jobs?status with invalid input | 400/422 + error message |
+| TC-02251 | API | Application submission pipeline | Edge case | GET /api/jobs?status at boundary value | Correct boundary handling |
+| TC-02252 | API | Application submission pipeline | No auth token | GET /api/jobs?status | 401 Unauthorized |
+| TC-02253 | frontend-UAT | Application submission pipeline | Logged in | Open submission queue by status in UI | UI renders correctly |
+| TC-02254 | frontend-UAT | Application submission pipeline | No data | Open submission queue by status with no data | No-data state shown |
+| TC-02255 | API | Application submission pipeline | Expired token | GET /api/jobs?status | 401 Unauthorized |
+| TC-02256 | API | Application submission pipeline | Insufficient role | GET /api/jobs?status | 403 Forbidden |
 ### F20 — Application status tracking
 
-| TC-02281 | API | Application status tracking | Logged in | GET /api/applications/{id}/status | 200 + valid data |
-| TC-02282 | API | Application status tracking | Logged in | GET /api/applications/{id}/status with invalid input | 400/422 + error message |
-| TC-02283 | API | Application status tracking | Edge case | GET /api/applications/{id}/status at boundary value | Correct boundary handling |
-| TC-02284 | API | Application status tracking | No auth token | GET /api/applications/{id}/status | 401 Unauthorized |
-| TC-02285 | frontend-UAT | Application status tracking | Logged in | Open current status in UI | UI renders correctly |
-| TC-02286 | frontend-UAT | Application status tracking | No data | Open current status with no data | No-data state shown |
-| TC-02287 | API | Application status tracking | Expired token | GET /api/applications/{id}/status | 401 Unauthorized |
-| TC-02288 | API | Application status tracking | Insufficient role | GET /api/applications/{id}/status | 403 Forbidden |
-| TC-02289 | API | Application status tracking | Logged in | GET /api/applications/{id}/status-history | 200 + valid data |
-| TC-02290 | API | Application status tracking | Logged in | GET /api/applications/{id}/status-history with invalid input | 400/422 + error message |
-| TC-02291 | API | Application status tracking | Edge case | GET /api/applications/{id}/status-history at boundary value | Correct boundary handling |
-| TC-02292 | API | Application status tracking | No auth token | GET /api/applications/{id}/status-history | 401 Unauthorized |
-| TC-02293 | frontend-UAT | Application status tracking | Logged in | Open status history in UI | UI renders correctly |
-| TC-02294 | frontend-UAT | Application status tracking | No data | Open status history with no data | No-data state shown |
-| TC-02295 | API | Application status tracking | Expired token | GET /api/applications/{id}/status-history | 401 Unauthorized |
-| TC-02296 | API | Application status tracking | Insufficient role | GET /api/applications/{id}/status-history | 403 Forbidden |
-| TC-02297 | API | Application status tracking | Logged in | GET /api/applications?status | 200 + valid data |
-| TC-02298 | API | Application status tracking | Logged in | GET /api/applications?status with invalid input | 400/422 + error message |
-| TC-02299 | API | Application status tracking | Edge case | GET /api/applications?status at boundary value | Correct boundary handling |
-| TC-02300 | API | Application status tracking | No auth token | GET /api/applications?status | 401 Unauthorized |
-| TC-02301 | frontend-UAT | Application status tracking | Logged in | Open filter by status in UI | UI renders correctly |
-| TC-02302 | frontend-UAT | Application status tracking | No data | Open filter by status with no data | No-data state shown |
-| TC-02303 | API | Application status tracking | Expired token | GET /api/applications?status | 401 Unauthorized |
-| TC-02304 | API | Application status tracking | Insufficient role | GET /api/applications?status | 403 Forbidden |
-| TC-02305 | API | Application status tracking | Logged in | GET /api/applications/{id}/status?empty | 200 + valid data |
-| TC-02306 | API | Application status tracking | Logged in | GET /api/applications/{id}/status?empty with invalid input | 400/422 + error message |
-| TC-02307 | API | Application status tracking | Edge case | GET /api/applications/{id}/status?empty at boundary value | Correct boundary handling |
-| TC-02308 | API | Application status tracking | No auth token | GET /api/applications/{id}/status?empty | 401 Unauthorized |
-| TC-02309 | frontend-UAT | Application status tracking | Logged in | Open no-status state in UI | UI renders correctly |
-| TC-02310 | frontend-UAT | Application status tracking | No data | Open no-status state with no data | No-data state shown |
-| TC-02311 | API | Application status tracking | Expired token | GET /api/applications/{id}/status?empty | 401 Unauthorized |
-| TC-02312 | API | Application status tracking | Insufficient role | GET /api/applications/{id}/status?empty | 403 Forbidden |
-| TC-02313 | API | Application status tracking | Logged in | GET /api/applications/{id}/method | 200 + valid data |
-| TC-02314 | API | Application status tracking | Logged in | GET /api/applications/{id}/method with invalid input | 400/422 + error message |
-| TC-02315 | API | Application status tracking | Edge case | GET /api/applications/{id}/method at boundary value | Correct boundary handling |
-| TC-02316 | API | Application status tracking | No auth token | GET /api/applications/{id}/method | 401 Unauthorized |
-| TC-02317 | frontend-UAT | Application status tracking | Logged in | Open submission method in UI | UI renders correctly |
-| TC-02318 | frontend-UAT | Application status tracking | No data | Open submission method with no data | No-data state shown |
-| TC-02319 | API | Application status tracking | Expired token | GET /api/applications/{id}/method | 401 Unauthorized |
-| TC-02320 | API | Application status tracking | Insufficient role | GET /api/applications/{id}/method | 403 Forbidden |
-| TC-02321 | API | Application status tracking | Logged in | GET /api/applications/{id}/message | 200 + valid data |
-| TC-02322 | API | Application status tracking | Logged in | GET /api/applications/{id}/message with invalid input | 400/422 + error message |
-| TC-02323 | API | Application status tracking | Edge case | GET /api/applications/{id}/message at boundary value | Correct boundary handling |
-| TC-02324 | API | Application status tracking | No auth token | GET /api/applications/{id}/message | 401 Unauthorized |
-| TC-02325 | frontend-UAT | Application status tracking | Logged in | Open submission message in UI | UI renders correctly |
-| TC-02326 | frontend-UAT | Application status tracking | No data | Open submission message with no data | No-data state shown |
-| TC-02327 | API | Application status tracking | Expired token | GET /api/applications/{id}/message | 401 Unauthorized |
-| TC-02328 | API | Application status tracking | Insufficient role | GET /api/applications/{id}/message | 403 Forbidden |
-| TC-02329 | API | Application status tracking | Logged in | GET /api/applications/summary | 200 + valid data |
-| TC-02330 | API | Application status tracking | Logged in | GET /api/applications/summary with invalid input | 400/422 + error message |
-| TC-02331 | API | Application status tracking | Edge case | GET /api/applications/summary at boundary value | Correct boundary handling |
-| TC-02332 | API | Application status tracking | No auth token | GET /api/applications/summary | 401 Unauthorized |
-| TC-02333 | frontend-UAT | Application status tracking | Logged in | Open status summary in UI | UI renders correctly |
-| TC-02334 | frontend-UAT | Application status tracking | No data | Open status summary with no data | No-data state shown |
-| TC-02335 | API | Application status tracking | Expired token | GET /api/applications/summary | 401 Unauthorized |
-| TC-02336 | API | Application status tracking | Insufficient role | GET /api/applications/summary | 403 Forbidden |
-| TC-02337 | API | Application status tracking | Logged in | GET /api/applications?color | 200 + valid data |
-| TC-02338 | API | Application status tracking | Logged in | GET /api/applications?color with invalid input | 400/422 + error message |
-| TC-02339 | API | Application status tracking | Edge case | GET /api/applications?color at boundary value | Correct boundary handling |
-| TC-02340 | API | Application status tracking | No auth token | GET /api/applications?color | 401 Unauthorized |
-| TC-02341 | frontend-UAT | Application status tracking | Logged in | Open color-coded statuses in UI | UI renders correctly |
-| TC-02342 | frontend-UAT | Application status tracking | No data | Open color-coded statuses with no data | No-data state shown |
-| TC-02343 | API | Application status tracking | Expired token | GET /api/applications?color | 401 Unauthorized |
-| TC-02344 | API | Application status tracking | Insufficient role | GET /api/applications?color | 403 Forbidden |
-| TC-02345 | API | Application status tracking | Logged in | GET /api/applications/funnel | 200 + valid data |
-| TC-02346 | API | Application status tracking | Logged in | GET /api/applications/funnel with invalid input | 400/422 + error message |
-| TC-02347 | API | Application status tracking | Edge case | GET /api/applications/funnel at boundary value | Correct boundary handling |
-| TC-02348 | API | Application status tracking | No auth token | GET /api/applications/funnel | 401 Unauthorized |
-| TC-02349 | frontend-UAT | Application status tracking | Logged in | Open status funnel in UI | UI renders correctly |
-| TC-02350 | frontend-UAT | Application status tracking | No data | Open status funnel with no data | No-data state shown |
-| TC-02351 | API | Application status tracking | Expired token | GET /api/applications/funnel | 401 Unauthorized |
-| TC-02352 | API | Application status tracking | Insufficient role | GET /api/applications/funnel | 403 Forbidden |
-| TC-02353 | API | Application status tracking | Logged in | GET /api/applications?by_source | 200 + valid data |
-| TC-02354 | API | Application status tracking | Logged in | GET /api/applications?by_source with invalid input | 400/422 + error message |
-| TC-02355 | API | Application status tracking | Edge case | GET /api/applications?by_source at boundary value | Correct boundary handling |
-| TC-02356 | API | Application status tracking | No auth token | GET /api/applications?by_source | 401 Unauthorized |
-| TC-02357 | frontend-UAT | Application status tracking | Logged in | Open status by source in UI | UI renders correctly |
-| TC-02358 | frontend-UAT | Application status tracking | No data | Open status by source with no data | No-data state shown |
-| TC-02359 | API | Application status tracking | Expired token | GET /api/applications?by_source | 401 Unauthorized |
-| TC-02360 | API | Application status tracking | Insufficient role | GET /api/applications?by_source | 403 Forbidden |
-| TC-02361 | API | Application status tracking | Logged in | GET /api/applications?by_week | 200 + valid data |
-| TC-02362 | API | Application status tracking | Logged in | GET /api/applications?by_week with invalid input | 400/422 + error message |
-| TC-02363 | API | Application status tracking | Edge case | GET /api/applications?by_week at boundary value | Correct boundary handling |
-| TC-02364 | API | Application status tracking | No auth token | GET /api/applications?by_week | 401 Unauthorized |
-| TC-02365 | frontend-UAT | Application status tracking | Logged in | Open status by week in UI | UI renders correctly |
-| TC-02366 | frontend-UAT | Application status tracking | No data | Open status by week with no data | No-data state shown |
-| TC-02367 | API | Application status tracking | Expired token | GET /api/applications?by_week | 401 Unauthorized |
-| TC-02368 | API | Application status tracking | Insufficient role | GET /api/applications?by_week | 403 Forbidden |
-| TC-02369 | API | Application status tracking | Logged in | GET /api/applications?by_salary | 200 + valid data |
-| TC-02370 | API | Application status tracking | Logged in | GET /api/applications?by_salary with invalid input | 400/422 + error message |
-| TC-02371 | API | Application status tracking | Edge case | GET /api/applications?by_salary at boundary value | Correct boundary handling |
-| TC-02372 | API | Application status tracking | No auth token | GET /api/applications?by_salary | 401 Unauthorized |
-| TC-02373 | frontend-UAT | Application status tracking | Logged in | Open status by salary in UI | UI renders correctly |
-| TC-02374 | frontend-UAT | Application status tracking | No data | Open status by salary with no data | No-data state shown |
-| TC-02375 | API | Application status tracking | Expired token | GET /api/applications?by_salary | 401 Unauthorized |
-| TC-02376 | API | Application status tracking | Insufficient role | GET /api/applications?by_salary | 403 Forbidden |
-| TC-02377 | API | Application status tracking | Logged in | GET /api/applications?by_role | 200 + valid data |
-| TC-02378 | API | Application status tracking | Logged in | GET /api/applications?by_role with invalid input | 400/422 + error message |
-| TC-02379 | API | Application status tracking | Edge case | GET /api/applications?by_role at boundary value | Correct boundary handling |
-| TC-02380 | API | Application status tracking | No auth token | GET /api/applications?by_role | 401 Unauthorized |
-| TC-02381 | frontend-UAT | Application status tracking | Logged in | Open status by role in UI | UI renders correctly |
-| TC-02382 | frontend-UAT | Application status tracking | No data | Open status by role with no data | No-data state shown |
-| TC-02383 | API | Application status tracking | Expired token | GET /api/applications?by_role | 401 Unauthorized |
-| TC-02384 | API | Application status tracking | Insufficient role | GET /api/applications?by_role | 403 Forbidden |
-| TC-02385 | API | Application status tracking | Logged in | GET /api/applications?empty | 200 + valid data |
-| TC-02386 | API | Application status tracking | Logged in | GET /api/applications?empty with invalid input | 400/422 + error message |
-| TC-02387 | API | Application status tracking | Edge case | GET /api/applications?empty at boundary value | Correct boundary handling |
-| TC-02388 | API | Application status tracking | No auth token | GET /api/applications?empty | 401 Unauthorized |
-| TC-02389 | frontend-UAT | Application status tracking | Logged in | Open no-data state in UI | UI renders correctly |
-| TC-02390 | frontend-UAT | Application status tracking | No data | Open no-data state with no data | No-data state shown |
-| TC-02391 | API | Application status tracking | Expired token | GET /api/applications?empty | 401 Unauthorized |
-| TC-02392 | API | Application status tracking | Insufficient role | GET /api/applications?empty | 403 Forbidden |
-| TC-02393 | API | Application status tracking | Logged in | GET /api/applications?export | 200 + valid data |
-| TC-02394 | API | Application status tracking | Logged in | GET /api/applications?export with invalid input | 400/422 + error message |
-| TC-02395 | API | Application status tracking | Edge case | GET /api/applications?export at boundary value | Correct boundary handling |
-| TC-02396 | API | Application status tracking | No auth token | GET /api/applications?export | 401 Unauthorized |
-| TC-02397 | frontend-UAT | Application status tracking | Logged in | Open export statuses in UI | UI renders correctly |
-| TC-02398 | frontend-UAT | Application status tracking | No data | Open export statuses with no data | No-data state shown |
-| TC-02399 | API | Application status tracking | Expired token | GET /api/applications?export | 401 Unauthorized |
-| TC-02400 | API | Application status tracking | Insufficient role | GET /api/applications?export | 403 Forbidden |
+| TC-02257 | API | Application status tracking | Logged in | GET /api/applications/{id}/status | 200 + valid data |
+| TC-02258 | API | Application status tracking | Logged in | GET /api/applications/{id}/status with invalid input | 400/422 + error message |
+| TC-02259 | API | Application status tracking | Edge case | GET /api/applications/{id}/status at boundary value | Correct boundary handling |
+| TC-02260 | API | Application status tracking | No auth token | GET /api/applications/{id}/status | 401 Unauthorized |
+| TC-02261 | frontend-UAT | Application status tracking | Logged in | Open current status in UI | UI renders correctly |
+| TC-02262 | frontend-UAT | Application status tracking | No data | Open current status with no data | No-data state shown |
+| TC-02263 | API | Application status tracking | Expired token | GET /api/applications/{id}/status | 401 Unauthorized |
+| TC-02264 | API | Application status tracking | Insufficient role | GET /api/applications/{id}/status | 403 Forbidden |
+| TC-02265 | API | Application status tracking | Logged in | GET /api/applications/{id}/status-history | 200 + valid data |
+| TC-02266 | API | Application status tracking | Logged in | GET /api/applications/{id}/status-history with invalid input | 400/422 + error message |
+| TC-02267 | API | Application status tracking | Edge case | GET /api/applications/{id}/status-history at boundary value | Correct boundary handling |
+| TC-02268 | API | Application status tracking | No auth token | GET /api/applications/{id}/status-history | 401 Unauthorized |
+| TC-02269 | frontend-UAT | Application status tracking | Logged in | Open status history in UI | UI renders correctly |
+| TC-02270 | frontend-UAT | Application status tracking | No data | Open status history with no data | No-data state shown |
+| TC-02271 | API | Application status tracking | Expired token | GET /api/applications/{id}/status-history | 401 Unauthorized |
+| TC-02272 | API | Application status tracking | Insufficient role | GET /api/applications/{id}/status-history | 403 Forbidden |
+| TC-02273 | API | Application status tracking | Logged in | GET /api/applications?status | 200 + valid data |
+| TC-02274 | API | Application status tracking | Logged in | GET /api/applications?status with invalid input | 400/422 + error message |
+| TC-02275 | API | Application status tracking | Edge case | GET /api/applications?status at boundary value | Correct boundary handling |
+| TC-02276 | API | Application status tracking | No auth token | GET /api/applications?status | 401 Unauthorized |
+| TC-02277 | frontend-UAT | Application status tracking | Logged in | Open filter by status in UI | UI renders correctly |
+| TC-02278 | frontend-UAT | Application status tracking | No data | Open filter by status with no data | No-data state shown |
+| TC-02279 | API | Application status tracking | Expired token | GET /api/applications?status | 401 Unauthorized |
+| TC-02280 | API | Application status tracking | Insufficient role | GET /api/applications?status | 403 Forbidden |
+| TC-02281 | API | Application status tracking | Logged in | GET /api/applications/{id}/status?empty | 200 + valid data |
+| TC-02282 | API | Application status tracking | Logged in | GET /api/applications/{id}/status?empty with invalid input | 400/422 + error message |
+| TC-02283 | API | Application status tracking | Edge case | GET /api/applications/{id}/status?empty at boundary value | Correct boundary handling |
+| TC-02284 | API | Application status tracking | No auth token | GET /api/applications/{id}/status?empty | 401 Unauthorized |
+| TC-02285 | frontend-UAT | Application status tracking | Logged in | Open no-status state in UI | UI renders correctly |
+| TC-02286 | frontend-UAT | Application status tracking | No data | Open no-status state with no data | No-data state shown |
+| TC-02287 | API | Application status tracking | Expired token | GET /api/applications/{id}/status?empty | 401 Unauthorized |
+| TC-02288 | API | Application status tracking | Insufficient role | GET /api/applications/{id}/status?empty | 403 Forbidden |
+| TC-02289 | API | Application status tracking | Logged in | GET /api/applications/{id}/method | 200 + valid data |
+| TC-02290 | API | Application status tracking | Logged in | GET /api/applications/{id}/method with invalid input | 400/422 + error message |
+| TC-02291 | API | Application status tracking | Edge case | GET /api/applications/{id}/method at boundary value | Correct boundary handling |
+| TC-02292 | API | Application status tracking | No auth token | GET /api/applications/{id}/method | 401 Unauthorized |
+| TC-02293 | frontend-UAT | Application status tracking | Logged in | Open submission method in UI | UI renders correctly |
+| TC-02294 | frontend-UAT | Application status tracking | No data | Open submission method with no data | No-data state shown |
+| TC-02295 | API | Application status tracking | Expired token | GET /api/applications/{id}/method | 401 Unauthorized |
+| TC-02296 | API | Application status tracking | Insufficient role | GET /api/applications/{id}/method | 403 Forbidden |
+| TC-02297 | API | Application status tracking | Logged in | GET /api/applications/{id}/message | 200 + valid data |
+| TC-02298 | API | Application status tracking | Logged in | GET /api/applications/{id}/message with invalid input | 400/422 + error message |
+| TC-02299 | API | Application status tracking | Edge case | GET /api/applications/{id}/message at boundary value | Correct boundary handling |
+| TC-02300 | API | Application status tracking | No auth token | GET /api/applications/{id}/message | 401 Unauthorized |
+| TC-02301 | frontend-UAT | Application status tracking | Logged in | Open submission message in UI | UI renders correctly |
+| TC-02302 | frontend-UAT | Application status tracking | No data | Open submission message with no data | No-data state shown |
+| TC-02303 | API | Application status tracking | Expired token | GET /api/applications/{id}/message | 401 Unauthorized |
+| TC-02304 | API | Application status tracking | Insufficient role | GET /api/applications/{id}/message | 403 Forbidden |
+| TC-02305 | API | Application status tracking | Logged in | GET /api/applications/summary | 200 + valid data |
+| TC-02306 | API | Application status tracking | Logged in | GET /api/applications/summary with invalid input | 400/422 + error message |
+| TC-02307 | API | Application status tracking | Edge case | GET /api/applications/summary at boundary value | Correct boundary handling |
+| TC-02308 | API | Application status tracking | No auth token | GET /api/applications/summary | 401 Unauthorized |
+| TC-02309 | frontend-UAT | Application status tracking | Logged in | Open status summary in UI | UI renders correctly |
+| TC-02310 | frontend-UAT | Application status tracking | No data | Open status summary with no data | No-data state shown |
+| TC-02311 | API | Application status tracking | Expired token | GET /api/applications/summary | 401 Unauthorized |
+| TC-02312 | API | Application status tracking | Insufficient role | GET /api/applications/summary | 403 Forbidden |
+| TC-02313 | API | Application status tracking | Logged in | GET /api/applications?color | 200 + valid data |
+| TC-02314 | API | Application status tracking | Logged in | GET /api/applications?color with invalid input | 400/422 + error message |
+| TC-02315 | API | Application status tracking | Edge case | GET /api/applications?color at boundary value | Correct boundary handling |
+| TC-02316 | API | Application status tracking | No auth token | GET /api/applications?color | 401 Unauthorized |
+| TC-02317 | frontend-UAT | Application status tracking | Logged in | Open color-coded statuses in UI | UI renders correctly |
+| TC-02318 | frontend-UAT | Application status tracking | No data | Open color-coded statuses with no data | No-data state shown |
+| TC-02319 | API | Application status tracking | Expired token | GET /api/applications?color | 401 Unauthorized |
+| TC-02320 | API | Application status tracking | Insufficient role | GET /api/applications?color | 403 Forbidden |
+| TC-02321 | API | Application status tracking | Logged in | GET /api/applications/funnel | 200 + valid data |
+| TC-02322 | API | Application status tracking | Logged in | GET /api/applications/funnel with invalid input | 400/422 + error message |
+| TC-02323 | API | Application status tracking | Edge case | GET /api/applications/funnel at boundary value | Correct boundary handling |
+| TC-02324 | API | Application status tracking | No auth token | GET /api/applications/funnel | 401 Unauthorized |
+| TC-02325 | frontend-UAT | Application status tracking | Logged in | Open status funnel in UI | UI renders correctly |
+| TC-02326 | frontend-UAT | Application status tracking | No data | Open status funnel with no data | No-data state shown |
+| TC-02327 | API | Application status tracking | Expired token | GET /api/applications/funnel | 401 Unauthorized |
+| TC-02328 | API | Application status tracking | Insufficient role | GET /api/applications/funnel | 403 Forbidden |
+| TC-02329 | API | Application status tracking | Logged in | GET /api/applications?by_source | 200 + valid data |
+| TC-02330 | API | Application status tracking | Logged in | GET /api/applications?by_source with invalid input | 400/422 + error message |
+| TC-02331 | API | Application status tracking | Edge case | GET /api/applications?by_source at boundary value | Correct boundary handling |
+| TC-02332 | API | Application status tracking | No auth token | GET /api/applications?by_source | 401 Unauthorized |
+| TC-02333 | frontend-UAT | Application status tracking | Logged in | Open status by source in UI | UI renders correctly |
+| TC-02334 | frontend-UAT | Application status tracking | No data | Open status by source with no data | No-data state shown |
+| TC-02335 | API | Application status tracking | Expired token | GET /api/applications?by_source | 401 Unauthorized |
+| TC-02336 | API | Application status tracking | Insufficient role | GET /api/applications?by_source | 403 Forbidden |
+| TC-02337 | API | Application status tracking | Logged in | GET /api/applications?by_week | 200 + valid data |
+| TC-02338 | API | Application status tracking | Logged in | GET /api/applications?by_week with invalid input | 400/422 + error message |
+| TC-02339 | API | Application status tracking | Edge case | GET /api/applications?by_week at boundary value | Correct boundary handling |
+| TC-02340 | API | Application status tracking | No auth token | GET /api/applications?by_week | 401 Unauthorized |
+| TC-02341 | frontend-UAT | Application status tracking | Logged in | Open status by week in UI | UI renders correctly |
+| TC-02342 | frontend-UAT | Application status tracking | No data | Open status by week with no data | No-data state shown |
+| TC-02343 | API | Application status tracking | Expired token | GET /api/applications?by_week | 401 Unauthorized |
+| TC-02344 | API | Application status tracking | Insufficient role | GET /api/applications?by_week | 403 Forbidden |
+| TC-02345 | API | Application status tracking | Logged in | GET /api/applications?by_salary | 200 + valid data |
+| TC-02346 | API | Application status tracking | Logged in | GET /api/applications?by_salary with invalid input | 400/422 + error message |
+| TC-02347 | API | Application status tracking | Edge case | GET /api/applications?by_salary at boundary value | Correct boundary handling |
+| TC-02348 | API | Application status tracking | No auth token | GET /api/applications?by_salary | 401 Unauthorized |
+| TC-02349 | frontend-UAT | Application status tracking | Logged in | Open status by salary in UI | UI renders correctly |
+| TC-02350 | frontend-UAT | Application status tracking | No data | Open status by salary with no data | No-data state shown |
+| TC-02351 | API | Application status tracking | Expired token | GET /api/applications?by_salary | 401 Unauthorized |
+| TC-02352 | API | Application status tracking | Insufficient role | GET /api/applications?by_salary | 403 Forbidden |
+| TC-02353 | API | Application status tracking | Logged in | GET /api/applications?by_role | 200 + valid data |
+| TC-02354 | API | Application status tracking | Logged in | GET /api/applications?by_role with invalid input | 400/422 + error message |
+| TC-02355 | API | Application status tracking | Edge case | GET /api/applications?by_role at boundary value | Correct boundary handling |
+| TC-02356 | API | Application status tracking | No auth token | GET /api/applications?by_role | 401 Unauthorized |
+| TC-02357 | frontend-UAT | Application status tracking | Logged in | Open status by role in UI | UI renders correctly |
+| TC-02358 | frontend-UAT | Application status tracking | No data | Open status by role with no data | No-data state shown |
+| TC-02359 | API | Application status tracking | Expired token | GET /api/applications?by_role | 401 Unauthorized |
+| TC-02360 | API | Application status tracking | Insufficient role | GET /api/applications?by_role | 403 Forbidden |
+| TC-02361 | API | Application status tracking | Logged in | GET /api/applications?empty | 200 + valid data |
+| TC-02362 | API | Application status tracking | Logged in | GET /api/applications?empty with invalid input | 400/422 + error message |
+| TC-02363 | API | Application status tracking | Edge case | GET /api/applications?empty at boundary value | Correct boundary handling |
+| TC-02364 | API | Application status tracking | No auth token | GET /api/applications?empty | 401 Unauthorized |
+| TC-02365 | frontend-UAT | Application status tracking | Logged in | Open no-data state in UI | UI renders correctly |
+| TC-02366 | frontend-UAT | Application status tracking | No data | Open no-data state with no data | No-data state shown |
+| TC-02367 | API | Application status tracking | Expired token | GET /api/applications?empty | 401 Unauthorized |
+| TC-02368 | API | Application status tracking | Insufficient role | GET /api/applications?empty | 403 Forbidden |
+| TC-02369 | API | Application status tracking | Logged in | GET /api/applications?export | 200 + valid data |
+| TC-02370 | API | Application status tracking | Logged in | GET /api/applications?export with invalid input | 400/422 + error message |
+| TC-02371 | API | Application status tracking | Edge case | GET /api/applications?export at boundary value | Correct boundary handling |
+| TC-02372 | API | Application status tracking | No auth token | GET /api/applications?export | 401 Unauthorized |
+| TC-02373 | frontend-UAT | Application status tracking | Logged in | Open export statuses in UI | UI renders correctly |
+| TC-02374 | frontend-UAT | Application status tracking | No data | Open export statuses with no data | No-data state shown |
+| TC-02375 | API | Application status tracking | Expired token | GET /api/applications?export | 401 Unauthorized |
+| TC-02376 | API | Application status tracking | Insufficient role | GET /api/applications?export | 403 Forbidden |
 ### F21 — Application form editor
 
-| TC-02401 | API | Application form editor | Logged in | PUT /api/form/fields/{id} | 200 + valid data |
-| TC-02402 | API | Application form editor | Logged in | PUT /api/form/fields/{id} with invalid input | 400/422 + error message |
-| TC-02403 | API | Application form editor | Edge case | PUT /api/form/fields/{id} at boundary value | Correct boundary handling |
-| TC-02404 | API | Application form editor | No auth token | PUT /api/form/fields/{id} | 401 Unauthorized |
-| TC-02405 | frontend-UAT | Application form editor | Logged in | Open edit field in UI | UI renders correctly |
-| TC-02406 | frontend-UAT | Application form editor | No data | Open edit field with no data | No-data state shown |
-| TC-02407 | API | Application form editor | Expired token | PUT /api/form/fields/{id} | 401 Unauthorized |
-| TC-02408 | API | Application form editor | Insufficient role | PUT /api/form/fields/{id} | 403 Forbidden |
-| TC-02409 | API | Application form editor | Logged in | POST /api/form/fields | 200 + valid data |
-| TC-02410 | API | Application form editor | Logged in | POST /api/form/fields with invalid input | 400/422 + error message |
-| TC-02411 | API | Application form editor | Edge case | POST /api/form/fields at boundary value | Correct boundary handling |
-| TC-02412 | API | Application form editor | No auth token | POST /api/form/fields | 401 Unauthorized |
-| TC-02413 | frontend-UAT | Application form editor | Logged in | Open add field in UI | UI renders correctly |
-| TC-02414 | frontend-UAT | Application form editor | No data | Open add field with no data | No-data state shown |
-| TC-02415 | API | Application form editor | Expired token | POST /api/form/fields | 401 Unauthorized |
-| TC-02416 | API | Application form editor | Insufficient role | POST /api/form/fields | 403 Forbidden |
-| TC-02417 | API | Application form editor | Logged in | PUT /api/form/fields/{id}/hidden | 200 + valid data |
-| TC-02418 | API | Application form editor | Logged in | PUT /api/form/fields/{id}/hidden with invalid input | 400/422 + error message |
-| TC-02419 | API | Application form editor | Edge case | PUT /api/form/fields/{id}/hidden at boundary value | Correct boundary handling |
-| TC-02420 | API | Application form editor | No auth token | PUT /api/form/fields/{id}/hidden | 401 Unauthorized |
-| TC-02421 | frontend-UAT | Application form editor | Logged in | Open hide field in UI | UI renders correctly |
-| TC-02422 | frontend-UAT | Application form editor | No data | Open hide field with no data | No-data state shown |
-| TC-02423 | API | Application form editor | Expired token | PUT /api/form/fields/{id}/hidden | 401 Unauthorized |
-| TC-02424 | API | Application form editor | Insufficient role | PUT /api/form/fields/{id}/hidden | 403 Forbidden |
-| TC-02425 | API | Application form editor | Logged in | GET /api/form/preview | 200 + valid data |
-| TC-02426 | API | Application form editor | Logged in | GET /api/form/preview with invalid input | 400/422 + error message |
-| TC-02427 | API | Application form editor | Edge case | GET /api/form/preview at boundary value | Correct boundary handling |
-| TC-02428 | API | Application form editor | No auth token | GET /api/form/preview | 401 Unauthorized |
-| TC-02429 | frontend-UAT | Application form editor | Logged in | Open form preview in UI | UI renders correctly |
-| TC-02430 | frontend-UAT | Application form editor | No data | Open form preview with no data | No-data state shown |
-| TC-02431 | API | Application form editor | Expired token | GET /api/form/preview | 401 Unauthorized |
-| TC-02432 | API | Application form editor | Insufficient role | GET /api/form/preview | 403 Forbidden |
-| TC-02433 | API | Application form editor | Logged in | PUT /api/form/fields/{id}/reset | 200 + valid data |
-| TC-02434 | API | Application form editor | Logged in | PUT /api/form/fields/{id}/reset with invalid input | 400/422 + error message |
-| TC-02435 | API | Application form editor | Edge case | PUT /api/form/fields/{id}/reset at boundary value | Correct boundary handling |
-| TC-02436 | API | Application form editor | No auth token | PUT /api/form/fields/{id}/reset | 401 Unauthorized |
-| TC-02437 | frontend-UAT | Application form editor | Logged in | Open reset field in UI | UI renders correctly |
-| TC-02438 | frontend-UAT | Application form editor | No data | Open reset field with no data | No-data state shown |
-| TC-02439 | API | Application form editor | Expired token | PUT /api/form/fields/{id}/reset | 401 Unauthorized |
-| TC-02440 | API | Application form editor | Insufficient role | PUT /api/form/fields/{id}/reset | 403 Forbidden |
-| TC-02441 | API | Application form editor | Logged in | POST /api/form/fields?invalid | 200 + valid data |
-| TC-02442 | API | Application form editor | Logged in | POST /api/form/fields?invalid with invalid input | 400/422 + error message |
-| TC-02443 | API | Application form editor | Edge case | POST /api/form/fields?invalid at boundary value | Correct boundary handling |
-| TC-02444 | API | Application form editor | No auth token | POST /api/form/fields?invalid | 401 Unauthorized |
-| TC-02445 | frontend-UAT | Application form editor | Logged in | Open invalid field in UI | UI renders correctly |
-| TC-02446 | frontend-UAT | Application form editor | No data | Open invalid field with no data | No-data state shown |
-| TC-02447 | API | Application form editor | Expired token | POST /api/form/fields?invalid | 401 Unauthorized |
-| TC-02448 | API | Application form editor | Insufficient role | POST /api/form/fields?invalid | 403 Forbidden |
-| TC-02449 | API | Application form editor | Logged in | PUT /api/form/order | 200 + valid data |
-| TC-02450 | API | Application form editor | Logged in | PUT /api/form/order with invalid input | 400/422 + error message |
-| TC-02451 | API | Application form editor | Edge case | PUT /api/form/order at boundary value | Correct boundary handling |
-| TC-02452 | API | Application form editor | No auth token | PUT /api/form/order | 401 Unauthorized |
-| TC-02453 | frontend-UAT | Application form editor | Logged in | Open reorder fields in UI | UI renders correctly |
-| TC-02454 | frontend-UAT | Application form editor | No data | Open reorder fields with no data | No-data state shown |
-| TC-02455 | API | Application form editor | Expired token | PUT /api/form/order | 401 Unauthorized |
-| TC-02456 | API | Application form editor | Insufficient role | PUT /api/form/order | 403 Forbidden |
-| TC-02457 | API | Application form editor | Logged in | GET /api/form/usage | 200 + valid data |
-| TC-02458 | API | Application form editor | Logged in | GET /api/form/usage with invalid input | 400/422 + error message |
-| TC-02459 | API | Application form editor | Edge case | GET /api/form/usage at boundary value | Correct boundary handling |
-| TC-02460 | API | Application form editor | No auth token | GET /api/form/usage | 401 Unauthorized |
-| TC-02461 | frontend-UAT | Application form editor | Logged in | Open field usage in UI | UI renders correctly |
-| TC-02462 | frontend-UAT | Application form editor | No data | Open field usage with no data | No-data state shown |
-| TC-02463 | API | Application form editor | Expired token | GET /api/form/usage | 401 Unauthorized |
-| TC-02464 | API | Application form editor | Insufficient role | GET /api/form/usage | 403 Forbidden |
-| TC-02465 | API | Application form editor | Logged in | PUT /api/form/fields/{id}?invalid | 200 + valid data |
-| TC-02466 | API | Application form editor | Logged in | PUT /api/form/fields/{id}?invalid with invalid input | 400/422 + error message |
-| TC-02467 | API | Application form editor | Edge case | PUT /api/form/fields/{id}?invalid at boundary value | Correct boundary handling |
-| TC-02468 | API | Application form editor | No auth token | PUT /api/form/fields/{id}?invalid | 401 Unauthorized |
-| TC-02469 | frontend-UAT | Application form editor | Logged in | Open validation error in UI | UI renders correctly |
-| TC-02470 | frontend-UAT | Application form editor | No data | Open validation error with no data | No-data state shown |
-| TC-02471 | API | Application form editor | Expired token | PUT /api/form/fields/{id}?invalid | 401 Unauthorized |
-| TC-02472 | API | Application form editor | Insufficient role | PUT /api/form/fields/{id}?invalid | 403 Forbidden |
-| TC-02473 | API | Application form editor | Logged in | GET /api/form/fields/{id}/default | 200 + valid data |
-| TC-02474 | API | Application form editor | Logged in | GET /api/form/fields/{id}/default with invalid input | 400/422 + error message |
-| TC-02475 | API | Application form editor | Edge case | GET /api/form/fields/{id}/default at boundary value | Correct boundary handling |
-| TC-02476 | API | Application form editor | No auth token | GET /api/form/fields/{id}/default | 401 Unauthorized |
-| TC-02477 | frontend-UAT | Application form editor | Logged in | Open default value in UI | UI renders correctly |
-| TC-02478 | frontend-UAT | Application form editor | No data | Open default value with no data | No-data state shown |
-| TC-02479 | API | Application form editor | Expired token | GET /api/form/fields/{id}/default | 401 Unauthorized |
-| TC-02480 | API | Application form editor | Insufficient role | GET /api/form/fields/{id}/default | 403 Forbidden |
-| TC-02481 | API | Application form editor | Logged in | GET /api/form/fields/{id}/help | 200 + valid data |
-| TC-02482 | API | Application form editor | Logged in | GET /api/form/fields/{id}/help with invalid input | 400/422 + error message |
-| TC-02483 | API | Application form editor | Edge case | GET /api/form/fields/{id}/help at boundary value | Correct boundary handling |
-| TC-02484 | API | Application form editor | No auth token | GET /api/form/fields/{id}/help | 401 Unauthorized |
-| TC-02485 | frontend-UAT | Application form editor | Logged in | Open help text in UI | UI renders correctly |
-| TC-02486 | frontend-UAT | Application form editor | No data | Open help text with no data | No-data state shown |
-| TC-02487 | API | Application form editor | Expired token | GET /api/form/fields/{id}/help | 401 Unauthorized |
-| TC-02488 | API | Application form editor | Insufficient role | GET /api/form/fields/{id}/help | 403 Forbidden |
-| TC-02489 | API | Application form editor | Logged in | GET /api/form/fields/{id}/history | 200 + valid data |
-| TC-02490 | API | Application form editor | Logged in | GET /api/form/fields/{id}/history with invalid input | 400/422 + error message |
-| TC-02491 | API | Application form editor | Edge case | GET /api/form/fields/{id}/history at boundary value | Correct boundary handling |
-| TC-02492 | API | Application form editor | No auth token | GET /api/form/fields/{id}/history | 401 Unauthorized |
-| TC-02493 | frontend-UAT | Application form editor | Logged in | Open value history in UI | UI renders correctly |
-| TC-02494 | frontend-UAT | Application form editor | No data | Open value history with no data | No-data state shown |
-| TC-02495 | API | Application form editor | Expired token | GET /api/form/fields/{id}/history | 401 Unauthorized |
-| TC-02496 | API | Application form editor | Insufficient role | GET /api/form/fields/{id}/history | 403 Forbidden |
-| TC-02497 | API | Application form editor | Logged in | GET /api/form/fields?empty | 200 + valid data |
-| TC-02498 | API | Application form editor | Logged in | GET /api/form/fields?empty with invalid input | 400/422 + error message |
-| TC-02499 | API | Application form editor | Edge case | GET /api/form/fields?empty at boundary value | Correct boundary handling |
-| TC-02500 | API | Application form editor | No auth token | GET /api/form/fields?empty | 401 Unauthorized |
-| TC-02501 | frontend-UAT | Application form editor | Logged in | Open no-data state in UI | UI renders correctly |
-| TC-02502 | frontend-UAT | Application form editor | No data | Open no-data state with no data | No-data state shown |
-| TC-02503 | API | Application form editor | Expired token | GET /api/form/fields?empty | 401 Unauthorized |
-| TC-02504 | API | Application form editor | Insufficient role | GET /api/form/fields?empty | 403 Forbidden |
-| TC-02505 | API | Application form editor | Logged in | GET /api/form/fields?editor | 200 + valid data |
-| TC-02506 | API | Application form editor | Logged in | GET /api/form/fields?editor with invalid input | 400/422 + error message |
-| TC-02507 | API | Application form editor | Edge case | GET /api/form/fields?editor at boundary value | Correct boundary handling |
-| TC-02508 | API | Application form editor | No auth token | GET /api/form/fields?editor | 401 Unauthorized |
-| TC-02509 | frontend-UAT | Application form editor | Logged in | Open editor render in UI | UI renders correctly |
-| TC-02510 | frontend-UAT | Application form editor | No data | Open editor render with no data | No-data state shown |
-| TC-02511 | API | Application form editor | Expired token | GET /api/form/fields?editor | 401 Unauthorized |
-| TC-02512 | API | Application form editor | Insufficient role | GET /api/form/fields?editor | 403 Forbidden |
-| TC-02513 | API | Application form editor | Logged in | GET /api/form/fields?export | 200 + valid data |
-| TC-02514 | API | Application form editor | Logged in | GET /api/form/fields?export with invalid input | 400/422 + error message |
-| TC-02515 | API | Application form editor | Edge case | GET /api/form/fields?export at boundary value | Correct boundary handling |
-| TC-02516 | API | Application form editor | No auth token | GET /api/form/fields?export | 401 Unauthorized |
-| TC-02517 | frontend-UAT | Application form editor | Logged in | Open export fields in UI | UI renders correctly |
-| TC-02518 | frontend-UAT | Application form editor | No data | Open export fields with no data | No-data state shown |
-| TC-02519 | API | Application form editor | Expired token | GET /api/form/fields?export | 401 Unauthorized |
-| TC-02520 | API | Application form editor | Insufficient role | GET /api/form/fields?export | 403 Forbidden |
+| TC-02377 | API | Application form editor | Logged in | PUT /api/form/fields/{id} | 200 + valid data |
+| TC-02378 | API | Application form editor | Logged in | PUT /api/form/fields/{id} with invalid input | 400/422 + error message |
+| TC-02379 | API | Application form editor | Edge case | PUT /api/form/fields/{id} at boundary value | Correct boundary handling |
+| TC-02380 | API | Application form editor | No auth token | PUT /api/form/fields/{id} | 401 Unauthorized |
+| TC-02381 | frontend-UAT | Application form editor | Logged in | Open edit field in UI | UI renders correctly |
+| TC-02382 | frontend-UAT | Application form editor | No data | Open edit field with no data | No-data state shown |
+| TC-02383 | API | Application form editor | Expired token | PUT /api/form/fields/{id} | 401 Unauthorized |
+| TC-02384 | API | Application form editor | Insufficient role | PUT /api/form/fields/{id} | 403 Forbidden |
+| TC-02385 | API | Application form editor | Logged in | POST /api/form/fields | 200 + valid data |
+| TC-02386 | API | Application form editor | Logged in | POST /api/form/fields with invalid input | 400/422 + error message |
+| TC-02387 | API | Application form editor | Edge case | POST /api/form/fields at boundary value | Correct boundary handling |
+| TC-02388 | API | Application form editor | No auth token | POST /api/form/fields | 401 Unauthorized |
+| TC-02389 | frontend-UAT | Application form editor | Logged in | Open add field in UI | UI renders correctly |
+| TC-02390 | frontend-UAT | Application form editor | No data | Open add field with no data | No-data state shown |
+| TC-02391 | API | Application form editor | Expired token | POST /api/form/fields | 401 Unauthorized |
+| TC-02392 | API | Application form editor | Insufficient role | POST /api/form/fields | 403 Forbidden |
+| TC-02393 | API | Application form editor | Logged in | PUT /api/form/fields/{id}/hidden | 200 + valid data |
+| TC-02394 | API | Application form editor | Logged in | PUT /api/form/fields/{id}/hidden with invalid input | 400/422 + error message |
+| TC-02395 | API | Application form editor | Edge case | PUT /api/form/fields/{id}/hidden at boundary value | Correct boundary handling |
+| TC-02396 | API | Application form editor | No auth token | PUT /api/form/fields/{id}/hidden | 401 Unauthorized |
+| TC-02397 | frontend-UAT | Application form editor | Logged in | Open hide field in UI | UI renders correctly |
+| TC-02398 | frontend-UAT | Application form editor | No data | Open hide field with no data | No-data state shown |
+| TC-02399 | API | Application form editor | Expired token | PUT /api/form/fields/{id}/hidden | 401 Unauthorized |
+| TC-02400 | API | Application form editor | Insufficient role | PUT /api/form/fields/{id}/hidden | 403 Forbidden |
+| TC-02401 | API | Application form editor | Logged in | GET /api/form/preview | 200 + valid data |
+| TC-02402 | API | Application form editor | Logged in | GET /api/form/preview with invalid input | 400/422 + error message |
+| TC-02403 | API | Application form editor | Edge case | GET /api/form/preview at boundary value | Correct boundary handling |
+| TC-02404 | API | Application form editor | No auth token | GET /api/form/preview | 401 Unauthorized |
+| TC-02405 | frontend-UAT | Application form editor | Logged in | Open form preview in UI | UI renders correctly |
+| TC-02406 | frontend-UAT | Application form editor | No data | Open form preview with no data | No-data state shown |
+| TC-02407 | API | Application form editor | Expired token | GET /api/form/preview | 401 Unauthorized |
+| TC-02408 | API | Application form editor | Insufficient role | GET /api/form/preview | 403 Forbidden |
+| TC-02409 | API | Application form editor | Logged in | PUT /api/form/fields/{id}/reset | 200 + valid data |
+| TC-02410 | API | Application form editor | Logged in | PUT /api/form/fields/{id}/reset with invalid input | 400/422 + error message |
+| TC-02411 | API | Application form editor | Edge case | PUT /api/form/fields/{id}/reset at boundary value | Correct boundary handling |
+| TC-02412 | API | Application form editor | No auth token | PUT /api/form/fields/{id}/reset | 401 Unauthorized |
+| TC-02413 | frontend-UAT | Application form editor | Logged in | Open reset field in UI | UI renders correctly |
+| TC-02414 | frontend-UAT | Application form editor | No data | Open reset field with no data | No-data state shown |
+| TC-02415 | API | Application form editor | Expired token | PUT /api/form/fields/{id}/reset | 401 Unauthorized |
+| TC-02416 | API | Application form editor | Insufficient role | PUT /api/form/fields/{id}/reset | 403 Forbidden |
+| TC-02417 | API | Application form editor | Logged in | POST /api/form/fields?invalid | 200 + valid data |
+| TC-02418 | API | Application form editor | Logged in | POST /api/form/fields?invalid with invalid input | 400/422 + error message |
+| TC-02419 | API | Application form editor | Edge case | POST /api/form/fields?invalid at boundary value | Correct boundary handling |
+| TC-02420 | API | Application form editor | No auth token | POST /api/form/fields?invalid | 401 Unauthorized |
+| TC-02421 | frontend-UAT | Application form editor | Logged in | Open invalid field in UI | UI renders correctly |
+| TC-02422 | frontend-UAT | Application form editor | No data | Open invalid field with no data | No-data state shown |
+| TC-02423 | API | Application form editor | Expired token | POST /api/form/fields?invalid | 401 Unauthorized |
+| TC-02424 | API | Application form editor | Insufficient role | POST /api/form/fields?invalid | 403 Forbidden |
+| TC-02425 | API | Application form editor | Logged in | PUT /api/form/order | 200 + valid data |
+| TC-02426 | API | Application form editor | Logged in | PUT /api/form/order with invalid input | 400/422 + error message |
+| TC-02427 | API | Application form editor | Edge case | PUT /api/form/order at boundary value | Correct boundary handling |
+| TC-02428 | API | Application form editor | No auth token | PUT /api/form/order | 401 Unauthorized |
+| TC-02429 | frontend-UAT | Application form editor | Logged in | Open reorder fields in UI | UI renders correctly |
+| TC-02430 | frontend-UAT | Application form editor | No data | Open reorder fields with no data | No-data state shown |
+| TC-02431 | API | Application form editor | Expired token | PUT /api/form/order | 401 Unauthorized |
+| TC-02432 | API | Application form editor | Insufficient role | PUT /api/form/order | 403 Forbidden |
+| TC-02433 | API | Application form editor | Logged in | GET /api/form/usage | 200 + valid data |
+| TC-02434 | API | Application form editor | Logged in | GET /api/form/usage with invalid input | 400/422 + error message |
+| TC-02435 | API | Application form editor | Edge case | GET /api/form/usage at boundary value | Correct boundary handling |
+| TC-02436 | API | Application form editor | No auth token | GET /api/form/usage | 401 Unauthorized |
+| TC-02437 | frontend-UAT | Application form editor | Logged in | Open field usage in UI | UI renders correctly |
+| TC-02438 | frontend-UAT | Application form editor | No data | Open field usage with no data | No-data state shown |
+| TC-02439 | API | Application form editor | Expired token | GET /api/form/usage | 401 Unauthorized |
+| TC-02440 | API | Application form editor | Insufficient role | GET /api/form/usage | 403 Forbidden |
+| TC-02441 | API | Application form editor | Logged in | PUT /api/form/fields/{id}?invalid | 200 + valid data |
+| TC-02442 | API | Application form editor | Logged in | PUT /api/form/fields/{id}?invalid with invalid input | 400/422 + error message |
+| TC-02443 | API | Application form editor | Edge case | PUT /api/form/fields/{id}?invalid at boundary value | Correct boundary handling |
+| TC-02444 | API | Application form editor | No auth token | PUT /api/form/fields/{id}?invalid | 401 Unauthorized |
+| TC-02445 | frontend-UAT | Application form editor | Logged in | Open validation error in UI | UI renders correctly |
+| TC-02446 | frontend-UAT | Application form editor | No data | Open validation error with no data | No-data state shown |
+| TC-02447 | API | Application form editor | Expired token | PUT /api/form/fields/{id}?invalid | 401 Unauthorized |
+| TC-02448 | API | Application form editor | Insufficient role | PUT /api/form/fields/{id}?invalid | 403 Forbidden |
+| TC-02449 | API | Application form editor | Logged in | GET /api/form/fields/{id}/default | 200 + valid data |
+| TC-02450 | API | Application form editor | Logged in | GET /api/form/fields/{id}/default with invalid input | 400/422 + error message |
+| TC-02451 | API | Application form editor | Edge case | GET /api/form/fields/{id}/default at boundary value | Correct boundary handling |
+| TC-02452 | API | Application form editor | No auth token | GET /api/form/fields/{id}/default | 401 Unauthorized |
+| TC-02453 | frontend-UAT | Application form editor | Logged in | Open default value in UI | UI renders correctly |
+| TC-02454 | frontend-UAT | Application form editor | No data | Open default value with no data | No-data state shown |
+| TC-02455 | API | Application form editor | Expired token | GET /api/form/fields/{id}/default | 401 Unauthorized |
+| TC-02456 | API | Application form editor | Insufficient role | GET /api/form/fields/{id}/default | 403 Forbidden |
+| TC-02457 | API | Application form editor | Logged in | GET /api/form/fields/{id}/help | 200 + valid data |
+| TC-02458 | API | Application form editor | Logged in | GET /api/form/fields/{id}/help with invalid input | 400/422 + error message |
+| TC-02459 | API | Application form editor | Edge case | GET /api/form/fields/{id}/help at boundary value | Correct boundary handling |
+| TC-02460 | API | Application form editor | No auth token | GET /api/form/fields/{id}/help | 401 Unauthorized |
+| TC-02461 | frontend-UAT | Application form editor | Logged in | Open help text in UI | UI renders correctly |
+| TC-02462 | frontend-UAT | Application form editor | No data | Open help text with no data | No-data state shown |
+| TC-02463 | API | Application form editor | Expired token | GET /api/form/fields/{id}/help | 401 Unauthorized |
+| TC-02464 | API | Application form editor | Insufficient role | GET /api/form/fields/{id}/help | 403 Forbidden |
+| TC-02465 | API | Application form editor | Logged in | GET /api/form/fields/{id}/history | 200 + valid data |
+| TC-02466 | API | Application form editor | Logged in | GET /api/form/fields/{id}/history with invalid input | 400/422 + error message |
+| TC-02467 | API | Application form editor | Edge case | GET /api/form/fields/{id}/history at boundary value | Correct boundary handling |
+| TC-02468 | API | Application form editor | No auth token | GET /api/form/fields/{id}/history | 401 Unauthorized |
+| TC-02469 | frontend-UAT | Application form editor | Logged in | Open value history in UI | UI renders correctly |
+| TC-02470 | frontend-UAT | Application form editor | No data | Open value history with no data | No-data state shown |
+| TC-02471 | API | Application form editor | Expired token | GET /api/form/fields/{id}/history | 401 Unauthorized |
+| TC-02472 | API | Application form editor | Insufficient role | GET /api/form/fields/{id}/history | 403 Forbidden |
+| TC-02473 | API | Application form editor | Logged in | GET /api/form/fields?empty | 200 + valid data |
+| TC-02474 | API | Application form editor | Logged in | GET /api/form/fields?empty with invalid input | 400/422 + error message |
+| TC-02475 | API | Application form editor | Edge case | GET /api/form/fields?empty at boundary value | Correct boundary handling |
+| TC-02476 | API | Application form editor | No auth token | GET /api/form/fields?empty | 401 Unauthorized |
+| TC-02477 | frontend-UAT | Application form editor | Logged in | Open no-data state in UI | UI renders correctly |
+| TC-02478 | frontend-UAT | Application form editor | No data | Open no-data state with no data | No-data state shown |
+| TC-02479 | API | Application form editor | Expired token | GET /api/form/fields?empty | 401 Unauthorized |
+| TC-02480 | API | Application form editor | Insufficient role | GET /api/form/fields?empty | 403 Forbidden |
+| TC-02481 | API | Application form editor | Logged in | GET /api/form/fields?editor | 200 + valid data |
+| TC-02482 | API | Application form editor | Logged in | GET /api/form/fields?editor with invalid input | 400/422 + error message |
+| TC-02483 | API | Application form editor | Edge case | GET /api/form/fields?editor at boundary value | Correct boundary handling |
+| TC-02484 | API | Application form editor | No auth token | GET /api/form/fields?editor | 401 Unauthorized |
+| TC-02485 | frontend-UAT | Application form editor | Logged in | Open editor render in UI | UI renders correctly |
+| TC-02486 | frontend-UAT | Application form editor | No data | Open editor render with no data | No-data state shown |
+| TC-02487 | API | Application form editor | Expired token | GET /api/form/fields?editor | 401 Unauthorized |
+| TC-02488 | API | Application form editor | Insufficient role | GET /api/form/fields?editor | 403 Forbidden |
+| TC-02489 | API | Application form editor | Logged in | GET /api/form/fields?export | 200 + valid data |
+| TC-02490 | API | Application form editor | Logged in | GET /api/form/fields?export with invalid input | 400/422 + error message |
+| TC-02491 | API | Application form editor | Edge case | GET /api/form/fields?export at boundary value | Correct boundary handling |
+| TC-02492 | API | Application form editor | No auth token | GET /api/form/fields?export | 401 Unauthorized |
+| TC-02493 | frontend-UAT | Application form editor | Logged in | Open export fields in UI | UI renders correctly |
+| TC-02494 | frontend-UAT | Application form editor | No data | Open export fields with no data | No-data state shown |
+| TC-02495 | API | Application form editor | Expired token | GET /api/form/fields?export | 401 Unauthorized |
+| TC-02496 | API | Application form editor | Insufficient role | GET /api/form/fields?export | 403 Forbidden |
 ### F22 — Resume PDF generation
 
-| TC-02521 | API | Resume PDF generation | Logged in | GET /api/resume/pdf | 200 + valid data |
-| TC-02522 | API | Resume PDF generation | Logged in | GET /api/resume/pdf with invalid input | 400/422 + error message |
-| TC-02523 | API | Resume PDF generation | Edge case | GET /api/resume/pdf at boundary value | Correct boundary handling |
-| TC-02524 | API | Resume PDF generation | No auth token | GET /api/resume/pdf | 401 Unauthorized |
-| TC-02525 | frontend-UAT | Resume PDF generation | Logged in | Open generate PDF in UI | UI renders correctly |
-| TC-02526 | frontend-UAT | Resume PDF generation | No data | Open generate PDF with no data | No-data state shown |
-| TC-02527 | API | Resume PDF generation | Expired token | GET /api/resume/pdf | 401 Unauthorized |
-| TC-02528 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf | 403 Forbidden |
-| TC-02529 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/preview | 200 + valid data |
-| TC-02530 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/preview with invalid input | 400/422 + error message |
-| TC-02531 | API | Resume PDF generation | Edge case | GET /api/resume/pdf/preview at boundary value | Correct boundary handling |
-| TC-02532 | API | Resume PDF generation | No auth token | GET /api/resume/pdf/preview | 401 Unauthorized |
-| TC-02533 | frontend-UAT | Resume PDF generation | Logged in | Open preview PDF in UI | UI renders correctly |
-| TC-02534 | frontend-UAT | Resume PDF generation | No data | Open preview PDF with no data | No-data state shown |
-| TC-02535 | API | Resume PDF generation | Expired token | GET /api/resume/pdf/preview | 401 Unauthorized |
-| TC-02536 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf/preview | 403 Forbidden |
-| TC-02537 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?variant | 200 + valid data |
-| TC-02538 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?variant with invalid input | 400/422 + error message |
-| TC-02539 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?variant at boundary value | Correct boundary handling |
-| TC-02540 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?variant | 401 Unauthorized |
-| TC-02541 | frontend-UAT | Resume PDF generation | Logged in | Open variant PDF in UI | UI renders correctly |
-| TC-02542 | frontend-UAT | Resume PDF generation | No data | Open variant PDF with no data | No-data state shown |
-| TC-02543 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?variant | 401 Unauthorized |
-| TC-02544 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?variant | 403 Forbidden |
-| TC-02545 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/pages | 200 + valid data |
-| TC-02546 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/pages with invalid input | 400/422 + error message |
-| TC-02547 | API | Resume PDF generation | Edge case | GET /api/resume/pdf/pages at boundary value | Correct boundary handling |
-| TC-02548 | API | Resume PDF generation | No auth token | GET /api/resume/pdf/pages | 401 Unauthorized |
-| TC-02549 | frontend-UAT | Resume PDF generation | Logged in | Open page count in UI | UI renders correctly |
-| TC-02550 | frontend-UAT | Resume PDF generation | No data | Open page count with no data | No-data state shown |
-| TC-02551 | API | Resume PDF generation | Expired token | GET /api/resume/pdf/pages | 401 Unauthorized |
-| TC-02552 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf/pages | 403 Forbidden |
-| TC-02553 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/export | 200 + valid data |
-| TC-02554 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/export with invalid input | 400/422 + error message |
-| TC-02555 | API | Resume PDF generation | Edge case | GET /api/resume/pdf/export at boundary value | Correct boundary handling |
-| TC-02556 | API | Resume PDF generation | No auth token | GET /api/resume/pdf/export | 401 Unauthorized |
-| TC-02557 | frontend-UAT | Resume PDF generation | Logged in | Open export PDF in UI | UI renders correctly |
-| TC-02558 | frontend-UAT | Resume PDF generation | No data | Open export PDF with no data | No-data state shown |
-| TC-02559 | API | Resume PDF generation | Expired token | GET /api/resume/pdf/export | 401 Unauthorized |
-| TC-02560 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf/export | 403 Forbidden |
-| TC-02561 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/view | 200 + valid data |
-| TC-02562 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/view with invalid input | 400/422 + error message |
-| TC-02563 | API | Resume PDF generation | Edge case | GET /api/resume/pdf/view at boundary value | Correct boundary handling |
-| TC-02564 | API | Resume PDF generation | No auth token | GET /api/resume/pdf/view | 401 Unauthorized |
-| TC-02565 | frontend-UAT | Resume PDF generation | Logged in | Open viewer in UI | UI renders correctly |
-| TC-02566 | frontend-UAT | Resume PDF generation | No data | Open viewer with no data | No-data state shown |
-| TC-02567 | API | Resume PDF generation | Expired token | GET /api/resume/pdf/view | 401 Unauthorized |
-| TC-02568 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf/view | 403 Forbidden |
-| TC-02569 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?font | 200 + valid data |
-| TC-02570 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?font with invalid input | 400/422 + error message |
-| TC-02571 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?font at boundary value | Correct boundary handling |
-| TC-02572 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?font | 401 Unauthorized |
-| TC-02573 | frontend-UAT | Resume PDF generation | Logged in | Open font size in UI | UI renders correctly |
-| TC-02574 | frontend-UAT | Resume PDF generation | No data | Open font size with no data | No-data state shown |
-| TC-02575 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?font | 401 Unauthorized |
-| TC-02576 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?font | 403 Forbidden |
-| TC-02577 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/log | 200 + valid data |
-| TC-02578 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/log with invalid input | 400/422 + error message |
-| TC-02579 | API | Resume PDF generation | Edge case | GET /api/resume/pdf/log at boundary value | Correct boundary handling |
-| TC-02580 | API | Resume PDF generation | No auth token | GET /api/resume/pdf/log | 401 Unauthorized |
-| TC-02581 | frontend-UAT | Resume PDF generation | Logged in | Open export log in UI | UI renders correctly |
-| TC-02582 | frontend-UAT | Resume PDF generation | No data | Open export log with no data | No-data state shown |
-| TC-02583 | API | Resume PDF generation | Expired token | GET /api/resume/pdf/log | 401 Unauthorized |
-| TC-02584 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf/log | 403 Forbidden |
-| TC-02585 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?empty | 200 + valid data |
-| TC-02586 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?empty with invalid input | 400/422 + error message |
-| TC-02587 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?empty at boundary value | Correct boundary handling |
-| TC-02588 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?empty | 401 Unauthorized |
-| TC-02589 | frontend-UAT | Resume PDF generation | Logged in | Open no-data state in UI | UI renders correctly |
-| TC-02590 | frontend-UAT | Resume PDF generation | No data | Open no-data state with no data | No-data state shown |
-| TC-02591 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?empty | 401 Unauthorized |
-| TC-02592 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?empty | 403 Forbidden |
-| TC-02593 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?download | 200 + valid data |
-| TC-02594 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?download with invalid input | 400/422 + error message |
-| TC-02595 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?download at boundary value | Correct boundary handling |
-| TC-02596 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?download | 401 Unauthorized |
-| TC-02597 | frontend-UAT | Resume PDF generation | Logged in | Open download render in UI | UI renders correctly |
-| TC-02598 | frontend-UAT | Resume PDF generation | No data | Open download render with no data | No-data state shown |
-| TC-02599 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?download | 401 Unauthorized |
-| TC-02600 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?download | 403 Forbidden |
-| TC-02601 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?preview | 200 + valid data |
-| TC-02602 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?preview with invalid input | 400/422 + error message |
-| TC-02603 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?preview at boundary value | Correct boundary handling |
-| TC-02604 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?preview | 401 Unauthorized |
-| TC-02605 | frontend-UAT | Resume PDF generation | Logged in | Open preview render in UI | UI renders correctly |
-| TC-02606 | frontend-UAT | Resume PDF generation | No data | Open preview render with no data | No-data state shown |
-| TC-02607 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?preview | 401 Unauthorized |
-| TC-02608 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?preview | 403 Forbidden |
-| TC-02609 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?variant | 200 + valid data |
-| TC-02610 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?variant with invalid input | 400/422 + error message |
-| TC-02611 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?variant at boundary value | Correct boundary handling |
-| TC-02612 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?variant | 401 Unauthorized |
-| TC-02613 | frontend-UAT | Resume PDF generation | Logged in | Open variant render in UI | UI renders correctly |
-| TC-02614 | frontend-UAT | Resume PDF generation | No data | Open variant render with no data | No-data state shown |
-| TC-02615 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?variant | 401 Unauthorized |
-| TC-02616 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?variant | 403 Forbidden |
-| TC-02617 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?mobile | 200 + valid data |
-| TC-02618 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?mobile with invalid input | 400/422 + error message |
-| TC-02619 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?mobile at boundary value | Correct boundary handling |
-| TC-02620 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?mobile | 401 Unauthorized |
-| TC-02621 | frontend-UAT | Resume PDF generation | Logged in | Open mobile view in UI | UI renders correctly |
-| TC-02622 | frontend-UAT | Resume PDF generation | No data | Open mobile view with no data | No-data state shown |
-| TC-02623 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?mobile | 401 Unauthorized |
-| TC-02624 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?mobile | 403 Forbidden |
-| TC-02625 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?print | 200 + valid data |
-| TC-02626 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?print with invalid input | 400/422 + error message |
-| TC-02627 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?print at boundary value | Correct boundary handling |
-| TC-02628 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?print | 401 Unauthorized |
-| TC-02629 | frontend-UAT | Resume PDF generation | Logged in | Open print view in UI | UI renders correctly |
-| TC-02630 | frontend-UAT | Resume PDF generation | No data | Open print view with no data | No-data state shown |
-| TC-02631 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?print | 401 Unauthorized |
-| TC-02632 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?print | 403 Forbidden |
-| TC-02633 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?hover | 200 + valid data |
-| TC-02634 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?hover with invalid input | 400/422 + error message |
-| TC-02635 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?hover at boundary value | Correct boundary handling |
-| TC-02636 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?hover | 401 Unauthorized |
-| TC-02637 | frontend-UAT | Resume PDF generation | Logged in | Open hover tooltip in UI | UI renders correctly |
-| TC-02638 | frontend-UAT | Resume PDF generation | No data | Open hover tooltip with no data | No-data state shown |
-| TC-02639 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?hover | 401 Unauthorized |
-| TC-02640 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?hover | 403 Forbidden |
+| TC-02497 | API | Resume PDF generation | Logged in | GET /api/resume/pdf | 200 + valid data |
+| TC-02498 | API | Resume PDF generation | Logged in | GET /api/resume/pdf with invalid input | 400/422 + error message |
+| TC-02499 | API | Resume PDF generation | Edge case | GET /api/resume/pdf at boundary value | Correct boundary handling |
+| TC-02500 | API | Resume PDF generation | No auth token | GET /api/resume/pdf | 401 Unauthorized |
+| TC-02501 | frontend-UAT | Resume PDF generation | Logged in | Open generate PDF in UI | UI renders correctly |
+| TC-02502 | frontend-UAT | Resume PDF generation | No data | Open generate PDF with no data | No-data state shown |
+| TC-02503 | API | Resume PDF generation | Expired token | GET /api/resume/pdf | 401 Unauthorized |
+| TC-02504 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf | 403 Forbidden |
+| TC-02505 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/preview | 200 + valid data |
+| TC-02506 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/preview with invalid input | 400/422 + error message |
+| TC-02507 | API | Resume PDF generation | Edge case | GET /api/resume/pdf/preview at boundary value | Correct boundary handling |
+| TC-02508 | API | Resume PDF generation | No auth token | GET /api/resume/pdf/preview | 401 Unauthorized |
+| TC-02509 | frontend-UAT | Resume PDF generation | Logged in | Open preview PDF in UI | UI renders correctly |
+| TC-02510 | frontend-UAT | Resume PDF generation | No data | Open preview PDF with no data | No-data state shown |
+| TC-02511 | API | Resume PDF generation | Expired token | GET /api/resume/pdf/preview | 401 Unauthorized |
+| TC-02512 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf/preview | 403 Forbidden |
+| TC-02513 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?variant | 200 + valid data |
+| TC-02514 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?variant with invalid input | 400/422 + error message |
+| TC-02515 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?variant at boundary value | Correct boundary handling |
+| TC-02516 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?variant | 401 Unauthorized |
+| TC-02517 | frontend-UAT | Resume PDF generation | Logged in | Open variant PDF in UI | UI renders correctly |
+| TC-02518 | frontend-UAT | Resume PDF generation | No data | Open variant PDF with no data | No-data state shown |
+| TC-02519 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?variant | 401 Unauthorized |
+| TC-02520 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?variant | 403 Forbidden |
+| TC-02521 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/pages | 200 + valid data |
+| TC-02522 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/pages with invalid input | 400/422 + error message |
+| TC-02523 | API | Resume PDF generation | Edge case | GET /api/resume/pdf/pages at boundary value | Correct boundary handling |
+| TC-02524 | API | Resume PDF generation | No auth token | GET /api/resume/pdf/pages | 401 Unauthorized |
+| TC-02525 | frontend-UAT | Resume PDF generation | Logged in | Open page count in UI | UI renders correctly |
+| TC-02526 | frontend-UAT | Resume PDF generation | No data | Open page count with no data | No-data state shown |
+| TC-02527 | API | Resume PDF generation | Expired token | GET /api/resume/pdf/pages | 401 Unauthorized |
+| TC-02528 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf/pages | 403 Forbidden |
+| TC-02529 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/export | 200 + valid data |
+| TC-02530 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/export with invalid input | 400/422 + error message |
+| TC-02531 | API | Resume PDF generation | Edge case | GET /api/resume/pdf/export at boundary value | Correct boundary handling |
+| TC-02532 | API | Resume PDF generation | No auth token | GET /api/resume/pdf/export | 401 Unauthorized |
+| TC-02533 | frontend-UAT | Resume PDF generation | Logged in | Open export PDF in UI | UI renders correctly |
+| TC-02534 | frontend-UAT | Resume PDF generation | No data | Open export PDF with no data | No-data state shown |
+| TC-02535 | API | Resume PDF generation | Expired token | GET /api/resume/pdf/export | 401 Unauthorized |
+| TC-02536 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf/export | 403 Forbidden |
+| TC-02537 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/view | 200 + valid data |
+| TC-02538 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/view with invalid input | 400/422 + error message |
+| TC-02539 | API | Resume PDF generation | Edge case | GET /api/resume/pdf/view at boundary value | Correct boundary handling |
+| TC-02540 | API | Resume PDF generation | No auth token | GET /api/resume/pdf/view | 401 Unauthorized |
+| TC-02541 | frontend-UAT | Resume PDF generation | Logged in | Open viewer in UI | UI renders correctly |
+| TC-02542 | frontend-UAT | Resume PDF generation | No data | Open viewer with no data | No-data state shown |
+| TC-02543 | API | Resume PDF generation | Expired token | GET /api/resume/pdf/view | 401 Unauthorized |
+| TC-02544 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf/view | 403 Forbidden |
+| TC-02545 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?font | 200 + valid data |
+| TC-02546 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?font with invalid input | 400/422 + error message |
+| TC-02547 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?font at boundary value | Correct boundary handling |
+| TC-02548 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?font | 401 Unauthorized |
+| TC-02549 | frontend-UAT | Resume PDF generation | Logged in | Open font size in UI | UI renders correctly |
+| TC-02550 | frontend-UAT | Resume PDF generation | No data | Open font size with no data | No-data state shown |
+| TC-02551 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?font | 401 Unauthorized |
+| TC-02552 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?font | 403 Forbidden |
+| TC-02553 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/log | 200 + valid data |
+| TC-02554 | API | Resume PDF generation | Logged in | GET /api/resume/pdf/log with invalid input | 400/422 + error message |
+| TC-02555 | API | Resume PDF generation | Edge case | GET /api/resume/pdf/log at boundary value | Correct boundary handling |
+| TC-02556 | API | Resume PDF generation | No auth token | GET /api/resume/pdf/log | 401 Unauthorized |
+| TC-02557 | frontend-UAT | Resume PDF generation | Logged in | Open export log in UI | UI renders correctly |
+| TC-02558 | frontend-UAT | Resume PDF generation | No data | Open export log with no data | No-data state shown |
+| TC-02559 | API | Resume PDF generation | Expired token | GET /api/resume/pdf/log | 401 Unauthorized |
+| TC-02560 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf/log | 403 Forbidden |
+| TC-02561 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?empty | 200 + valid data |
+| TC-02562 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?empty with invalid input | 400/422 + error message |
+| TC-02563 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?empty at boundary value | Correct boundary handling |
+| TC-02564 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?empty | 401 Unauthorized |
+| TC-02565 | frontend-UAT | Resume PDF generation | Logged in | Open no-data state in UI | UI renders correctly |
+| TC-02566 | frontend-UAT | Resume PDF generation | No data | Open no-data state with no data | No-data state shown |
+| TC-02567 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?empty | 401 Unauthorized |
+| TC-02568 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?empty | 403 Forbidden |
+| TC-02569 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?download | 200 + valid data |
+| TC-02570 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?download with invalid input | 400/422 + error message |
+| TC-02571 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?download at boundary value | Correct boundary handling |
+| TC-02572 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?download | 401 Unauthorized |
+| TC-02573 | frontend-UAT | Resume PDF generation | Logged in | Open download render in UI | UI renders correctly |
+| TC-02574 | frontend-UAT | Resume PDF generation | No data | Open download render with no data | No-data state shown |
+| TC-02575 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?download | 401 Unauthorized |
+| TC-02576 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?download | 403 Forbidden |
+| TC-02577 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?preview | 200 + valid data |
+| TC-02578 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?preview with invalid input | 400/422 + error message |
+| TC-02579 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?preview at boundary value | Correct boundary handling |
+| TC-02580 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?preview | 401 Unauthorized |
+| TC-02581 | frontend-UAT | Resume PDF generation | Logged in | Open preview render in UI | UI renders correctly |
+| TC-02582 | frontend-UAT | Resume PDF generation | No data | Open preview render with no data | No-data state shown |
+| TC-02583 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?preview | 401 Unauthorized |
+| TC-02584 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?preview | 403 Forbidden |
+| TC-02585 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?variant | 200 + valid data |
+| TC-02586 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?variant with invalid input | 400/422 + error message |
+| TC-02587 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?variant at boundary value | Correct boundary handling |
+| TC-02588 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?variant | 401 Unauthorized |
+| TC-02589 | frontend-UAT | Resume PDF generation | Logged in | Open variant render in UI | UI renders correctly |
+| TC-02590 | frontend-UAT | Resume PDF generation | No data | Open variant render with no data | No-data state shown |
+| TC-02591 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?variant | 401 Unauthorized |
+| TC-02592 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?variant | 403 Forbidden |
+| TC-02593 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?mobile | 200 + valid data |
+| TC-02594 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?mobile with invalid input | 400/422 + error message |
+| TC-02595 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?mobile at boundary value | Correct boundary handling |
+| TC-02596 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?mobile | 401 Unauthorized |
+| TC-02597 | frontend-UAT | Resume PDF generation | Logged in | Open mobile view in UI | UI renders correctly |
+| TC-02598 | frontend-UAT | Resume PDF generation | No data | Open mobile view with no data | No-data state shown |
+| TC-02599 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?mobile | 401 Unauthorized |
+| TC-02600 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?mobile | 403 Forbidden |
+| TC-02601 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?print | 200 + valid data |
+| TC-02602 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?print with invalid input | 400/422 + error message |
+| TC-02603 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?print at boundary value | Correct boundary handling |
+| TC-02604 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?print | 401 Unauthorized |
+| TC-02605 | frontend-UAT | Resume PDF generation | Logged in | Open print view in UI | UI renders correctly |
+| TC-02606 | frontend-UAT | Resume PDF generation | No data | Open print view with no data | No-data state shown |
+| TC-02607 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?print | 401 Unauthorized |
+| TC-02608 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?print | 403 Forbidden |
+| TC-02609 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?hover | 200 + valid data |
+| TC-02610 | API | Resume PDF generation | Logged in | GET /api/resume/pdf?hover with invalid input | 400/422 + error message |
+| TC-02611 | API | Resume PDF generation | Edge case | GET /api/resume/pdf?hover at boundary value | Correct boundary handling |
+| TC-02612 | API | Resume PDF generation | No auth token | GET /api/resume/pdf?hover | 401 Unauthorized |
+| TC-02613 | frontend-UAT | Resume PDF generation | Logged in | Open hover tooltip in UI | UI renders correctly |
+| TC-02614 | frontend-UAT | Resume PDF generation | No data | Open hover tooltip with no data | No-data state shown |
+| TC-02615 | API | Resume PDF generation | Expired token | GET /api/resume/pdf?hover | 401 Unauthorized |
+| TC-02616 | API | Resume PDF generation | Insufficient role | GET /api/resume/pdf?hover | 403 Forbidden |
 ### F23 — Company intel & facts
 
-| TC-02641 | API | Company intel & facts | Logged in | GET /api/company/{name} | 200 + valid data |
-| TC-02642 | API | Company intel & facts | Logged in | GET /api/company/{name} with invalid input | 400/422 + error message |
-| TC-02643 | API | Company intel & facts | Edge case | GET /api/company/{name} at boundary value | Correct boundary handling |
-| TC-02644 | API | Company intel & facts | No auth token | GET /api/company/{name} | 401 Unauthorized |
-| TC-02645 | frontend-UAT | Company intel & facts | Logged in | Open company facts in UI | UI renders correctly |
-| TC-02646 | frontend-UAT | Company intel & facts | No data | Open company facts with no data | No-data state shown |
-| TC-02647 | API | Company intel & facts | Expired token | GET /api/company/{name} | 401 Unauthorized |
-| TC-02648 | API | Company intel & facts | Insufficient role | GET /api/company/{name} | 403 Forbidden |
-| TC-02649 | API | Company intel & facts | Logged in | GET /api/company/{name}?size | 200 + valid data |
-| TC-02650 | API | Company intel & facts | Logged in | GET /api/company/{name}?size with invalid input | 400/422 + error message |
-| TC-02651 | API | Company intel & facts | Edge case | GET /api/company/{name}?size at boundary value | Correct boundary handling |
-| TC-02652 | API | Company intel & facts | No auth token | GET /api/company/{name}?size | 401 Unauthorized |
-| TC-02653 | frontend-UAT | Company intel & facts | Logged in | Open company size in UI | UI renders correctly |
-| TC-02654 | frontend-UAT | Company intel & facts | No data | Open company size with no data | No-data state shown |
-| TC-02655 | API | Company intel & facts | Expired token | GET /api/company/{name}?size | 401 Unauthorized |
-| TC-02656 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?size | 403 Forbidden |
-| TC-02657 | API | Company intel & facts | Logged in | GET /api/company/{name}?industry | 200 + valid data |
-| TC-02658 | API | Company intel & facts | Logged in | GET /api/company/{name}?industry with invalid input | 400/422 + error message |
-| TC-02659 | API | Company intel & facts | Edge case | GET /api/company/{name}?industry at boundary value | Correct boundary handling |
-| TC-02660 | API | Company intel & facts | No auth token | GET /api/company/{name}?industry | 401 Unauthorized |
-| TC-02661 | frontend-UAT | Company intel & facts | Logged in | Open industry in UI | UI renders correctly |
-| TC-02662 | frontend-UAT | Company intel & facts | No data | Open industry with no data | No-data state shown |
-| TC-02663 | API | Company intel & facts | Expired token | GET /api/company/{name}?industry | 401 Unauthorized |
-| TC-02664 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?industry | 403 Forbidden |
-| TC-02665 | API | Company intel & facts | Logged in | GET /api/company/{name}?location | 200 + valid data |
-| TC-02666 | API | Company intel & facts | Logged in | GET /api/company/{name}?location with invalid input | 400/422 + error message |
-| TC-02667 | API | Company intel & facts | Edge case | GET /api/company/{name}?location at boundary value | Correct boundary handling |
-| TC-02668 | API | Company intel & facts | No auth token | GET /api/company/{name}?location | 401 Unauthorized |
-| TC-02669 | frontend-UAT | Company intel & facts | Logged in | Open location in UI | UI renders correctly |
-| TC-02670 | frontend-UAT | Company intel & facts | No data | Open location with no data | No-data state shown |
-| TC-02671 | API | Company intel & facts | Expired token | GET /api/company/{name}?location | 401 Unauthorized |
-| TC-02672 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?location | 403 Forbidden |
-| TC-02673 | API | Company intel & facts | Logged in | GET /api/company/{name}?empty | 200 + valid data |
-| TC-02674 | API | Company intel & facts | Logged in | GET /api/company/{name}?empty with invalid input | 400/422 + error message |
-| TC-02675 | API | Company intel & facts | Edge case | GET /api/company/{name}?empty at boundary value | Correct boundary handling |
-| TC-02676 | API | Company intel & facts | No auth token | GET /api/company/{name}?empty | 401 Unauthorized |
-| TC-02677 | frontend-UAT | Company intel & facts | Logged in | Open no-intel state in UI | UI renders correctly |
-| TC-02678 | frontend-UAT | Company intel & facts | No data | Open no-intel state with no data | No-data state shown |
-| TC-02679 | API | Company intel & facts | Expired token | GET /api/company/{name}?empty | 401 Unauthorized |
-| TC-02680 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?empty | 403 Forbidden |
-| TC-02681 | API | Company intel & facts | Logged in | GET /api/company/{name}?refresh | 200 + valid data |
-| TC-02682 | API | Company intel & facts | Logged in | GET /api/company/{name}?refresh with invalid input | 400/422 + error message |
-| TC-02683 | API | Company intel & facts | Edge case | GET /api/company/{name}?refresh at boundary value | Correct boundary handling |
-| TC-02684 | API | Company intel & facts | No auth token | GET /api/company/{name}?refresh | 401 Unauthorized |
-| TC-02685 | frontend-UAT | Company intel & facts | Logged in | Open refresh intel in UI | UI renders correctly |
-| TC-02686 | frontend-UAT | Company intel & facts | No data | Open refresh intel with no data | No-data state shown |
-| TC-02687 | API | Company intel & facts | Expired token | GET /api/company/{name}?refresh | 401 Unauthorized |
-| TC-02688 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?refresh | 403 Forbidden |
-| TC-02689 | API | Company intel & facts | Logged in | GET /api/company/{name}?funding | 200 + valid data |
-| TC-02690 | API | Company intel & facts | Logged in | GET /api/company/{name}?funding with invalid input | 400/422 + error message |
-| TC-02691 | API | Company intel & facts | Edge case | GET /api/company/{name}?funding at boundary value | Correct boundary handling |
-| TC-02692 | API | Company intel & facts | No auth token | GET /api/company/{name}?funding | 401 Unauthorized |
-| TC-02693 | frontend-UAT | Company intel & facts | Logged in | Open funding stage in UI | UI renders correctly |
-| TC-02694 | frontend-UAT | Company intel & facts | No data | Open funding stage with no data | No-data state shown |
-| TC-02695 | API | Company intel & facts | Expired token | GET /api/company/{name}?funding | 401 Unauthorized |
-| TC-02696 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?funding | 403 Forbidden |
-| TC-02697 | API | Company intel & facts | Logged in | GET /api/company/{name}?website | 200 + valid data |
-| TC-02698 | API | Company intel & facts | Logged in | GET /api/company/{name}?website with invalid input | 400/422 + error message |
-| TC-02699 | API | Company intel & facts | Edge case | GET /api/company/{name}?website at boundary value | Correct boundary handling |
-| TC-02700 | API | Company intel & facts | No auth token | GET /api/company/{name}?website | 401 Unauthorized |
-| TC-02701 | frontend-UAT | Company intel & facts | Logged in | Open website in UI | UI renders correctly |
-| TC-02702 | frontend-UAT | Company intel & facts | No data | Open website with no data | No-data state shown |
-| TC-02703 | API | Company intel & facts | Expired token | GET /api/company/{name}?website | 401 Unauthorized |
-| TC-02704 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?website | 403 Forbidden |
-| TC-02705 | API | Company intel & facts | Logged in | GET /api/company/{name}?revenue | 200 + valid data |
-| TC-02706 | API | Company intel & facts | Logged in | GET /api/company/{name}?revenue with invalid input | 400/422 + error message |
-| TC-02707 | API | Company intel & facts | Edge case | GET /api/company/{name}?revenue at boundary value | Correct boundary handling |
-| TC-02708 | API | Company intel & facts | No auth token | GET /api/company/{name}?revenue | 401 Unauthorized |
-| TC-02709 | frontend-UAT | Company intel & facts | Logged in | Open revenue in UI | UI renders correctly |
-| TC-02710 | frontend-UAT | Company intel & facts | No data | Open revenue with no data | No-data state shown |
-| TC-02711 | API | Company intel & facts | Expired token | GET /api/company/{name}?revenue | 401 Unauthorized |
-| TC-02712 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?revenue | 403 Forbidden |
-| TC-02713 | API | Company intel & facts | Logged in | GET /api/company/{name}?founded | 200 + valid data |
-| TC-02714 | API | Company intel & facts | Logged in | GET /api/company/{name}?founded with invalid input | 400/422 + error message |
-| TC-02715 | API | Company intel & facts | Edge case | GET /api/company/{name}?founded at boundary value | Correct boundary handling |
-| TC-02716 | API | Company intel & facts | No auth token | GET /api/company/{name}?founded | 401 Unauthorized |
-| TC-02717 | frontend-UAT | Company intel & facts | Logged in | Open founding year in UI | UI renders correctly |
-| TC-02718 | frontend-UAT | Company intel & facts | No data | Open founding year with no data | No-data state shown |
-| TC-02719 | API | Company intel & facts | Expired token | GET /api/company/{name}?founded | 401 Unauthorized |
-| TC-02720 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?founded | 403 Forbidden |
-| TC-02721 | API | Company intel & facts | Logged in | GET /api/company/{name}?tech | 200 + valid data |
-| TC-02722 | API | Company intel & facts | Logged in | GET /api/company/{name}?tech with invalid input | 400/422 + error message |
-| TC-02723 | API | Company intel & facts | Edge case | GET /api/company/{name}?tech at boundary value | Correct boundary handling |
-| TC-02724 | API | Company intel & facts | No auth token | GET /api/company/{name}?tech | 401 Unauthorized |
-| TC-02725 | frontend-UAT | Company intel & facts | Logged in | Open tech stack in UI | UI renders correctly |
-| TC-02726 | frontend-UAT | Company intel & facts | No data | Open tech stack with no data | No-data state shown |
-| TC-02727 | API | Company intel & facts | Expired token | GET /api/company/{name}?tech | 401 Unauthorized |
-| TC-02728 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?tech | 403 Forbidden |
-| TC-02729 | API | Company intel & facts | Logged in | GET /api/company/{name}?competitors | 200 + valid data |
-| TC-02730 | API | Company intel & facts | Logged in | GET /api/company/{name}?competitors with invalid input | 400/422 + error message |
-| TC-02731 | API | Company intel & facts | Edge case | GET /api/company/{name}?competitors at boundary value | Correct boundary handling |
-| TC-02732 | API | Company intel & facts | No auth token | GET /api/company/{name}?competitors | 401 Unauthorized |
-| TC-02733 | frontend-UAT | Company intel & facts | Logged in | Open competitors in UI | UI renders correctly |
-| TC-02734 | frontend-UAT | Company intel & facts | No data | Open competitors with no data | No-data state shown |
-| TC-02735 | API | Company intel & facts | Expired token | GET /api/company/{name}?competitors | 401 Unauthorized |
-| TC-02736 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?competitors | 403 Forbidden |
-| TC-02737 | API | Company intel & facts | Logged in | GET /api/company/{name}?news | 200 + valid data |
-| TC-02738 | API | Company intel & facts | Logged in | GET /api/company/{name}?news with invalid input | 400/422 + error message |
-| TC-02739 | API | Company intel & facts | Edge case | GET /api/company/{name}?news at boundary value | Correct boundary handling |
-| TC-02740 | API | Company intel & facts | No auth token | GET /api/company/{name}?news | 401 Unauthorized |
-| TC-02741 | frontend-UAT | Company intel & facts | Logged in | Open news in UI | UI renders correctly |
-| TC-02742 | frontend-UAT | Company intel & facts | No data | Open news with no data | No-data state shown |
-| TC-02743 | API | Company intel & facts | Expired token | GET /api/company/{name}?news | 401 Unauthorized |
-| TC-02744 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?news | 403 Forbidden |
-| TC-02745 | API | Company intel & facts | Logged in | GET /api/company/{name}?reviews | 200 + valid data |
-| TC-02746 | API | Company intel & facts | Logged in | GET /api/company/{name}?reviews with invalid input | 400/422 + error message |
-| TC-02747 | API | Company intel & facts | Edge case | GET /api/company/{name}?reviews at boundary value | Correct boundary handling |
-| TC-02748 | API | Company intel & facts | No auth token | GET /api/company/{name}?reviews | 401 Unauthorized |
-| TC-02749 | frontend-UAT | Company intel & facts | Logged in | Open reviews in UI | UI renders correctly |
-| TC-02750 | frontend-UAT | Company intel & facts | No data | Open reviews with no data | No-data state shown |
-| TC-02751 | API | Company intel & facts | Expired token | GET /api/company/{name}?reviews | 401 Unauthorized |
-| TC-02752 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?reviews | 403 Forbidden |
-| TC-02753 | API | Company intel & facts | Logged in | GET /api/company/{name}?panel | 200 + valid data |
-| TC-02754 | API | Company intel & facts | Logged in | GET /api/company/{name}?panel with invalid input | 400/422 + error message |
-| TC-02755 | API | Company intel & facts | Edge case | GET /api/company/{name}?panel at boundary value | Correct boundary handling |
-| TC-02756 | API | Company intel & facts | No auth token | GET /api/company/{name}?panel | 401 Unauthorized |
-| TC-02757 | frontend-UAT | Company intel & facts | Logged in | Open panel render in UI | UI renders correctly |
-| TC-02758 | frontend-UAT | Company intel & facts | No data | Open panel render with no data | No-data state shown |
-| TC-02759 | API | Company intel & facts | Expired token | GET /api/company/{name}?panel | 401 Unauthorized |
-| TC-02760 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?panel | 403 Forbidden |
+| TC-02617 | API | Company intel & facts | Logged in | GET /api/company/{name} | 200 + valid data |
+| TC-02618 | API | Company intel & facts | Logged in | GET /api/company/{name} with invalid input | 400/422 + error message |
+| TC-02619 | API | Company intel & facts | Edge case | GET /api/company/{name} at boundary value | Correct boundary handling |
+| TC-02620 | API | Company intel & facts | No auth token | GET /api/company/{name} | 401 Unauthorized |
+| TC-02621 | frontend-UAT | Company intel & facts | Logged in | Open company facts in UI | UI renders correctly |
+| TC-02622 | frontend-UAT | Company intel & facts | No data | Open company facts with no data | No-data state shown |
+| TC-02623 | API | Company intel & facts | Expired token | GET /api/company/{name} | 401 Unauthorized |
+| TC-02624 | API | Company intel & facts | Insufficient role | GET /api/company/{name} | 403 Forbidden |
+| TC-02625 | API | Company intel & facts | Logged in | GET /api/company/{name}?size | 200 + valid data |
+| TC-02626 | API | Company intel & facts | Logged in | GET /api/company/{name}?size with invalid input | 400/422 + error message |
+| TC-02627 | API | Company intel & facts | Edge case | GET /api/company/{name}?size at boundary value | Correct boundary handling |
+| TC-02628 | API | Company intel & facts | No auth token | GET /api/company/{name}?size | 401 Unauthorized |
+| TC-02629 | frontend-UAT | Company intel & facts | Logged in | Open company size in UI | UI renders correctly |
+| TC-02630 | frontend-UAT | Company intel & facts | No data | Open company size with no data | No-data state shown |
+| TC-02631 | API | Company intel & facts | Expired token | GET /api/company/{name}?size | 401 Unauthorized |
+| TC-02632 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?size | 403 Forbidden |
+| TC-02633 | API | Company intel & facts | Logged in | GET /api/company/{name}?industry | 200 + valid data |
+| TC-02634 | API | Company intel & facts | Logged in | GET /api/company/{name}?industry with invalid input | 400/422 + error message |
+| TC-02635 | API | Company intel & facts | Edge case | GET /api/company/{name}?industry at boundary value | Correct boundary handling |
+| TC-02636 | API | Company intel & facts | No auth token | GET /api/company/{name}?industry | 401 Unauthorized |
+| TC-02637 | frontend-UAT | Company intel & facts | Logged in | Open industry in UI | UI renders correctly |
+| TC-02638 | frontend-UAT | Company intel & facts | No data | Open industry with no data | No-data state shown |
+| TC-02639 | API | Company intel & facts | Expired token | GET /api/company/{name}?industry | 401 Unauthorized |
+| TC-02640 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?industry | 403 Forbidden |
+| TC-02641 | API | Company intel & facts | Logged in | GET /api/company/{name}?location | 200 + valid data |
+| TC-02642 | API | Company intel & facts | Logged in | GET /api/company/{name}?location with invalid input | 400/422 + error message |
+| TC-02643 | API | Company intel & facts | Edge case | GET /api/company/{name}?location at boundary value | Correct boundary handling |
+| TC-02644 | API | Company intel & facts | No auth token | GET /api/company/{name}?location | 401 Unauthorized |
+| TC-02645 | frontend-UAT | Company intel & facts | Logged in | Open location in UI | UI renders correctly |
+| TC-02646 | frontend-UAT | Company intel & facts | No data | Open location with no data | No-data state shown |
+| TC-02647 | API | Company intel & facts | Expired token | GET /api/company/{name}?location | 401 Unauthorized |
+| TC-02648 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?location | 403 Forbidden |
+| TC-02649 | API | Company intel & facts | Logged in | GET /api/company/{name}?empty | 200 + valid data |
+| TC-02650 | API | Company intel & facts | Logged in | GET /api/company/{name}?empty with invalid input | 400/422 + error message |
+| TC-02651 | API | Company intel & facts | Edge case | GET /api/company/{name}?empty at boundary value | Correct boundary handling |
+| TC-02652 | API | Company intel & facts | No auth token | GET /api/company/{name}?empty | 401 Unauthorized |
+| TC-02653 | frontend-UAT | Company intel & facts | Logged in | Open no-intel state in UI | UI renders correctly |
+| TC-02654 | frontend-UAT | Company intel & facts | No data | Open no-intel state with no data | No-data state shown |
+| TC-02655 | API | Company intel & facts | Expired token | GET /api/company/{name}?empty | 401 Unauthorized |
+| TC-02656 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?empty | 403 Forbidden |
+| TC-02657 | API | Company intel & facts | Logged in | GET /api/company/{name}?refresh | 200 + valid data |
+| TC-02658 | API | Company intel & facts | Logged in | GET /api/company/{name}?refresh with invalid input | 400/422 + error message |
+| TC-02659 | API | Company intel & facts | Edge case | GET /api/company/{name}?refresh at boundary value | Correct boundary handling |
+| TC-02660 | API | Company intel & facts | No auth token | GET /api/company/{name}?refresh | 401 Unauthorized |
+| TC-02661 | frontend-UAT | Company intel & facts | Logged in | Open refresh intel in UI | UI renders correctly |
+| TC-02662 | frontend-UAT | Company intel & facts | No data | Open refresh intel with no data | No-data state shown |
+| TC-02663 | API | Company intel & facts | Expired token | GET /api/company/{name}?refresh | 401 Unauthorized |
+| TC-02664 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?refresh | 403 Forbidden |
+| TC-02665 | API | Company intel & facts | Logged in | GET /api/company/{name}?funding | 200 + valid data |
+| TC-02666 | API | Company intel & facts | Logged in | GET /api/company/{name}?funding with invalid input | 400/422 + error message |
+| TC-02667 | API | Company intel & facts | Edge case | GET /api/company/{name}?funding at boundary value | Correct boundary handling |
+| TC-02668 | API | Company intel & facts | No auth token | GET /api/company/{name}?funding | 401 Unauthorized |
+| TC-02669 | frontend-UAT | Company intel & facts | Logged in | Open funding stage in UI | UI renders correctly |
+| TC-02670 | frontend-UAT | Company intel & facts | No data | Open funding stage with no data | No-data state shown |
+| TC-02671 | API | Company intel & facts | Expired token | GET /api/company/{name}?funding | 401 Unauthorized |
+| TC-02672 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?funding | 403 Forbidden |
+| TC-02673 | API | Company intel & facts | Logged in | GET /api/company/{name}?website | 200 + valid data |
+| TC-02674 | API | Company intel & facts | Logged in | GET /api/company/{name}?website with invalid input | 400/422 + error message |
+| TC-02675 | API | Company intel & facts | Edge case | GET /api/company/{name}?website at boundary value | Correct boundary handling |
+| TC-02676 | API | Company intel & facts | No auth token | GET /api/company/{name}?website | 401 Unauthorized |
+| TC-02677 | frontend-UAT | Company intel & facts | Logged in | Open website in UI | UI renders correctly |
+| TC-02678 | frontend-UAT | Company intel & facts | No data | Open website with no data | No-data state shown |
+| TC-02679 | API | Company intel & facts | Expired token | GET /api/company/{name}?website | 401 Unauthorized |
+| TC-02680 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?website | 403 Forbidden |
+| TC-02681 | API | Company intel & facts | Logged in | GET /api/company/{name}?revenue | 200 + valid data |
+| TC-02682 | API | Company intel & facts | Logged in | GET /api/company/{name}?revenue with invalid input | 400/422 + error message |
+| TC-02683 | API | Company intel & facts | Edge case | GET /api/company/{name}?revenue at boundary value | Correct boundary handling |
+| TC-02684 | API | Company intel & facts | No auth token | GET /api/company/{name}?revenue | 401 Unauthorized |
+| TC-02685 | frontend-UAT | Company intel & facts | Logged in | Open revenue in UI | UI renders correctly |
+| TC-02686 | frontend-UAT | Company intel & facts | No data | Open revenue with no data | No-data state shown |
+| TC-02687 | API | Company intel & facts | Expired token | GET /api/company/{name}?revenue | 401 Unauthorized |
+| TC-02688 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?revenue | 403 Forbidden |
+| TC-02689 | API | Company intel & facts | Logged in | GET /api/company/{name}?founded | 200 + valid data |
+| TC-02690 | API | Company intel & facts | Logged in | GET /api/company/{name}?founded with invalid input | 400/422 + error message |
+| TC-02691 | API | Company intel & facts | Edge case | GET /api/company/{name}?founded at boundary value | Correct boundary handling |
+| TC-02692 | API | Company intel & facts | No auth token | GET /api/company/{name}?founded | 401 Unauthorized |
+| TC-02693 | frontend-UAT | Company intel & facts | Logged in | Open founding year in UI | UI renders correctly |
+| TC-02694 | frontend-UAT | Company intel & facts | No data | Open founding year with no data | No-data state shown |
+| TC-02695 | API | Company intel & facts | Expired token | GET /api/company/{name}?founded | 401 Unauthorized |
+| TC-02696 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?founded | 403 Forbidden |
+| TC-02697 | API | Company intel & facts | Logged in | GET /api/company/{name}?tech | 200 + valid data |
+| TC-02698 | API | Company intel & facts | Logged in | GET /api/company/{name}?tech with invalid input | 400/422 + error message |
+| TC-02699 | API | Company intel & facts | Edge case | GET /api/company/{name}?tech at boundary value | Correct boundary handling |
+| TC-02700 | API | Company intel & facts | No auth token | GET /api/company/{name}?tech | 401 Unauthorized |
+| TC-02701 | frontend-UAT | Company intel & facts | Logged in | Open tech stack in UI | UI renders correctly |
+| TC-02702 | frontend-UAT | Company intel & facts | No data | Open tech stack with no data | No-data state shown |
+| TC-02703 | API | Company intel & facts | Expired token | GET /api/company/{name}?tech | 401 Unauthorized |
+| TC-02704 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?tech | 403 Forbidden |
+| TC-02705 | API | Company intel & facts | Logged in | GET /api/company/{name}?competitors | 200 + valid data |
+| TC-02706 | API | Company intel & facts | Logged in | GET /api/company/{name}?competitors with invalid input | 400/422 + error message |
+| TC-02707 | API | Company intel & facts | Edge case | GET /api/company/{name}?competitors at boundary value | Correct boundary handling |
+| TC-02708 | API | Company intel & facts | No auth token | GET /api/company/{name}?competitors | 401 Unauthorized |
+| TC-02709 | frontend-UAT | Company intel & facts | Logged in | Open competitors in UI | UI renders correctly |
+| TC-02710 | frontend-UAT | Company intel & facts | No data | Open competitors with no data | No-data state shown |
+| TC-02711 | API | Company intel & facts | Expired token | GET /api/company/{name}?competitors | 401 Unauthorized |
+| TC-02712 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?competitors | 403 Forbidden |
+| TC-02713 | API | Company intel & facts | Logged in | GET /api/company/{name}?news | 200 + valid data |
+| TC-02714 | API | Company intel & facts | Logged in | GET /api/company/{name}?news with invalid input | 400/422 + error message |
+| TC-02715 | API | Company intel & facts | Edge case | GET /api/company/{name}?news at boundary value | Correct boundary handling |
+| TC-02716 | API | Company intel & facts | No auth token | GET /api/company/{name}?news | 401 Unauthorized |
+| TC-02717 | frontend-UAT | Company intel & facts | Logged in | Open news in UI | UI renders correctly |
+| TC-02718 | frontend-UAT | Company intel & facts | No data | Open news with no data | No-data state shown |
+| TC-02719 | API | Company intel & facts | Expired token | GET /api/company/{name}?news | 401 Unauthorized |
+| TC-02720 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?news | 403 Forbidden |
+| TC-02721 | API | Company intel & facts | Logged in | GET /api/company/{name}?reviews | 200 + valid data |
+| TC-02722 | API | Company intel & facts | Logged in | GET /api/company/{name}?reviews with invalid input | 400/422 + error message |
+| TC-02723 | API | Company intel & facts | Edge case | GET /api/company/{name}?reviews at boundary value | Correct boundary handling |
+| TC-02724 | API | Company intel & facts | No auth token | GET /api/company/{name}?reviews | 401 Unauthorized |
+| TC-02725 | frontend-UAT | Company intel & facts | Logged in | Open reviews in UI | UI renders correctly |
+| TC-02726 | frontend-UAT | Company intel & facts | No data | Open reviews with no data | No-data state shown |
+| TC-02727 | API | Company intel & facts | Expired token | GET /api/company/{name}?reviews | 401 Unauthorized |
+| TC-02728 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?reviews | 403 Forbidden |
+| TC-02729 | API | Company intel & facts | Logged in | GET /api/company/{name}?panel | 200 + valid data |
+| TC-02730 | API | Company intel & facts | Logged in | GET /api/company/{name}?panel with invalid input | 400/422 + error message |
+| TC-02731 | API | Company intel & facts | Edge case | GET /api/company/{name}?panel at boundary value | Correct boundary handling |
+| TC-02732 | API | Company intel & facts | No auth token | GET /api/company/{name}?panel | 401 Unauthorized |
+| TC-02733 | frontend-UAT | Company intel & facts | Logged in | Open panel render in UI | UI renders correctly |
+| TC-02734 | frontend-UAT | Company intel & facts | No data | Open panel render with no data | No-data state shown |
+| TC-02735 | API | Company intel & facts | Expired token | GET /api/company/{name}?panel | 401 Unauthorized |
+| TC-02736 | API | Company intel & facts | Insufficient role | GET /api/company/{name}?panel | 403 Forbidden |
 ### F24 — Salary negotiation assistant
 
-| TC-02761 | API | Salary negotiation assistant | Logged in | PUT /api/negotiation?offer | 200 + valid data |
-| TC-02762 | API | Salary negotiation assistant | Logged in | PUT /api/negotiation?offer with invalid input | 400/422 + error message |
-| TC-02763 | API | Salary negotiation assistant | Edge case | PUT /api/negotiation?offer at boundary value | Correct boundary handling |
-| TC-02764 | API | Salary negotiation assistant | No auth token | PUT /api/negotiation?offer | 401 Unauthorized |
-| TC-02765 | frontend-UAT | Salary negotiation assistant | Logged in | Open get recommendation in UI | UI renders correctly |
-| TC-02766 | frontend-UAT | Salary negotiation assistant | No data | Open get recommendation with no data | No-data state shown |
-| TC-02767 | API | Salary negotiation assistant | Expired token | PUT /api/negotiation?offer | 401 Unauthorized |
-| TC-02768 | API | Salary negotiation assistant | Insufficient role | PUT /api/negotiation?offer | 403 Forbidden |
-| TC-02769 | API | Salary negotiation assistant | Logged in | GET /api/negotiation | 200 + valid data |
-| TC-02770 | API | Salary negotiation assistant | Logged in | GET /api/negotiation with invalid input | 400/422 + error message |
-| TC-02771 | API | Salary negotiation assistant | Edge case | GET /api/negotiation at boundary value | Correct boundary handling |
-| TC-02772 | API | Salary negotiation assistant | No auth token | GET /api/negotiation | 401 Unauthorized |
-| TC-02773 | frontend-UAT | Salary negotiation assistant | Logged in | Open market range in UI | UI renders correctly |
-| TC-02774 | frontend-UAT | Salary negotiation assistant | No data | Open market range with no data | No-data state shown |
-| TC-02775 | API | Salary negotiation assistant | Expired token | GET /api/negotiation | 401 Unauthorized |
-| TC-02776 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation | 403 Forbidden |
-| TC-02777 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?percentiles | 200 + valid data |
-| TC-02778 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?percentiles with invalid input | 400/422 + error message |
-| TC-02779 | API | Salary negotiation assistant | Edge case | GET /api/negotiation?percentiles at boundary value | Correct boundary handling |
-| TC-02780 | API | Salary negotiation assistant | No auth token | GET /api/negotiation?percentiles | 401 Unauthorized |
-| TC-02781 | frontend-UAT | Salary negotiation assistant | Logged in | Open percentiles in UI | UI renders correctly |
-| TC-02782 | frontend-UAT | Salary negotiation assistant | No data | Open percentiles with no data | No-data state shown |
-| TC-02783 | API | Salary negotiation assistant | Expired token | GET /api/negotiation?percentiles | 401 Unauthorized |
-| TC-02784 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation?percentiles | 403 Forbidden |
-| TC-02785 | API | Salary negotiation assistant | Logged in | PUT /api/negotiation?target | 200 + valid data |
-| TC-02786 | API | Salary negotiation assistant | Logged in | PUT /api/negotiation?target with invalid input | 400/422 + error message |
-| TC-02787 | API | Salary negotiation assistant | Edge case | PUT /api/negotiation?target at boundary value | Correct boundary handling |
-| TC-02788 | API | Salary negotiation assistant | No auth token | PUT /api/negotiation?target | 401 Unauthorized |
-| TC-02789 | frontend-UAT | Salary negotiation assistant | Logged in | Open tailored advice in UI | UI renders correctly |
-| TC-02790 | frontend-UAT | Salary negotiation assistant | No data | Open tailored advice with no data | No-data state shown |
-| TC-02791 | API | Salary negotiation assistant | Expired token | PUT /api/negotiation?target | 401 Unauthorized |
-| TC-02792 | API | Salary negotiation assistant | Insufficient role | PUT /api/negotiation?target | 403 Forbidden |
-| TC-02793 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/script | 200 + valid data |
-| TC-02794 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/script with invalid input | 400/422 + error message |
-| TC-02795 | API | Salary negotiation assistant | Edge case | GET /api/negotiation/script at boundary value | Correct boundary handling |
-| TC-02796 | API | Salary negotiation assistant | No auth token | GET /api/negotiation/script | 401 Unauthorized |
-| TC-02797 | frontend-UAT | Salary negotiation assistant | Logged in | Open negotiation script in UI | UI renders correctly |
-| TC-02798 | frontend-UAT | Salary negotiation assistant | No data | Open negotiation script with no data | No-data state shown |
-| TC-02799 | API | Salary negotiation assistant | Expired token | GET /api/negotiation/script | 401 Unauthorized |
-| TC-02800 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation/script | 403 Forbidden |
-| TC-02801 | API | Salary negotiation assistant | Logged in | PUT /api/negotiation/reset | 200 + valid data |
-| TC-02802 | API | Salary negotiation assistant | Logged in | PUT /api/negotiation/reset with invalid input | 400/422 + error message |
-| TC-02803 | API | Salary negotiation assistant | Edge case | PUT /api/negotiation/reset at boundary value | Correct boundary handling |
-| TC-02804 | API | Salary negotiation assistant | No auth token | PUT /api/negotiation/reset | 401 Unauthorized |
-| TC-02805 | frontend-UAT | Salary negotiation assistant | Logged in | Open reset inputs in UI | UI renders correctly |
-| TC-02806 | frontend-UAT | Salary negotiation assistant | No data | Open reset inputs with no data | No-data state shown |
-| TC-02807 | API | Salary negotiation assistant | Expired token | PUT /api/negotiation/reset | 401 Unauthorized |
-| TC-02808 | API | Salary negotiation assistant | Insufficient role | PUT /api/negotiation/reset | 403 Forbidden |
-| TC-02809 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/risk | 200 + valid data |
-| TC-02810 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/risk with invalid input | 400/422 + error message |
-| TC-02811 | API | Salary negotiation assistant | Edge case | GET /api/negotiation/risk at boundary value | Correct boundary handling |
-| TC-02812 | API | Salary negotiation assistant | No auth token | GET /api/negotiation/risk | 401 Unauthorized |
-| TC-02813 | frontend-UAT | Salary negotiation assistant | Logged in | Open downside risk in UI | UI renders correctly |
-| TC-02814 | frontend-UAT | Salary negotiation assistant | No data | Open downside risk with no data | No-data state shown |
-| TC-02815 | API | Salary negotiation assistant | Expired token | GET /api/negotiation/risk | 401 Unauthorized |
-| TC-02816 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation/risk | 403 Forbidden |
-| TC-02817 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/upside | 200 + valid data |
-| TC-02818 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/upside with invalid input | 400/422 + error message |
-| TC-02819 | API | Salary negotiation assistant | Edge case | GET /api/negotiation/upside at boundary value | Correct boundary handling |
-| TC-02820 | API | Salary negotiation assistant | No auth token | GET /api/negotiation/upside | 401 Unauthorized |
-| TC-02821 | frontend-UAT | Salary negotiation assistant | Logged in | Open upside in UI | UI renders correctly |
-| TC-02822 | frontend-UAT | Salary negotiation assistant | No data | Open upside with no data | No-data state shown |
-| TC-02823 | API | Salary negotiation assistant | Expired token | GET /api/negotiation/upside | 401 Unauthorized |
-| TC-02824 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation/upside | 403 Forbidden |
-| TC-02825 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/range | 200 + valid data |
-| TC-02826 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/range with invalid input | 400/422 + error message |
-| TC-02827 | API | Salary negotiation assistant | Edge case | GET /api/negotiation/range at boundary value | Correct boundary handling |
-| TC-02828 | API | Salary negotiation assistant | No auth token | GET /api/negotiation/range | 401 Unauthorized |
-| TC-02829 | frontend-UAT | Salary negotiation assistant | Logged in | Open negotiation range in UI | UI renders correctly |
-| TC-02830 | frontend-UAT | Salary negotiation assistant | No data | Open negotiation range with no data | No-data state shown |
-| TC-02831 | API | Salary negotiation assistant | Expired token | GET /api/negotiation/range | 401 Unauthorized |
-| TC-02832 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation/range | 403 Forbidden |
-| TC-02833 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/email-template | 200 + valid data |
-| TC-02834 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/email-template with invalid input | 400/422 + error message |
-| TC-02835 | API | Salary negotiation assistant | Edge case | GET /api/negotiation/email-template at boundary value | Correct boundary handling |
-| TC-02836 | API | Salary negotiation assistant | No auth token | GET /api/negotiation/email-template | 401 Unauthorized |
-| TC-02837 | frontend-UAT | Salary negotiation assistant | Logged in | Open email template in UI | UI renders correctly |
-| TC-02838 | frontend-UAT | Salary negotiation assistant | No data | Open email template with no data | No-data state shown |
-| TC-02839 | API | Salary negotiation assistant | Expired token | GET /api/negotiation/email-template | 401 Unauthorized |
-| TC-02840 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation/email-template | 403 Forbidden |
-| TC-02841 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?type | 200 + valid data |
-| TC-02842 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?type with invalid input | 400/422 + error message |
-| TC-02843 | API | Salary negotiation assistant | Edge case | GET /api/negotiation?type at boundary value | Correct boundary handling |
-| TC-02844 | API | Salary negotiation assistant | No auth token | GET /api/negotiation?type | 401 Unauthorized |
-| TC-02845 | frontend-UAT | Salary negotiation assistant | Logged in | Open offer type in UI | UI renders correctly |
-| TC-02846 | frontend-UAT | Salary negotiation assistant | No data | Open offer type with no data | No-data state shown |
-| TC-02847 | API | Salary negotiation assistant | Expired token | GET /api/negotiation?type | 401 Unauthorized |
-| TC-02848 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation?type | 403 Forbidden |
-| TC-02849 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?role | 200 + valid data |
-| TC-02850 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?role with invalid input | 400/422 + error message |
-| TC-02851 | API | Salary negotiation assistant | Edge case | GET /api/negotiation?role at boundary value | Correct boundary handling |
-| TC-02852 | API | Salary negotiation assistant | No auth token | GET /api/negotiation?role | 401 Unauthorized |
-| TC-02853 | frontend-UAT | Salary negotiation assistant | Logged in | Open role-specific in UI | UI renders correctly |
-| TC-02854 | frontend-UAT | Salary negotiation assistant | No data | Open role-specific with no data | No-data state shown |
-| TC-02855 | API | Salary negotiation assistant | Expired token | GET /api/negotiation?role | 401 Unauthorized |
-| TC-02856 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation?role | 403 Forbidden |
-| TC-02857 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?experience | 200 + valid data |
-| TC-02858 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?experience with invalid input | 400/422 + error message |
-| TC-02859 | API | Salary negotiation assistant | Edge case | GET /api/negotiation?experience at boundary value | Correct boundary handling |
-| TC-02860 | API | Salary negotiation assistant | No auth token | GET /api/negotiation?experience | 401 Unauthorized |
-| TC-02861 | frontend-UAT | Salary negotiation assistant | Logged in | Open experience-specific in UI | UI renders correctly |
-| TC-02862 | frontend-UAT | Salary negotiation assistant | No data | Open experience-specific with no data | No-data state shown |
-| TC-02863 | API | Salary negotiation assistant | Expired token | GET /api/negotiation?experience | 401 Unauthorized |
-| TC-02864 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation?experience | 403 Forbidden |
-| TC-02865 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?location | 200 + valid data |
-| TC-02866 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?location with invalid input | 400/422 + error message |
-| TC-02867 | API | Salary negotiation assistant | Edge case | GET /api/negotiation?location at boundary value | Correct boundary handling |
-| TC-02868 | API | Salary negotiation assistant | No auth token | GET /api/negotiation?location | 401 Unauthorized |
-| TC-02869 | frontend-UAT | Salary negotiation assistant | Logged in | Open location-specific in UI | UI renders correctly |
-| TC-02870 | frontend-UAT | Salary negotiation assistant | No data | Open location-specific with no data | No-data state shown |
-| TC-02871 | API | Salary negotiation assistant | Expired token | GET /api/negotiation?location | 401 Unauthorized |
-| TC-02872 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation?location | 403 Forbidden |
-| TC-02873 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?empty | 200 + valid data |
-| TC-02874 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?empty with invalid input | 400/422 + error message |
-| TC-02875 | API | Salary negotiation assistant | Edge case | GET /api/negotiation?empty at boundary value | Correct boundary handling |
-| TC-02876 | API | Salary negotiation assistant | No auth token | GET /api/negotiation?empty | 401 Unauthorized |
-| TC-02877 | frontend-UAT | Salary negotiation assistant | Logged in | Open no-data state in UI | UI renders correctly |
-| TC-02878 | frontend-UAT | Salary negotiation assistant | No data | Open no-data state with no data | No-data state shown |
-| TC-02879 | API | Salary negotiation assistant | Expired token | GET /api/negotiation?empty | 401 Unauthorized |
-| TC-02880 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation?empty | 403 Forbidden |
+| TC-02737 | API | Salary negotiation assistant | Logged in | PUT /api/negotiation?offer | 200 + valid data |
+| TC-02738 | API | Salary negotiation assistant | Logged in | PUT /api/negotiation?offer with invalid input | 400/422 + error message |
+| TC-02739 | API | Salary negotiation assistant | Edge case | PUT /api/negotiation?offer at boundary value | Correct boundary handling |
+| TC-02740 | API | Salary negotiation assistant | No auth token | PUT /api/negotiation?offer | 401 Unauthorized |
+| TC-02741 | frontend-UAT | Salary negotiation assistant | Logged in | Open get recommendation in UI | UI renders correctly |
+| TC-02742 | frontend-UAT | Salary negotiation assistant | No data | Open get recommendation with no data | No-data state shown |
+| TC-02743 | API | Salary negotiation assistant | Expired token | PUT /api/negotiation?offer | 401 Unauthorized |
+| TC-02744 | API | Salary negotiation assistant | Insufficient role | PUT /api/negotiation?offer | 403 Forbidden |
+| TC-02745 | API | Salary negotiation assistant | Logged in | GET /api/negotiation | 200 + valid data |
+| TC-02746 | API | Salary negotiation assistant | Logged in | GET /api/negotiation with invalid input | 400/422 + error message |
+| TC-02747 | API | Salary negotiation assistant | Edge case | GET /api/negotiation at boundary value | Correct boundary handling |
+| TC-02748 | API | Salary negotiation assistant | No auth token | GET /api/negotiation | 401 Unauthorized |
+| TC-02749 | frontend-UAT | Salary negotiation assistant | Logged in | Open market range in UI | UI renders correctly |
+| TC-02750 | frontend-UAT | Salary negotiation assistant | No data | Open market range with no data | No-data state shown |
+| TC-02751 | API | Salary negotiation assistant | Expired token | GET /api/negotiation | 401 Unauthorized |
+| TC-02752 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation | 403 Forbidden |
+| TC-02753 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?percentiles | 200 + valid data |
+| TC-02754 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?percentiles with invalid input | 400/422 + error message |
+| TC-02755 | API | Salary negotiation assistant | Edge case | GET /api/negotiation?percentiles at boundary value | Correct boundary handling |
+| TC-02756 | API | Salary negotiation assistant | No auth token | GET /api/negotiation?percentiles | 401 Unauthorized |
+| TC-02757 | frontend-UAT | Salary negotiation assistant | Logged in | Open percentiles in UI | UI renders correctly |
+| TC-02758 | frontend-UAT | Salary negotiation assistant | No data | Open percentiles with no data | No-data state shown |
+| TC-02759 | API | Salary negotiation assistant | Expired token | GET /api/negotiation?percentiles | 401 Unauthorized |
+| TC-02760 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation?percentiles | 403 Forbidden |
+| TC-02761 | API | Salary negotiation assistant | Logged in | PUT /api/negotiation?target | 200 + valid data |
+| TC-02762 | API | Salary negotiation assistant | Logged in | PUT /api/negotiation?target with invalid input | 400/422 + error message |
+| TC-02763 | API | Salary negotiation assistant | Edge case | PUT /api/negotiation?target at boundary value | Correct boundary handling |
+| TC-02764 | API | Salary negotiation assistant | No auth token | PUT /api/negotiation?target | 401 Unauthorized |
+| TC-02765 | frontend-UAT | Salary negotiation assistant | Logged in | Open tailored advice in UI | UI renders correctly |
+| TC-02766 | frontend-UAT | Salary negotiation assistant | No data | Open tailored advice with no data | No-data state shown |
+| TC-02767 | API | Salary negotiation assistant | Expired token | PUT /api/negotiation?target | 401 Unauthorized |
+| TC-02768 | API | Salary negotiation assistant | Insufficient role | PUT /api/negotiation?target | 403 Forbidden |
+| TC-02769 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/script | 200 + valid data |
+| TC-02770 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/script with invalid input | 400/422 + error message |
+| TC-02771 | API | Salary negotiation assistant | Edge case | GET /api/negotiation/script at boundary value | Correct boundary handling |
+| TC-02772 | API | Salary negotiation assistant | No auth token | GET /api/negotiation/script | 401 Unauthorized |
+| TC-02773 | frontend-UAT | Salary negotiation assistant | Logged in | Open negotiation script in UI | UI renders correctly |
+| TC-02774 | frontend-UAT | Salary negotiation assistant | No data | Open negotiation script with no data | No-data state shown |
+| TC-02775 | API | Salary negotiation assistant | Expired token | GET /api/negotiation/script | 401 Unauthorized |
+| TC-02776 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation/script | 403 Forbidden |
+| TC-02777 | API | Salary negotiation assistant | Logged in | PUT /api/negotiation/reset | 200 + valid data |
+| TC-02778 | API | Salary negotiation assistant | Logged in | PUT /api/negotiation/reset with invalid input | 400/422 + error message |
+| TC-02779 | API | Salary negotiation assistant | Edge case | PUT /api/negotiation/reset at boundary value | Correct boundary handling |
+| TC-02780 | API | Salary negotiation assistant | No auth token | PUT /api/negotiation/reset | 401 Unauthorized |
+| TC-02781 | frontend-UAT | Salary negotiation assistant | Logged in | Open reset inputs in UI | UI renders correctly |
+| TC-02782 | frontend-UAT | Salary negotiation assistant | No data | Open reset inputs with no data | No-data state shown |
+| TC-02783 | API | Salary negotiation assistant | Expired token | PUT /api/negotiation/reset | 401 Unauthorized |
+| TC-02784 | API | Salary negotiation assistant | Insufficient role | PUT /api/negotiation/reset | 403 Forbidden |
+| TC-02785 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/risk | 200 + valid data |
+| TC-02786 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/risk with invalid input | 400/422 + error message |
+| TC-02787 | API | Salary negotiation assistant | Edge case | GET /api/negotiation/risk at boundary value | Correct boundary handling |
+| TC-02788 | API | Salary negotiation assistant | No auth token | GET /api/negotiation/risk | 401 Unauthorized |
+| TC-02789 | frontend-UAT | Salary negotiation assistant | Logged in | Open downside risk in UI | UI renders correctly |
+| TC-02790 | frontend-UAT | Salary negotiation assistant | No data | Open downside risk with no data | No-data state shown |
+| TC-02791 | API | Salary negotiation assistant | Expired token | GET /api/negotiation/risk | 401 Unauthorized |
+| TC-02792 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation/risk | 403 Forbidden |
+| TC-02793 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/upside | 200 + valid data |
+| TC-02794 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/upside with invalid input | 400/422 + error message |
+| TC-02795 | API | Salary negotiation assistant | Edge case | GET /api/negotiation/upside at boundary value | Correct boundary handling |
+| TC-02796 | API | Salary negotiation assistant | No auth token | GET /api/negotiation/upside | 401 Unauthorized |
+| TC-02797 | frontend-UAT | Salary negotiation assistant | Logged in | Open upside in UI | UI renders correctly |
+| TC-02798 | frontend-UAT | Salary negotiation assistant | No data | Open upside with no data | No-data state shown |
+| TC-02799 | API | Salary negotiation assistant | Expired token | GET /api/negotiation/upside | 401 Unauthorized |
+| TC-02800 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation/upside | 403 Forbidden |
+| TC-02801 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/range | 200 + valid data |
+| TC-02802 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/range with invalid input | 400/422 + error message |
+| TC-02803 | API | Salary negotiation assistant | Edge case | GET /api/negotiation/range at boundary value | Correct boundary handling |
+| TC-02804 | API | Salary negotiation assistant | No auth token | GET /api/negotiation/range | 401 Unauthorized |
+| TC-02805 | frontend-UAT | Salary negotiation assistant | Logged in | Open negotiation range in UI | UI renders correctly |
+| TC-02806 | frontend-UAT | Salary negotiation assistant | No data | Open negotiation range with no data | No-data state shown |
+| TC-02807 | API | Salary negotiation assistant | Expired token | GET /api/negotiation/range | 401 Unauthorized |
+| TC-02808 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation/range | 403 Forbidden |
+| TC-02809 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/email-template | 200 + valid data |
+| TC-02810 | API | Salary negotiation assistant | Logged in | GET /api/negotiation/email-template with invalid input | 400/422 + error message |
+| TC-02811 | API | Salary negotiation assistant | Edge case | GET /api/negotiation/email-template at boundary value | Correct boundary handling |
+| TC-02812 | API | Salary negotiation assistant | No auth token | GET /api/negotiation/email-template | 401 Unauthorized |
+| TC-02813 | frontend-UAT | Salary negotiation assistant | Logged in | Open email template in UI | UI renders correctly |
+| TC-02814 | frontend-UAT | Salary negotiation assistant | No data | Open email template with no data | No-data state shown |
+| TC-02815 | API | Salary negotiation assistant | Expired token | GET /api/negotiation/email-template | 401 Unauthorized |
+| TC-02816 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation/email-template | 403 Forbidden |
+| TC-02817 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?type | 200 + valid data |
+| TC-02818 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?type with invalid input | 400/422 + error message |
+| TC-02819 | API | Salary negotiation assistant | Edge case | GET /api/negotiation?type at boundary value | Correct boundary handling |
+| TC-02820 | API | Salary negotiation assistant | No auth token | GET /api/negotiation?type | 401 Unauthorized |
+| TC-02821 | frontend-UAT | Salary negotiation assistant | Logged in | Open offer type in UI | UI renders correctly |
+| TC-02822 | frontend-UAT | Salary negotiation assistant | No data | Open offer type with no data | No-data state shown |
+| TC-02823 | API | Salary negotiation assistant | Expired token | GET /api/negotiation?type | 401 Unauthorized |
+| TC-02824 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation?type | 403 Forbidden |
+| TC-02825 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?role | 200 + valid data |
+| TC-02826 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?role with invalid input | 400/422 + error message |
+| TC-02827 | API | Salary negotiation assistant | Edge case | GET /api/negotiation?role at boundary value | Correct boundary handling |
+| TC-02828 | API | Salary negotiation assistant | No auth token | GET /api/negotiation?role | 401 Unauthorized |
+| TC-02829 | frontend-UAT | Salary negotiation assistant | Logged in | Open role-specific in UI | UI renders correctly |
+| TC-02830 | frontend-UAT | Salary negotiation assistant | No data | Open role-specific with no data | No-data state shown |
+| TC-02831 | API | Salary negotiation assistant | Expired token | GET /api/negotiation?role | 401 Unauthorized |
+| TC-02832 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation?role | 403 Forbidden |
+| TC-02833 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?experience | 200 + valid data |
+| TC-02834 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?experience with invalid input | 400/422 + error message |
+| TC-02835 | API | Salary negotiation assistant | Edge case | GET /api/negotiation?experience at boundary value | Correct boundary handling |
+| TC-02836 | API | Salary negotiation assistant | No auth token | GET /api/negotiation?experience | 401 Unauthorized |
+| TC-02837 | frontend-UAT | Salary negotiation assistant | Logged in | Open experience-specific in UI | UI renders correctly |
+| TC-02838 | frontend-UAT | Salary negotiation assistant | No data | Open experience-specific with no data | No-data state shown |
+| TC-02839 | API | Salary negotiation assistant | Expired token | GET /api/negotiation?experience | 401 Unauthorized |
+| TC-02840 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation?experience | 403 Forbidden |
+| TC-02841 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?location | 200 + valid data |
+| TC-02842 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?location with invalid input | 400/422 + error message |
+| TC-02843 | API | Salary negotiation assistant | Edge case | GET /api/negotiation?location at boundary value | Correct boundary handling |
+| TC-02844 | API | Salary negotiation assistant | No auth token | GET /api/negotiation?location | 401 Unauthorized |
+| TC-02845 | frontend-UAT | Salary negotiation assistant | Logged in | Open location-specific in UI | UI renders correctly |
+| TC-02846 | frontend-UAT | Salary negotiation assistant | No data | Open location-specific with no data | No-data state shown |
+| TC-02847 | API | Salary negotiation assistant | Expired token | GET /api/negotiation?location | 401 Unauthorized |
+| TC-02848 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation?location | 403 Forbidden |
+| TC-02849 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?empty | 200 + valid data |
+| TC-02850 | API | Salary negotiation assistant | Logged in | GET /api/negotiation?empty with invalid input | 400/422 + error message |
+| TC-02851 | API | Salary negotiation assistant | Edge case | GET /api/negotiation?empty at boundary value | Correct boundary handling |
+| TC-02852 | API | Salary negotiation assistant | No auth token | GET /api/negotiation?empty | 401 Unauthorized |
+| TC-02853 | frontend-UAT | Salary negotiation assistant | Logged in | Open no-data state in UI | UI renders correctly |
+| TC-02854 | frontend-UAT | Salary negotiation assistant | No data | Open no-data state with no data | No-data state shown |
+| TC-02855 | API | Salary negotiation assistant | Expired token | GET /api/negotiation?empty | 401 Unauthorized |
+| TC-02856 | API | Salary negotiation assistant | Insufficient role | GET /api/negotiation?empty | 403 Forbidden |
 ### F25 — Rescoring
 
-| TC-02881 | API | Rescoring | Logged in | POST /api/rescore/all | 200 + valid data |
-| TC-02882 | API | Rescoring | Logged in | POST /api/rescore/all with invalid input | 400/422 + error message |
-| TC-02883 | API | Rescoring | Edge case | POST /api/rescore/all at boundary value | Correct boundary handling |
-| TC-02884 | API | Rescoring | No auth token | POST /api/rescore/all | 401 Unauthorized |
-| TC-02885 | frontend-UAT | Rescoring | Logged in | Open rescore all in UI | UI renders correctly |
-| TC-02886 | frontend-UAT | Rescoring | No data | Open rescore all with no data | No-data state shown |
-| TC-02887 | API | Rescoring | Expired token | POST /api/rescore/all | 401 Unauthorized |
-| TC-02888 | API | Rescoring | Insufficient role | POST /api/rescore/all | 403 Forbidden |
-| TC-02889 | API | Rescoring | Logged in | GET /api/rescore/changed | 200 + valid data |
-| TC-02890 | API | Rescoring | Logged in | GET /api/rescore/changed with invalid input | 400/422 + error message |
-| TC-02891 | API | Rescoring | Edge case | GET /api/rescore/changed at boundary value | Correct boundary handling |
-| TC-02892 | API | Rescoring | No auth token | GET /api/rescore/changed | 401 Unauthorized |
-| TC-02893 | frontend-UAT | Rescoring | Logged in | Open changed jobs in UI | UI renders correctly |
-| TC-02894 | frontend-UAT | Rescoring | No data | Open changed jobs with no data | No-data state shown |
-| TC-02895 | API | Rescoring | Expired token | GET /api/rescore/changed | 401 Unauthorized |
-| TC-02896 | API | Rescoring | Insufficient role | GET /api/rescore/changed | 403 Forbidden |
-| TC-02897 | API | Rescoring | Logged in | POST /api/rescore/{job_id} | 200 + valid data |
-| TC-02898 | API | Rescoring | Logged in | POST /api/rescore/{job_id} with invalid input | 400/422 + error message |
-| TC-02899 | API | Rescoring | Edge case | POST /api/rescore/{job_id} at boundary value | Correct boundary handling |
-| TC-02900 | API | Rescoring | No auth token | POST /api/rescore/{job_id} | 401 Unauthorized |
-| TC-02901 | frontend-UAT | Rescoring | Logged in | Open rescore single in UI | UI renders correctly |
-| TC-02902 | frontend-UAT | Rescoring | No data | Open rescore single with no data | No-data state shown |
-| TC-02903 | API | Rescoring | Expired token | POST /api/rescore/{job_id} | 401 Unauthorized |
-| TC-02904 | API | Rescoring | Insufficient role | POST /api/rescore/{job_id} | 403 Forbidden |
-| TC-02905 | API | Rescoring | Logged in | GET /api/rescore/timestamp | 200 + valid data |
-| TC-02906 | API | Rescoring | Logged in | GET /api/rescore/timestamp with invalid input | 400/422 + error message |
-| TC-02907 | API | Rescoring | Edge case | GET /api/rescore/timestamp at boundary value | Correct boundary handling |
-| TC-02908 | API | Rescoring | No auth token | GET /api/rescore/timestamp | 401 Unauthorized |
-| TC-02909 | frontend-UAT | Rescoring | Logged in | Open timestamp in UI | UI renders correctly |
-| TC-02910 | frontend-UAT | Rescoring | No data | Open timestamp with no data | No-data state shown |
-| TC-02911 | API | Rescoring | Expired token | GET /api/rescore/timestamp | 401 Unauthorized |
-| TC-02912 | API | Rescoring | Insufficient role | GET /api/rescore/timestamp | 403 Forbidden |
-| TC-02913 | API | Rescoring | Logged in | GET /api/rescore/summary | 200 + valid data |
-| TC-02914 | API | Rescoring | Logged in | GET /api/rescore/summary with invalid input | 400/422 + error message |
-| TC-02915 | API | Rescoring | Edge case | GET /api/rescore/summary at boundary value | Correct boundary handling |
-| TC-02916 | API | Rescoring | No auth token | GET /api/rescore/summary | 401 Unauthorized |
-| TC-02917 | frontend-UAT | Rescoring | Logged in | Open summary in UI | UI renders correctly |
-| TC-02918 | frontend-UAT | Rescoring | No data | Open summary with no data | No-data state shown |
-| TC-02919 | API | Rescoring | Expired token | GET /api/rescore/summary | 401 Unauthorized |
-| TC-02920 | API | Rescoring | Insufficient role | GET /api/rescore/summary | 403 Forbidden |
-| TC-02921 | API | Rescoring | Logged in | POST /api/rescore?after_feedback | 200 + valid data |
-| TC-02922 | API | Rescoring | Logged in | POST /api/rescore?after_feedback with invalid input | 400/422 + error message |
-| TC-02923 | API | Rescoring | Edge case | POST /api/rescore?after_feedback at boundary value | Correct boundary handling |
-| TC-02924 | API | Rescoring | No auth token | POST /api/rescore?after_feedback | 401 Unauthorized |
-| TC-02925 | frontend-UAT | Rescoring | Logged in | Open rescore with feedback in UI | UI renders correctly |
-| TC-02926 | frontend-UAT | Rescoring | No data | Open rescore with feedback with no data | No-data state shown |
-| TC-02927 | API | Rescoring | Expired token | POST /api/rescore?after_feedback | 401 Unauthorized |
-| TC-02928 | API | Rescoring | Insufficient role | POST /api/rescore?after_feedback | 403 Forbidden |
-| TC-02929 | API | Rescoring | Logged in | GET /api/rescore?by_job | 200 + valid data |
-| TC-02930 | API | Rescoring | Logged in | GET /api/rescore?by_job with invalid input | 400/422 + error message |
-| TC-02931 | API | Rescoring | Edge case | GET /api/rescore?by_job at boundary value | Correct boundary handling |
-| TC-02932 | API | Rescoring | No auth token | GET /api/rescore?by_job | 401 Unauthorized |
-| TC-02933 | frontend-UAT | Rescoring | Logged in | Open rescore by job in UI | UI renders correctly |
-| TC-02934 | frontend-UAT | Rescoring | No data | Open rescore by job with no data | No-data state shown |
-| TC-02935 | API | Rescoring | Expired token | GET /api/rescore?by_job | 401 Unauthorized |
-| TC-02936 | API | Rescoring | Insufficient role | GET /api/rescore?by_job | 403 Forbidden |
-| TC-02937 | API | Rescoring | Logged in | GET /api/rescore?by_change | 200 + valid data |
-| TC-02938 | API | Rescoring | Logged in | GET /api/rescore?by_change with invalid input | 400/422 + error message |
-| TC-02939 | API | Rescoring | Edge case | GET /api/rescore?by_change at boundary value | Correct boundary handling |
-| TC-02940 | API | Rescoring | No auth token | GET /api/rescore?by_change | 401 Unauthorized |
-| TC-02941 | frontend-UAT | Rescoring | Logged in | Open rescore by change in UI | UI renders correctly |
-| TC-02942 | frontend-UAT | Rescoring | No data | Open rescore by change with no data | No-data state shown |
-| TC-02943 | API | Rescoring | Expired token | GET /api/rescore?by_change | 401 Unauthorized |
-| TC-02944 | API | Rescoring | Insufficient role | GET /api/rescore?by_change | 403 Forbidden |
-| TC-02945 | API | Rescoring | Logged in | GET /api/rescore?by_source | 200 + valid data |
-| TC-02946 | API | Rescoring | Logged in | GET /api/rescore?by_source with invalid input | 400/422 + error message |
-| TC-02947 | API | Rescoring | Edge case | GET /api/rescore?by_source at boundary value | Correct boundary handling |
-| TC-02948 | API | Rescoring | No auth token | GET /api/rescore?by_source | 401 Unauthorized |
-| TC-02949 | frontend-UAT | Rescoring | Logged in | Open rescore by source in UI | UI renders correctly |
-| TC-02950 | frontend-UAT | Rescoring | No data | Open rescore by source with no data | No-data state shown |
-| TC-02951 | API | Rescoring | Expired token | GET /api/rescore?by_source | 401 Unauthorized |
-| TC-02952 | API | Rescoring | Insufficient role | GET /api/rescore?by_source | 403 Forbidden |
-| TC-02953 | API | Rescoring | Logged in | GET /api/rescore?by_role | 200 + valid data |
-| TC-02954 | API | Rescoring | Logged in | GET /api/rescore?by_role with invalid input | 400/422 + error message |
-| TC-02955 | API | Rescoring | Edge case | GET /api/rescore?by_role at boundary value | Correct boundary handling |
-| TC-02956 | API | Rescoring | No auth token | GET /api/rescore?by_role | 401 Unauthorized |
-| TC-02957 | frontend-UAT | Rescoring | Logged in | Open rescore by role in UI | UI renders correctly |
-| TC-02958 | frontend-UAT | Rescoring | No data | Open rescore by role with no data | No-data state shown |
-| TC-02959 | API | Rescoring | Expired token | GET /api/rescore?by_role | 401 Unauthorized |
-| TC-02960 | API | Rescoring | Insufficient role | GET /api/rescore?by_role | 403 Forbidden |
-| TC-02961 | API | Rescoring | Logged in | GET /api/rescore?by_salary | 200 + valid data |
-| TC-02962 | API | Rescoring | Logged in | GET /api/rescore?by_salary with invalid input | 400/422 + error message |
-| TC-02963 | API | Rescoring | Edge case | GET /api/rescore?by_salary at boundary value | Correct boundary handling |
-| TC-02964 | API | Rescoring | No auth token | GET /api/rescore?by_salary | 401 Unauthorized |
-| TC-02965 | frontend-UAT | Rescoring | Logged in | Open rescore by salary in UI | UI renders correctly |
-| TC-02966 | frontend-UAT | Rescoring | No data | Open rescore by salary with no data | No-data state shown |
-| TC-02967 | API | Rescoring | Expired token | GET /api/rescore?by_salary | 401 Unauthorized |
-| TC-02968 | API | Rescoring | Insufficient role | GET /api/rescore?by_salary | 403 Forbidden |
-| TC-02969 | API | Rescoring | Logged in | GET /api/rescore?by_week | 200 + valid data |
-| TC-02970 | API | Rescoring | Logged in | GET /api/rescore?by_week with invalid input | 400/422 + error message |
-| TC-02971 | API | Rescoring | Edge case | GET /api/rescore?by_week at boundary value | Correct boundary handling |
-| TC-02972 | API | Rescoring | No auth token | GET /api/rescore?by_week | 401 Unauthorized |
-| TC-02973 | frontend-UAT | Rescoring | Logged in | Open rescore by week in UI | UI renders correctly |
-| TC-02974 | frontend-UAT | Rescoring | No data | Open rescore by week with no data | No-data state shown |
-| TC-02975 | API | Rescoring | Expired token | GET /api/rescore?by_week | 401 Unauthorized |
-| TC-02976 | API | Rescoring | Insufficient role | GET /api/rescore?by_week | 403 Forbidden |
-| TC-02977 | API | Rescoring | Logged in | GET /api/rescore?empty | 200 + valid data |
-| TC-02978 | API | Rescoring | Logged in | GET /api/rescore?empty with invalid input | 400/422 + error message |
-| TC-02979 | API | Rescoring | Edge case | GET /api/rescore?empty at boundary value | Correct boundary handling |
-| TC-02980 | API | Rescoring | No auth token | GET /api/rescore?empty | 401 Unauthorized |
-| TC-02981 | frontend-UAT | Rescoring | Logged in | Open no-data state in UI | UI renders correctly |
-| TC-02982 | frontend-UAT | Rescoring | No data | Open no-data state with no data | No-data state shown |
-| TC-02983 | API | Rescoring | Expired token | GET /api/rescore?empty | 401 Unauthorized |
-| TC-02984 | API | Rescoring | Insufficient role | GET /api/rescore?empty | 403 Forbidden |
-| TC-02985 | API | Rescoring | Logged in | GET /api/rescore?export | 200 + valid data |
-| TC-02986 | API | Rescoring | Logged in | GET /api/rescore?export with invalid input | 400/422 + error message |
-| TC-02987 | API | Rescoring | Edge case | GET /api/rescore?export at boundary value | Correct boundary handling |
-| TC-02988 | API | Rescoring | No auth token | GET /api/rescore?export | 401 Unauthorized |
-| TC-02989 | frontend-UAT | Rescoring | Logged in | Open export rescore in UI | UI renders correctly |
-| TC-02990 | frontend-UAT | Rescoring | No data | Open export rescore with no data | No-data state shown |
-| TC-02991 | API | Rescoring | Expired token | GET /api/rescore?export | 401 Unauthorized |
-| TC-02992 | API | Rescoring | Insufficient role | GET /api/rescore?export | 403 Forbidden |
-| TC-02993 | API | Rescoring | Logged in | GET /api/rescore?mobile | 200 + valid data |
-| TC-02994 | API | Rescoring | Logged in | GET /api/rescore?mobile with invalid input | 400/422 + error message |
-| TC-02995 | API | Rescoring | Edge case | GET /api/rescore?mobile at boundary value | Correct boundary handling |
-| TC-02996 | API | Rescoring | No auth token | GET /api/rescore?mobile | 401 Unauthorized |
-| TC-02997 | frontend-UAT | Rescoring | Logged in | Open mobile view in UI | UI renders correctly |
-| TC-02998 | frontend-UAT | Rescoring | No data | Open mobile view with no data | No-data state shown |
-| TC-02999 | API | Rescoring | Expired token | GET /api/rescore?mobile | 401 Unauthorized |
-| TC-03000 | API | Rescoring | Insufficient role | GET /api/rescore?mobile | 403 Forbidden |
+| TC-02857 | API | Rescoring | Logged in | POST /api/rescore/all | 200 + valid data |
+| TC-02858 | API | Rescoring | Logged in | POST /api/rescore/all with invalid input | 400/422 + error message |
+| TC-02859 | API | Rescoring | Edge case | POST /api/rescore/all at boundary value | Correct boundary handling |
+| TC-02860 | API | Rescoring | No auth token | POST /api/rescore/all | 401 Unauthorized |
+| TC-02861 | frontend-UAT | Rescoring | Logged in | Open rescore all in UI | UI renders correctly |
+| TC-02862 | frontend-UAT | Rescoring | No data | Open rescore all with no data | No-data state shown |
+| TC-02863 | API | Rescoring | Expired token | POST /api/rescore/all | 401 Unauthorized |
+| TC-02864 | API | Rescoring | Insufficient role | POST /api/rescore/all | 403 Forbidden |
+| TC-02865 | API | Rescoring | Logged in | GET /api/rescore/changed | 200 + valid data |
+| TC-02866 | API | Rescoring | Logged in | GET /api/rescore/changed with invalid input | 400/422 + error message |
+| TC-02867 | API | Rescoring | Edge case | GET /api/rescore/changed at boundary value | Correct boundary handling |
+| TC-02868 | API | Rescoring | No auth token | GET /api/rescore/changed | 401 Unauthorized |
+| TC-02869 | frontend-UAT | Rescoring | Logged in | Open changed jobs in UI | UI renders correctly |
+| TC-02870 | frontend-UAT | Rescoring | No data | Open changed jobs with no data | No-data state shown |
+| TC-02871 | API | Rescoring | Expired token | GET /api/rescore/changed | 401 Unauthorized |
+| TC-02872 | API | Rescoring | Insufficient role | GET /api/rescore/changed | 403 Forbidden |
+| TC-02873 | API | Rescoring | Logged in | POST /api/rescore/{job_id} | 200 + valid data |
+| TC-02874 | API | Rescoring | Logged in | POST /api/rescore/{job_id} with invalid input | 400/422 + error message |
+| TC-02875 | API | Rescoring | Edge case | POST /api/rescore/{job_id} at boundary value | Correct boundary handling |
+| TC-02876 | API | Rescoring | No auth token | POST /api/rescore/{job_id} | 401 Unauthorized |
+| TC-02877 | frontend-UAT | Rescoring | Logged in | Open rescore single in UI | UI renders correctly |
+| TC-02878 | frontend-UAT | Rescoring | No data | Open rescore single with no data | No-data state shown |
+| TC-02879 | API | Rescoring | Expired token | POST /api/rescore/{job_id} | 401 Unauthorized |
+| TC-02880 | API | Rescoring | Insufficient role | POST /api/rescore/{job_id} | 403 Forbidden |
+| TC-02881 | API | Rescoring | Logged in | GET /api/rescore/timestamp | 200 + valid data |
+| TC-02882 | API | Rescoring | Logged in | GET /api/rescore/timestamp with invalid input | 400/422 + error message |
+| TC-02883 | API | Rescoring | Edge case | GET /api/rescore/timestamp at boundary value | Correct boundary handling |
+| TC-02884 | API | Rescoring | No auth token | GET /api/rescore/timestamp | 401 Unauthorized |
+| TC-02885 | frontend-UAT | Rescoring | Logged in | Open timestamp in UI | UI renders correctly |
+| TC-02886 | frontend-UAT | Rescoring | No data | Open timestamp with no data | No-data state shown |
+| TC-02887 | API | Rescoring | Expired token | GET /api/rescore/timestamp | 401 Unauthorized |
+| TC-02888 | API | Rescoring | Insufficient role | GET /api/rescore/timestamp | 403 Forbidden |
+| TC-02889 | API | Rescoring | Logged in | GET /api/rescore/summary | 200 + valid data |
+| TC-02890 | API | Rescoring | Logged in | GET /api/rescore/summary with invalid input | 400/422 + error message |
+| TC-02891 | API | Rescoring | Edge case | GET /api/rescore/summary at boundary value | Correct boundary handling |
+| TC-02892 | API | Rescoring | No auth token | GET /api/rescore/summary | 401 Unauthorized |
+| TC-02893 | frontend-UAT | Rescoring | Logged in | Open summary in UI | UI renders correctly |
+| TC-02894 | frontend-UAT | Rescoring | No data | Open summary with no data | No-data state shown |
+| TC-02895 | API | Rescoring | Expired token | GET /api/rescore/summary | 401 Unauthorized |
+| TC-02896 | API | Rescoring | Insufficient role | GET /api/rescore/summary | 403 Forbidden |
+| TC-02897 | API | Rescoring | Logged in | POST /api/rescore?after_feedback | 200 + valid data |
+| TC-02898 | API | Rescoring | Logged in | POST /api/rescore?after_feedback with invalid input | 400/422 + error message |
+| TC-02899 | API | Rescoring | Edge case | POST /api/rescore?after_feedback at boundary value | Correct boundary handling |
+| TC-02900 | API | Rescoring | No auth token | POST /api/rescore?after_feedback | 401 Unauthorized |
+| TC-02901 | frontend-UAT | Rescoring | Logged in | Open rescore with feedback in UI | UI renders correctly |
+| TC-02902 | frontend-UAT | Rescoring | No data | Open rescore with feedback with no data | No-data state shown |
+| TC-02903 | API | Rescoring | Expired token | POST /api/rescore?after_feedback | 401 Unauthorized |
+| TC-02904 | API | Rescoring | Insufficient role | POST /api/rescore?after_feedback | 403 Forbidden |
+| TC-02905 | API | Rescoring | Logged in | GET /api/rescore?by_job | 200 + valid data |
+| TC-02906 | API | Rescoring | Logged in | GET /api/rescore?by_job with invalid input | 400/422 + error message |
+| TC-02907 | API | Rescoring | Edge case | GET /api/rescore?by_job at boundary value | Correct boundary handling |
+| TC-02908 | API | Rescoring | No auth token | GET /api/rescore?by_job | 401 Unauthorized |
+| TC-02909 | frontend-UAT | Rescoring | Logged in | Open rescore by job in UI | UI renders correctly |
+| TC-02910 | frontend-UAT | Rescoring | No data | Open rescore by job with no data | No-data state shown |
+| TC-02911 | API | Rescoring | Expired token | GET /api/rescore?by_job | 401 Unauthorized |
+| TC-02912 | API | Rescoring | Insufficient role | GET /api/rescore?by_job | 403 Forbidden |
+| TC-02913 | API | Rescoring | Logged in | GET /api/rescore?by_change | 200 + valid data |
+| TC-02914 | API | Rescoring | Logged in | GET /api/rescore?by_change with invalid input | 400/422 + error message |
+| TC-02915 | API | Rescoring | Edge case | GET /api/rescore?by_change at boundary value | Correct boundary handling |
+| TC-02916 | API | Rescoring | No auth token | GET /api/rescore?by_change | 401 Unauthorized |
+| TC-02917 | frontend-UAT | Rescoring | Logged in | Open rescore by change in UI | UI renders correctly |
+| TC-02918 | frontend-UAT | Rescoring | No data | Open rescore by change with no data | No-data state shown |
+| TC-02919 | API | Rescoring | Expired token | GET /api/rescore?by_change | 401 Unauthorized |
+| TC-02920 | API | Rescoring | Insufficient role | GET /api/rescore?by_change | 403 Forbidden |
+| TC-02921 | API | Rescoring | Logged in | GET /api/rescore?by_source | 200 + valid data |
+| TC-02922 | API | Rescoring | Logged in | GET /api/rescore?by_source with invalid input | 400/422 + error message |
+| TC-02923 | API | Rescoring | Edge case | GET /api/rescore?by_source at boundary value | Correct boundary handling |
+| TC-02924 | API | Rescoring | No auth token | GET /api/rescore?by_source | 401 Unauthorized |
+| TC-02925 | frontend-UAT | Rescoring | Logged in | Open rescore by source in UI | UI renders correctly |
+| TC-02926 | frontend-UAT | Rescoring | No data | Open rescore by source with no data | No-data state shown |
+| TC-02927 | API | Rescoring | Expired token | GET /api/rescore?by_source | 401 Unauthorized |
+| TC-02928 | API | Rescoring | Insufficient role | GET /api/rescore?by_source | 403 Forbidden |
+| TC-02929 | API | Rescoring | Logged in | GET /api/rescore?by_role | 200 + valid data |
+| TC-02930 | API | Rescoring | Logged in | GET /api/rescore?by_role with invalid input | 400/422 + error message |
+| TC-02931 | API | Rescoring | Edge case | GET /api/rescore?by_role at boundary value | Correct boundary handling |
+| TC-02932 | API | Rescoring | No auth token | GET /api/rescore?by_role | 401 Unauthorized |
+| TC-02933 | frontend-UAT | Rescoring | Logged in | Open rescore by role in UI | UI renders correctly |
+| TC-02934 | frontend-UAT | Rescoring | No data | Open rescore by role with no data | No-data state shown |
+| TC-02935 | API | Rescoring | Expired token | GET /api/rescore?by_role | 401 Unauthorized |
+| TC-02936 | API | Rescoring | Insufficient role | GET /api/rescore?by_role | 403 Forbidden |
+| TC-02937 | API | Rescoring | Logged in | GET /api/rescore?by_salary | 200 + valid data |
+| TC-02938 | API | Rescoring | Logged in | GET /api/rescore?by_salary with invalid input | 400/422 + error message |
+| TC-02939 | API | Rescoring | Edge case | GET /api/rescore?by_salary at boundary value | Correct boundary handling |
+| TC-02940 | API | Rescoring | No auth token | GET /api/rescore?by_salary | 401 Unauthorized |
+| TC-02941 | frontend-UAT | Rescoring | Logged in | Open rescore by salary in UI | UI renders correctly |
+| TC-02942 | frontend-UAT | Rescoring | No data | Open rescore by salary with no data | No-data state shown |
+| TC-02943 | API | Rescoring | Expired token | GET /api/rescore?by_salary | 401 Unauthorized |
+| TC-02944 | API | Rescoring | Insufficient role | GET /api/rescore?by_salary | 403 Forbidden |
+| TC-02945 | API | Rescoring | Logged in | GET /api/rescore?by_week | 200 + valid data |
+| TC-02946 | API | Rescoring | Logged in | GET /api/rescore?by_week with invalid input | 400/422 + error message |
+| TC-02947 | API | Rescoring | Edge case | GET /api/rescore?by_week at boundary value | Correct boundary handling |
+| TC-02948 | API | Rescoring | No auth token | GET /api/rescore?by_week | 401 Unauthorized |
+| TC-02949 | frontend-UAT | Rescoring | Logged in | Open rescore by week in UI | UI renders correctly |
+| TC-02950 | frontend-UAT | Rescoring | No data | Open rescore by week with no data | No-data state shown |
+| TC-02951 | API | Rescoring | Expired token | GET /api/rescore?by_week | 401 Unauthorized |
+| TC-02952 | API | Rescoring | Insufficient role | GET /api/rescore?by_week | 403 Forbidden |
+| TC-02953 | API | Rescoring | Logged in | GET /api/rescore?empty | 200 + valid data |
+| TC-02954 | API | Rescoring | Logged in | GET /api/rescore?empty with invalid input | 400/422 + error message |
+| TC-02955 | API | Rescoring | Edge case | GET /api/rescore?empty at boundary value | Correct boundary handling |
+| TC-02956 | API | Rescoring | No auth token | GET /api/rescore?empty | 401 Unauthorized |
+| TC-02957 | frontend-UAT | Rescoring | Logged in | Open no-data state in UI | UI renders correctly |
+| TC-02958 | frontend-UAT | Rescoring | No data | Open no-data state with no data | No-data state shown |
+| TC-02959 | API | Rescoring | Expired token | GET /api/rescore?empty | 401 Unauthorized |
+| TC-02960 | API | Rescoring | Insufficient role | GET /api/rescore?empty | 403 Forbidden |
+| TC-02961 | API | Rescoring | Logged in | GET /api/rescore?export | 200 + valid data |
+| TC-02962 | API | Rescoring | Logged in | GET /api/rescore?export with invalid input | 400/422 + error message |
+| TC-02963 | API | Rescoring | Edge case | GET /api/rescore?export at boundary value | Correct boundary handling |
+| TC-02964 | API | Rescoring | No auth token | GET /api/rescore?export | 401 Unauthorized |
+| TC-02965 | frontend-UAT | Rescoring | Logged in | Open export rescore in UI | UI renders correctly |
+| TC-02966 | frontend-UAT | Rescoring | No data | Open export rescore with no data | No-data state shown |
+| TC-02967 | API | Rescoring | Expired token | GET /api/rescore?export | 401 Unauthorized |
+| TC-02968 | API | Rescoring | Insufficient role | GET /api/rescore?export | 403 Forbidden |
+| TC-02969 | API | Rescoring | Logged in | GET /api/rescore?mobile | 200 + valid data |
+| TC-02970 | API | Rescoring | Logged in | GET /api/rescore?mobile with invalid input | 400/422 + error message |
+| TC-02971 | API | Rescoring | Edge case | GET /api/rescore?mobile at boundary value | Correct boundary handling |
+| TC-02972 | API | Rescoring | No auth token | GET /api/rescore?mobile | 401 Unauthorized |
+| TC-02973 | frontend-UAT | Rescoring | Logged in | Open mobile view in UI | UI renders correctly |
+| TC-02974 | frontend-UAT | Rescoring | No data | Open mobile view with no data | No-data state shown |
+| TC-02975 | API | Rescoring | Expired token | GET /api/rescore?mobile | 401 Unauthorized |
+| TC-02976 | API | Rescoring | Insufficient role | GET /api/rescore?mobile | 403 Forbidden |
 ### F26 — Learning insights
 
-| TC-03001 | API | Learning insights | Logged in | GET /api/learning/matched | 200 + valid data |
-| TC-03002 | API | Learning insights | Logged in | GET /api/learning/matched with invalid input | 400/422 + error message |
-| TC-03003 | API | Learning insights | Edge case | GET /api/learning/matched at boundary value | Correct boundary handling |
-| TC-03004 | API | Learning insights | No auth token | GET /api/learning/matched | 401 Unauthorized |
-| TC-03005 | frontend-UAT | Learning insights | Logged in | Open matched jobs in UI | UI renders correctly |
-| TC-03006 | frontend-UAT | Learning insights | No data | Open matched jobs with no data | No-data state shown |
-| TC-03007 | API | Learning insights | Expired token | GET /api/learning/matched | 401 Unauthorized |
-| TC-03008 | API | Learning insights | Insufficient role | GET /api/learning/matched | 403 Forbidden |
-| TC-03009 | API | Learning insights | Logged in | GET /api/learning/top-skills | 200 + valid data |
-| TC-03010 | API | Learning insights | Logged in | GET /api/learning/top-skills with invalid input | 400/422 + error message |
-| TC-03011 | API | Learning insights | Edge case | GET /api/learning/top-skills at boundary value | Correct boundary handling |
-| TC-03012 | API | Learning insights | No auth token | GET /api/learning/top-skills | 401 Unauthorized |
-| TC-03013 | frontend-UAT | Learning insights | Logged in | Open top skills in UI | UI renders correctly |
-| TC-03014 | frontend-UAT | Learning insights | No data | Open top skills with no data | No-data state shown |
-| TC-03015 | API | Learning insights | Expired token | GET /api/learning/top-skills | 401 Unauthorized |
-| TC-03016 | API | Learning insights | Insufficient role | GET /api/learning/top-skills | 403 Forbidden |
-| TC-03017 | API | Learning insights | Logged in | GET /api/learning/patterns | 200 + valid data |
-| TC-03018 | API | Learning insights | Logged in | GET /api/learning/patterns with invalid input | 400/422 + error message |
-| TC-03019 | API | Learning insights | Edge case | GET /api/learning/patterns at boundary value | Correct boundary handling |
-| TC-03020 | API | Learning insights | No auth token | GET /api/learning/patterns | 401 Unauthorized |
-| TC-03021 | frontend-UAT | Learning insights | Logged in | Open rejected patterns in UI | UI renders correctly |
-| TC-03022 | frontend-UAT | Learning insights | No data | Open rejected patterns with no data | No-data state shown |
-| TC-03023 | API | Learning insights | Expired token | GET /api/learning/patterns | 401 Unauthorized |
-| TC-03024 | API | Learning insights | Insufficient role | GET /api/learning/patterns | 403 Forbidden |
-| TC-03025 | API | Learning insights | Logged in | GET /api/learning/tip | 200 + valid data |
-| TC-03026 | API | Learning insights | Logged in | GET /api/learning/tip with invalid input | 400/422 + error message |
-| TC-03027 | API | Learning insights | Edge case | GET /api/learning/tip at boundary value | Correct boundary handling |
-| TC-03028 | API | Learning insights | No auth token | GET /api/learning/tip | 401 Unauthorized |
-| TC-03029 | frontend-UAT | Learning insights | Logged in | Open learning tip in UI | UI renders correctly |
-| TC-03030 | frontend-UAT | Learning insights | No data | Open learning tip with no data | No-data state shown |
-| TC-03031 | API | Learning insights | Expired token | GET /api/learning/tip | 401 Unauthorized |
-| TC-03032 | API | Learning insights | Insufficient role | GET /api/learning/tip | 403 Forbidden |
-| TC-03033 | API | Learning insights | Logged in | GET /api/learning/effect | 200 + valid data |
-| TC-03034 | API | Learning insights | Logged in | GET /api/learning/effect with invalid input | 400/422 + error message |
-| TC-03035 | API | Learning insights | Edge case | GET /api/learning/effect at boundary value | Correct boundary handling |
-| TC-03036 | API | Learning insights | No auth token | GET /api/learning/effect | 401 Unauthorized |
-| TC-03037 | frontend-UAT | Learning insights | Logged in | Open feedback effect in UI | UI renders correctly |
-| TC-03038 | frontend-UAT | Learning insights | No data | Open feedback effect with no data | No-data state shown |
-| TC-03039 | API | Learning insights | Expired token | GET /api/learning/effect | 401 Unauthorized |
-| TC-03040 | API | Learning insights | Insufficient role | GET /api/learning/effect | 403 Forbidden |
-| TC-03041 | API | Learning insights | Logged in | GET /api/learning/next-skill | 200 + valid data |
-| TC-03042 | API | Learning insights | Logged in | GET /api/learning/next-skill with invalid input | 400/422 + error message |
-| TC-03043 | API | Learning insights | Edge case | GET /api/learning/next-skill at boundary value | Correct boundary handling |
-| TC-03044 | API | Learning insights | No auth token | GET /api/learning/next-skill | 401 Unauthorized |
-| TC-03045 | frontend-UAT | Learning insights | Logged in | Open next skill in UI | UI renders correctly |
-| TC-03046 | frontend-UAT | Learning insights | No data | Open next skill with no data | No-data state shown |
-| TC-03047 | API | Learning insights | Expired token | GET /api/learning/next-skill | 401 Unauthorized |
-| TC-03048 | API | Learning insights | Insufficient role | GET /api/learning/next-skill | 403 Forbidden |
-| TC-03049 | API | Learning insights | Logged in | GET /api/learning/tip?skill | 200 + valid data |
-| TC-03050 | API | Learning insights | Logged in | GET /api/learning/tip?skill with invalid input | 400/422 + error message |
-| TC-03051 | API | Learning insights | Edge case | GET /api/learning/tip?skill at boundary value | Correct boundary handling |
-| TC-03052 | API | Learning insights | No auth token | GET /api/learning/tip?skill | 401 Unauthorized |
-| TC-03053 | frontend-UAT | Learning insights | Logged in | Open skill-specific tip in UI | UI renders correctly |
-| TC-03054 | frontend-UAT | Learning insights | No data | Open skill-specific tip with no data | No-data state shown |
-| TC-03055 | API | Learning insights | Expired token | GET /api/learning/tip?skill | 401 Unauthorized |
-| TC-03056 | API | Learning insights | Insufficient role | GET /api/learning/tip?skill | 403 Forbidden |
-| TC-03057 | API | Learning insights | Logged in | GET /api/learning/tip?job | 200 + valid data |
-| TC-03058 | API | Learning insights | Logged in | GET /api/learning/tip?job with invalid input | 400/422 + error message |
-| TC-03059 | API | Learning insights | Edge case | GET /api/learning/tip?job at boundary value | Correct boundary handling |
-| TC-03060 | API | Learning insights | No auth token | GET /api/learning/tip?job | 401 Unauthorized |
-| TC-03061 | frontend-UAT | Learning insights | Logged in | Open job-specific tip in UI | UI renders correctly |
-| TC-03062 | frontend-UAT | Learning insights | No data | Open job-specific tip with no data | No-data state shown |
-| TC-03063 | API | Learning insights | Expired token | GET /api/learning/tip?job | 401 Unauthorized |
-| TC-03064 | API | Learning insights | Insufficient role | GET /api/learning/tip?job | 403 Forbidden |
-| TC-03065 | API | Learning insights | Logged in | GET /api/learning/tip?source | 200 + valid data |
-| TC-03066 | API | Learning insights | Logged in | GET /api/learning/tip?source with invalid input | 400/422 + error message |
-| TC-03067 | API | Learning insights | Edge case | GET /api/learning/tip?source at boundary value | Correct boundary handling |
-| TC-03068 | API | Learning insights | No auth token | GET /api/learning/tip?source | 401 Unauthorized |
-| TC-03069 | frontend-UAT | Learning insights | Logged in | Open source-specific tip in UI | UI renders correctly |
-| TC-03070 | frontend-UAT | Learning insights | No data | Open source-specific tip with no data | No-data state shown |
-| TC-03071 | API | Learning insights | Expired token | GET /api/learning/tip?source | 401 Unauthorized |
-| TC-03072 | API | Learning insights | Insufficient role | GET /api/learning/tip?source | 403 Forbidden |
-| TC-03073 | API | Learning insights | Logged in | GET /api/learning/tip?week | 200 + valid data |
-| TC-03074 | API | Learning insights | Logged in | GET /api/learning/tip?week with invalid input | 400/422 + error message |
-| TC-03075 | API | Learning insights | Edge case | GET /api/learning/tip?week at boundary value | Correct boundary handling |
-| TC-03076 | API | Learning insights | No auth token | GET /api/learning/tip?week | 401 Unauthorized |
-| TC-03077 | frontend-UAT | Learning insights | Logged in | Open week-specific tip in UI | UI renders correctly |
-| TC-03078 | frontend-UAT | Learning insights | No data | Open week-specific tip with no data | No-data state shown |
-| TC-03079 | API | Learning insights | Expired token | GET /api/learning/tip?week | 401 Unauthorized |
-| TC-03080 | API | Learning insights | Insufficient role | GET /api/learning/tip?week | 403 Forbidden |
-| TC-03081 | API | Learning insights | Logged in | GET /api/learning/tip?role | 200 + valid data |
-| TC-03082 | API | Learning insights | Logged in | GET /api/learning/tip?role with invalid input | 400/422 + error message |
-| TC-03083 | API | Learning insights | Edge case | GET /api/learning/tip?role at boundary value | Correct boundary handling |
-| TC-03084 | API | Learning insights | No auth token | GET /api/learning/tip?role | 401 Unauthorized |
-| TC-03085 | frontend-UAT | Learning insights | Logged in | Open role-specific tip in UI | UI renders correctly |
-| TC-03086 | frontend-UAT | Learning insights | No data | Open role-specific tip with no data | No-data state shown |
-| TC-03087 | API | Learning insights | Expired token | GET /api/learning/tip?role | 401 Unauthorized |
-| TC-03088 | API | Learning insights | Insufficient role | GET /api/learning/tip?role | 403 Forbidden |
-| TC-03089 | API | Learning insights | Logged in | GET /api/learning/tip?salary | 200 + valid data |
-| TC-03090 | API | Learning insights | Logged in | GET /api/learning/tip?salary with invalid input | 400/422 + error message |
-| TC-03091 | API | Learning insights | Edge case | GET /api/learning/tip?salary at boundary value | Correct boundary handling |
-| TC-03092 | API | Learning insights | No auth token | GET /api/learning/tip?salary | 401 Unauthorized |
-| TC-03093 | frontend-UAT | Learning insights | Logged in | Open salary-specific tip in UI | UI renders correctly |
-| TC-03094 | frontend-UAT | Learning insights | No data | Open salary-specific tip with no data | No-data state shown |
-| TC-03095 | API | Learning insights | Expired token | GET /api/learning/tip?salary | 401 Unauthorized |
-| TC-03096 | API | Learning insights | Insufficient role | GET /api/learning/tip?salary | 403 Forbidden |
-| TC-03097 | API | Learning insights | Logged in | GET /api/learning?empty | 200 + valid data |
-| TC-03098 | API | Learning insights | Logged in | GET /api/learning?empty with invalid input | 400/422 + error message |
-| TC-03099 | API | Learning insights | Edge case | GET /api/learning?empty at boundary value | Correct boundary handling |
-| TC-03100 | API | Learning insights | No auth token | GET /api/learning?empty | 401 Unauthorized |
-| TC-03101 | frontend-UAT | Learning insights | Logged in | Open no-data state in UI | UI renders correctly |
-| TC-03102 | frontend-UAT | Learning insights | No data | Open no-data state with no data | No-data state shown |
-| TC-03103 | API | Learning insights | Expired token | GET /api/learning?empty | 401 Unauthorized |
-| TC-03104 | API | Learning insights | Insufficient role | GET /api/learning?empty | 403 Forbidden |
-| TC-03105 | API | Learning insights | Logged in | GET /api/learning?panel | 200 + valid data |
-| TC-03106 | API | Learning insights | Logged in | GET /api/learning?panel with invalid input | 400/422 + error message |
-| TC-03107 | API | Learning insights | Edge case | GET /api/learning?panel at boundary value | Correct boundary handling |
-| TC-03108 | API | Learning insights | No auth token | GET /api/learning?panel | 401 Unauthorized |
-| TC-03109 | frontend-UAT | Learning insights | Logged in | Open panel render in UI | UI renders correctly |
-| TC-03110 | frontend-UAT | Learning insights | No data | Open panel render with no data | No-data state shown |
-| TC-03111 | API | Learning insights | Expired token | GET /api/learning?panel | 401 Unauthorized |
-| TC-03112 | API | Learning insights | Insufficient role | GET /api/learning?panel | 403 Forbidden |
-| TC-03113 | API | Learning insights | Logged in | GET /api/learning?export | 200 + valid data |
-| TC-03114 | API | Learning insights | Logged in | GET /api/learning?export with invalid input | 400/422 + error message |
-| TC-03115 | API | Learning insights | Edge case | GET /api/learning?export at boundary value | Correct boundary handling |
-| TC-03116 | API | Learning insights | No auth token | GET /api/learning?export | 401 Unauthorized |
-| TC-03117 | frontend-UAT | Learning insights | Logged in | Open export learning in UI | UI renders correctly |
-| TC-03118 | frontend-UAT | Learning insights | No data | Open export learning with no data | No-data state shown |
-| TC-03119 | API | Learning insights | Expired token | GET /api/learning?export | 401 Unauthorized |
-| TC-03120 | API | Learning insights | Insufficient role | GET /api/learning?export | 403 Forbidden |
+| TC-02977 | API | Learning insights | Logged in | GET /api/learning/matched | 200 + valid data |
+| TC-02978 | API | Learning insights | Logged in | GET /api/learning/matched with invalid input | 400/422 + error message |
+| TC-02979 | API | Learning insights | Edge case | GET /api/learning/matched at boundary value | Correct boundary handling |
+| TC-02980 | API | Learning insights | No auth token | GET /api/learning/matched | 401 Unauthorized |
+| TC-02981 | frontend-UAT | Learning insights | Logged in | Open matched jobs in UI | UI renders correctly |
+| TC-02982 | frontend-UAT | Learning insights | No data | Open matched jobs with no data | No-data state shown |
+| TC-02983 | API | Learning insights | Expired token | GET /api/learning/matched | 401 Unauthorized |
+| TC-02984 | API | Learning insights | Insufficient role | GET /api/learning/matched | 403 Forbidden |
+| TC-02985 | API | Learning insights | Logged in | GET /api/learning/top-skills | 200 + valid data |
+| TC-02986 | API | Learning insights | Logged in | GET /api/learning/top-skills with invalid input | 400/422 + error message |
+| TC-02987 | API | Learning insights | Edge case | GET /api/learning/top-skills at boundary value | Correct boundary handling |
+| TC-02988 | API | Learning insights | No auth token | GET /api/learning/top-skills | 401 Unauthorized |
+| TC-02989 | frontend-UAT | Learning insights | Logged in | Open top skills in UI | UI renders correctly |
+| TC-02990 | frontend-UAT | Learning insights | No data | Open top skills with no data | No-data state shown |
+| TC-02991 | API | Learning insights | Expired token | GET /api/learning/top-skills | 401 Unauthorized |
+| TC-02992 | API | Learning insights | Insufficient role | GET /api/learning/top-skills | 403 Forbidden |
+| TC-02993 | API | Learning insights | Logged in | GET /api/learning/patterns | 200 + valid data |
+| TC-02994 | API | Learning insights | Logged in | GET /api/learning/patterns with invalid input | 400/422 + error message |
+| TC-02995 | API | Learning insights | Edge case | GET /api/learning/patterns at boundary value | Correct boundary handling |
+| TC-02996 | API | Learning insights | No auth token | GET /api/learning/patterns | 401 Unauthorized |
+| TC-02997 | frontend-UAT | Learning insights | Logged in | Open rejected patterns in UI | UI renders correctly |
+| TC-02998 | frontend-UAT | Learning insights | No data | Open rejected patterns with no data | No-data state shown |
+| TC-02999 | API | Learning insights | Expired token | GET /api/learning/patterns | 401 Unauthorized |
+| TC-03000 | API | Learning insights | Insufficient role | GET /api/learning/patterns | 403 Forbidden |
+| TC-03001 | API | Learning insights | Logged in | GET /api/learning/tip | 200 + valid data |
+| TC-03002 | API | Learning insights | Logged in | GET /api/learning/tip with invalid input | 400/422 + error message |
+| TC-03003 | API | Learning insights | Edge case | GET /api/learning/tip at boundary value | Correct boundary handling |
+| TC-03004 | API | Learning insights | No auth token | GET /api/learning/tip | 401 Unauthorized |
+| TC-03005 | frontend-UAT | Learning insights | Logged in | Open learning tip in UI | UI renders correctly |
+| TC-03006 | frontend-UAT | Learning insights | No data | Open learning tip with no data | No-data state shown |
+| TC-03007 | API | Learning insights | Expired token | GET /api/learning/tip | 401 Unauthorized |
+| TC-03008 | API | Learning insights | Insufficient role | GET /api/learning/tip | 403 Forbidden |
+| TC-03009 | API | Learning insights | Logged in | GET /api/learning/effect | 200 + valid data |
+| TC-03010 | API | Learning insights | Logged in | GET /api/learning/effect with invalid input | 400/422 + error message |
+| TC-03011 | API | Learning insights | Edge case | GET /api/learning/effect at boundary value | Correct boundary handling |
+| TC-03012 | API | Learning insights | No auth token | GET /api/learning/effect | 401 Unauthorized |
+| TC-03013 | frontend-UAT | Learning insights | Logged in | Open feedback effect in UI | UI renders correctly |
+| TC-03014 | frontend-UAT | Learning insights | No data | Open feedback effect with no data | No-data state shown |
+| TC-03015 | API | Learning insights | Expired token | GET /api/learning/effect | 401 Unauthorized |
+| TC-03016 | API | Learning insights | Insufficient role | GET /api/learning/effect | 403 Forbidden |
+| TC-03017 | API | Learning insights | Logged in | GET /api/learning/next-skill | 200 + valid data |
+| TC-03018 | API | Learning insights | Logged in | GET /api/learning/next-skill with invalid input | 400/422 + error message |
+| TC-03019 | API | Learning insights | Edge case | GET /api/learning/next-skill at boundary value | Correct boundary handling |
+| TC-03020 | API | Learning insights | No auth token | GET /api/learning/next-skill | 401 Unauthorized |
+| TC-03021 | frontend-UAT | Learning insights | Logged in | Open next skill in UI | UI renders correctly |
+| TC-03022 | frontend-UAT | Learning insights | No data | Open next skill with no data | No-data state shown |
+| TC-03023 | API | Learning insights | Expired token | GET /api/learning/next-skill | 401 Unauthorized |
+| TC-03024 | API | Learning insights | Insufficient role | GET /api/learning/next-skill | 403 Forbidden |
+| TC-03025 | API | Learning insights | Logged in | GET /api/learning/tip?skill | 200 + valid data |
+| TC-03026 | API | Learning insights | Logged in | GET /api/learning/tip?skill with invalid input | 400/422 + error message |
+| TC-03027 | API | Learning insights | Edge case | GET /api/learning/tip?skill at boundary value | Correct boundary handling |
+| TC-03028 | API | Learning insights | No auth token | GET /api/learning/tip?skill | 401 Unauthorized |
+| TC-03029 | frontend-UAT | Learning insights | Logged in | Open skill-specific tip in UI | UI renders correctly |
+| TC-03030 | frontend-UAT | Learning insights | No data | Open skill-specific tip with no data | No-data state shown |
+| TC-03031 | API | Learning insights | Expired token | GET /api/learning/tip?skill | 401 Unauthorized |
+| TC-03032 | API | Learning insights | Insufficient role | GET /api/learning/tip?skill | 403 Forbidden |
+| TC-03033 | API | Learning insights | Logged in | GET /api/learning/tip?job | 200 + valid data |
+| TC-03034 | API | Learning insights | Logged in | GET /api/learning/tip?job with invalid input | 400/422 + error message |
+| TC-03035 | API | Learning insights | Edge case | GET /api/learning/tip?job at boundary value | Correct boundary handling |
+| TC-03036 | API | Learning insights | No auth token | GET /api/learning/tip?job | 401 Unauthorized |
+| TC-03037 | frontend-UAT | Learning insights | Logged in | Open job-specific tip in UI | UI renders correctly |
+| TC-03038 | frontend-UAT | Learning insights | No data | Open job-specific tip with no data | No-data state shown |
+| TC-03039 | API | Learning insights | Expired token | GET /api/learning/tip?job | 401 Unauthorized |
+| TC-03040 | API | Learning insights | Insufficient role | GET /api/learning/tip?job | 403 Forbidden |
+| TC-03041 | API | Learning insights | Logged in | GET /api/learning/tip?source | 200 + valid data |
+| TC-03042 | API | Learning insights | Logged in | GET /api/learning/tip?source with invalid input | 400/422 + error message |
+| TC-03043 | API | Learning insights | Edge case | GET /api/learning/tip?source at boundary value | Correct boundary handling |
+| TC-03044 | API | Learning insights | No auth token | GET /api/learning/tip?source | 401 Unauthorized |
+| TC-03045 | frontend-UAT | Learning insights | Logged in | Open source-specific tip in UI | UI renders correctly |
+| TC-03046 | frontend-UAT | Learning insights | No data | Open source-specific tip with no data | No-data state shown |
+| TC-03047 | API | Learning insights | Expired token | GET /api/learning/tip?source | 401 Unauthorized |
+| TC-03048 | API | Learning insights | Insufficient role | GET /api/learning/tip?source | 403 Forbidden |
+| TC-03049 | API | Learning insights | Logged in | GET /api/learning/tip?week | 200 + valid data |
+| TC-03050 | API | Learning insights | Logged in | GET /api/learning/tip?week with invalid input | 400/422 + error message |
+| TC-03051 | API | Learning insights | Edge case | GET /api/learning/tip?week at boundary value | Correct boundary handling |
+| TC-03052 | API | Learning insights | No auth token | GET /api/learning/tip?week | 401 Unauthorized |
+| TC-03053 | frontend-UAT | Learning insights | Logged in | Open week-specific tip in UI | UI renders correctly |
+| TC-03054 | frontend-UAT | Learning insights | No data | Open week-specific tip with no data | No-data state shown |
+| TC-03055 | API | Learning insights | Expired token | GET /api/learning/tip?week | 401 Unauthorized |
+| TC-03056 | API | Learning insights | Insufficient role | GET /api/learning/tip?week | 403 Forbidden |
+| TC-03057 | API | Learning insights | Logged in | GET /api/learning/tip?role | 200 + valid data |
+| TC-03058 | API | Learning insights | Logged in | GET /api/learning/tip?role with invalid input | 400/422 + error message |
+| TC-03059 | API | Learning insights | Edge case | GET /api/learning/tip?role at boundary value | Correct boundary handling |
+| TC-03060 | API | Learning insights | No auth token | GET /api/learning/tip?role | 401 Unauthorized |
+| TC-03061 | frontend-UAT | Learning insights | Logged in | Open role-specific tip in UI | UI renders correctly |
+| TC-03062 | frontend-UAT | Learning insights | No data | Open role-specific tip with no data | No-data state shown |
+| TC-03063 | API | Learning insights | Expired token | GET /api/learning/tip?role | 401 Unauthorized |
+| TC-03064 | API | Learning insights | Insufficient role | GET /api/learning/tip?role | 403 Forbidden |
+| TC-03065 | API | Learning insights | Logged in | GET /api/learning/tip?salary | 200 + valid data |
+| TC-03066 | API | Learning insights | Logged in | GET /api/learning/tip?salary with invalid input | 400/422 + error message |
+| TC-03067 | API | Learning insights | Edge case | GET /api/learning/tip?salary at boundary value | Correct boundary handling |
+| TC-03068 | API | Learning insights | No auth token | GET /api/learning/tip?salary | 401 Unauthorized |
+| TC-03069 | frontend-UAT | Learning insights | Logged in | Open salary-specific tip in UI | UI renders correctly |
+| TC-03070 | frontend-UAT | Learning insights | No data | Open salary-specific tip with no data | No-data state shown |
+| TC-03071 | API | Learning insights | Expired token | GET /api/learning/tip?salary | 401 Unauthorized |
+| TC-03072 | API | Learning insights | Insufficient role | GET /api/learning/tip?salary | 403 Forbidden |
+| TC-03073 | API | Learning insights | Logged in | GET /api/learning?empty | 200 + valid data |
+| TC-03074 | API | Learning insights | Logged in | GET /api/learning?empty with invalid input | 400/422 + error message |
+| TC-03075 | API | Learning insights | Edge case | GET /api/learning?empty at boundary value | Correct boundary handling |
+| TC-03076 | API | Learning insights | No auth token | GET /api/learning?empty | 401 Unauthorized |
+| TC-03077 | frontend-UAT | Learning insights | Logged in | Open no-data state in UI | UI renders correctly |
+| TC-03078 | frontend-UAT | Learning insights | No data | Open no-data state with no data | No-data state shown |
+| TC-03079 | API | Learning insights | Expired token | GET /api/learning?empty | 401 Unauthorized |
+| TC-03080 | API | Learning insights | Insufficient role | GET /api/learning?empty | 403 Forbidden |
+| TC-03081 | API | Learning insights | Logged in | GET /api/learning?panel | 200 + valid data |
+| TC-03082 | API | Learning insights | Logged in | GET /api/learning?panel with invalid input | 400/422 + error message |
+| TC-03083 | API | Learning insights | Edge case | GET /api/learning?panel at boundary value | Correct boundary handling |
+| TC-03084 | API | Learning insights | No auth token | GET /api/learning?panel | 401 Unauthorized |
+| TC-03085 | frontend-UAT | Learning insights | Logged in | Open panel render in UI | UI renders correctly |
+| TC-03086 | frontend-UAT | Learning insights | No data | Open panel render with no data | No-data state shown |
+| TC-03087 | API | Learning insights | Expired token | GET /api/learning?panel | 401 Unauthorized |
+| TC-03088 | API | Learning insights | Insufficient role | GET /api/learning?panel | 403 Forbidden |
+| TC-03089 | API | Learning insights | Logged in | GET /api/learning?export | 200 + valid data |
+| TC-03090 | API | Learning insights | Logged in | GET /api/learning?export with invalid input | 400/422 + error message |
+| TC-03091 | API | Learning insights | Edge case | GET /api/learning?export at boundary value | Correct boundary handling |
+| TC-03092 | API | Learning insights | No auth token | GET /api/learning?export | 401 Unauthorized |
+| TC-03093 | frontend-UAT | Learning insights | Logged in | Open export learning in UI | UI renders correctly |
+| TC-03094 | frontend-UAT | Learning insights | No data | Open export learning with no data | No-data state shown |
+| TC-03095 | API | Learning insights | Expired token | GET /api/learning?export | 401 Unauthorized |
+| TC-03096 | API | Learning insights | Insufficient role | GET /api/learning?export | 403 Forbidden |
 ### F27 — Analytics salary/skills/sources/trend
 
-| TC-03121 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/salary | 200 + valid data |
-| TC-03122 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/salary with invalid input | 400/422 + error message |
-| TC-03123 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics/salary at boundary value | Correct boundary handling |
-| TC-03124 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics/salary | 401 Unauthorized |
-| TC-03125 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open salary analytics in UI | UI renders correctly |
-| TC-03126 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open salary analytics with no data | No-data state shown |
-| TC-03127 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics/salary | 401 Unauthorized |
-| TC-03128 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics/salary | 403 Forbidden |
-| TC-03129 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/skills | 200 + valid data |
-| TC-03130 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/skills with invalid input | 400/422 + error message |
-| TC-03131 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics/skills at boundary value | Correct boundary handling |
-| TC-03132 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics/skills | 401 Unauthorized |
-| TC-03133 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open skills analytics in UI | UI renders correctly |
-| TC-03134 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open skills analytics with no data | No-data state shown |
-| TC-03135 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics/skills | 401 Unauthorized |
-| TC-03136 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics/skills | 403 Forbidden |
-| TC-03137 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/sources | 200 + valid data |
-| TC-03138 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/sources with invalid input | 400/422 + error message |
-| TC-03139 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics/sources at boundary value | Correct boundary handling |
-| TC-03140 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics/sources | 401 Unauthorized |
-| TC-03141 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open source analytics in UI | UI renders correctly |
-| TC-03142 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open source analytics with no data | No-data state shown |
-| TC-03143 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics/sources | 401 Unauthorized |
-| TC-03144 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics/sources | 403 Forbidden |
-| TC-03145 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/trend | 200 + valid data |
-| TC-03146 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/trend with invalid input | 400/422 + error message |
-| TC-03147 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics/trend at boundary value | Correct boundary handling |
-| TC-03148 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics/trend | 401 Unauthorized |
-| TC-03149 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open trend analytics in UI | UI renders correctly |
-| TC-03150 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open trend analytics with no data | No-data state shown |
-| TC-03151 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics/trend | 401 Unauthorized |
-| TC-03152 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics/trend | 403 Forbidden |
-| TC-03153 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/export | 200 + valid data |
-| TC-03154 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/export with invalid input | 400/422 + error message |
-| TC-03155 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics/export at boundary value | Correct boundary handling |
-| TC-03156 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics/export | 401 Unauthorized |
-| TC-03157 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open export analytics in UI | UI renders correctly |
-| TC-03158 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open export analytics with no data | No-data state shown |
-| TC-03159 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics/export | 401 Unauthorized |
-| TC-03160 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics/export | 403 Forbidden |
-| TC-03161 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?from | 200 + valid data |
-| TC-03162 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?from with invalid input | 400/422 + error message |
-| TC-03163 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?from at boundary value | Correct boundary handling |
-| TC-03164 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?from | 401 Unauthorized |
-| TC-03165 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open filter by date in UI | UI renders correctly |
-| TC-03166 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open filter by date with no data | No-data state shown |
-| TC-03167 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?from | 401 Unauthorized |
-| TC-03168 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?from | 403 Forbidden |
-| TC-03169 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/dashboard | 200 + valid data |
-| TC-03170 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/dashboard with invalid input | 400/422 + error message |
-| TC-03171 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics/dashboard at boundary value | Correct boundary handling |
-| TC-03172 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics/dashboard | 401 Unauthorized |
-| TC-03173 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open combined dashboard in UI | UI renders correctly |
-| TC-03174 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open combined dashboard with no data | No-data state shown |
-| TC-03175 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics/dashboard | 401 Unauthorized |
-| TC-03176 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics/dashboard | 403 Forbidden |
-| TC-03177 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?compare | 200 + valid data |
-| TC-03178 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?compare with invalid input | 400/422 + error message |
-| TC-03179 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?compare at boundary value | Correct boundary handling |
-| TC-03180 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?compare | 401 Unauthorized |
-| TC-03181 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open compare ranges in UI | UI renders correctly |
-| TC-03182 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open compare ranges with no data | No-data state shown |
-| TC-03183 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?compare | 401 Unauthorized |
-| TC-03184 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?compare | 403 Forbidden |
-| TC-03185 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?empty | 200 + valid data |
-| TC-03186 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?empty with invalid input | 400/422 + error message |
-| TC-03187 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?empty at boundary value | Correct boundary handling |
-| TC-03188 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?empty | 401 Unauthorized |
-| TC-03189 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open no-data state in UI | UI renders correctly |
-| TC-03190 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open no-data state with no data | No-data state shown |
-| TC-03191 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?empty | 401 Unauthorized |
-| TC-03192 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?empty | 403 Forbidden |
-| TC-03193 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?salary | 200 + valid data |
-| TC-03194 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?salary with invalid input | 400/422 + error message |
-| TC-03195 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?salary at boundary value | Correct boundary handling |
-| TC-03196 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?salary | 401 Unauthorized |
-| TC-03197 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open salary render in UI | UI renders correctly |
-| TC-03198 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open salary render with no data | No-data state shown |
-| TC-03199 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?salary | 401 Unauthorized |
-| TC-03200 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?salary | 403 Forbidden |
-| TC-03201 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?skills | 200 + valid data |
-| TC-03202 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?skills with invalid input | 400/422 + error message |
-| TC-03203 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?skills at boundary value | Correct boundary handling |
-| TC-03204 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?skills | 401 Unauthorized |
-| TC-03205 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open skills render in UI | UI renders correctly |
-| TC-03206 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open skills render with no data | No-data state shown |
-| TC-03207 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?skills | 401 Unauthorized |
-| TC-03208 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?skills | 403 Forbidden |
-| TC-03209 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?sources | 200 + valid data |
-| TC-03210 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?sources with invalid input | 400/422 + error message |
-| TC-03211 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?sources at boundary value | Correct boundary handling |
-| TC-03212 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?sources | 401 Unauthorized |
-| TC-03213 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open source render in UI | UI renders correctly |
-| TC-03214 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open source render with no data | No-data state shown |
-| TC-03215 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?sources | 401 Unauthorized |
-| TC-03216 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?sources | 403 Forbidden |
-| TC-03217 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?trend | 200 + valid data |
-| TC-03218 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?trend with invalid input | 400/422 + error message |
-| TC-03219 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?trend at boundary value | Correct boundary handling |
-| TC-03220 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?trend | 401 Unauthorized |
-| TC-03221 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open trend render in UI | UI renders correctly |
-| TC-03222 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open trend render with no data | No-data state shown |
-| TC-03223 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?trend | 401 Unauthorized |
-| TC-03224 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?trend | 403 Forbidden |
-| TC-03225 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?mobile | 200 + valid data |
-| TC-03226 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?mobile with invalid input | 400/422 + error message |
-| TC-03227 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?mobile at boundary value | Correct boundary handling |
-| TC-03228 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?mobile | 401 Unauthorized |
-| TC-03229 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open mobile view in UI | UI renders correctly |
-| TC-03230 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open mobile view with no data | No-data state shown |
-| TC-03231 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?mobile | 401 Unauthorized |
-| TC-03232 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?mobile | 403 Forbidden |
-| TC-03233 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?print | 200 + valid data |
-| TC-03234 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?print with invalid input | 400/422 + error message |
-| TC-03235 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?print at boundary value | Correct boundary handling |
-| TC-03236 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?print | 401 Unauthorized |
-| TC-03237 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open print view in UI | UI renders correctly |
-| TC-03238 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open print view with no data | No-data state shown |
-| TC-03239 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?print | 401 Unauthorized |
-| TC-03240 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?print | 403 Forbidden |
+| TC-03097 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/salary | 200 + valid data |
+| TC-03098 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/salary with invalid input | 400/422 + error message |
+| TC-03099 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics/salary at boundary value | Correct boundary handling |
+| TC-03100 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics/salary | 401 Unauthorized |
+| TC-03101 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open salary analytics in UI | UI renders correctly |
+| TC-03102 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open salary analytics with no data | No-data state shown |
+| TC-03103 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics/salary | 401 Unauthorized |
+| TC-03104 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics/salary | 403 Forbidden |
+| TC-03105 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/skills | 200 + valid data |
+| TC-03106 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/skills with invalid input | 400/422 + error message |
+| TC-03107 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics/skills at boundary value | Correct boundary handling |
+| TC-03108 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics/skills | 401 Unauthorized |
+| TC-03109 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open skills analytics in UI | UI renders correctly |
+| TC-03110 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open skills analytics with no data | No-data state shown |
+| TC-03111 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics/skills | 401 Unauthorized |
+| TC-03112 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics/skills | 403 Forbidden |
+| TC-03113 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/sources | 200 + valid data |
+| TC-03114 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/sources with invalid input | 400/422 + error message |
+| TC-03115 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics/sources at boundary value | Correct boundary handling |
+| TC-03116 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics/sources | 401 Unauthorized |
+| TC-03117 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open source analytics in UI | UI renders correctly |
+| TC-03118 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open source analytics with no data | No-data state shown |
+| TC-03119 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics/sources | 401 Unauthorized |
+| TC-03120 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics/sources | 403 Forbidden |
+| TC-03121 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/trend | 200 + valid data |
+| TC-03122 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/trend with invalid input | 400/422 + error message |
+| TC-03123 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics/trend at boundary value | Correct boundary handling |
+| TC-03124 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics/trend | 401 Unauthorized |
+| TC-03125 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open trend analytics in UI | UI renders correctly |
+| TC-03126 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open trend analytics with no data | No-data state shown |
+| TC-03127 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics/trend | 401 Unauthorized |
+| TC-03128 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics/trend | 403 Forbidden |
+| TC-03129 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/export | 200 + valid data |
+| TC-03130 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/export with invalid input | 400/422 + error message |
+| TC-03131 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics/export at boundary value | Correct boundary handling |
+| TC-03132 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics/export | 401 Unauthorized |
+| TC-03133 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open export analytics in UI | UI renders correctly |
+| TC-03134 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open export analytics with no data | No-data state shown |
+| TC-03135 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics/export | 401 Unauthorized |
+| TC-03136 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics/export | 403 Forbidden |
+| TC-03137 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?from | 200 + valid data |
+| TC-03138 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?from with invalid input | 400/422 + error message |
+| TC-03139 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?from at boundary value | Correct boundary handling |
+| TC-03140 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?from | 401 Unauthorized |
+| TC-03141 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open filter by date in UI | UI renders correctly |
+| TC-03142 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open filter by date with no data | No-data state shown |
+| TC-03143 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?from | 401 Unauthorized |
+| TC-03144 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?from | 403 Forbidden |
+| TC-03145 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/dashboard | 200 + valid data |
+| TC-03146 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics/dashboard with invalid input | 400/422 + error message |
+| TC-03147 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics/dashboard at boundary value | Correct boundary handling |
+| TC-03148 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics/dashboard | 401 Unauthorized |
+| TC-03149 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open combined dashboard in UI | UI renders correctly |
+| TC-03150 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open combined dashboard with no data | No-data state shown |
+| TC-03151 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics/dashboard | 401 Unauthorized |
+| TC-03152 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics/dashboard | 403 Forbidden |
+| TC-03153 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?compare | 200 + valid data |
+| TC-03154 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?compare with invalid input | 400/422 + error message |
+| TC-03155 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?compare at boundary value | Correct boundary handling |
+| TC-03156 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?compare | 401 Unauthorized |
+| TC-03157 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open compare ranges in UI | UI renders correctly |
+| TC-03158 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open compare ranges with no data | No-data state shown |
+| TC-03159 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?compare | 401 Unauthorized |
+| TC-03160 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?compare | 403 Forbidden |
+| TC-03161 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?empty | 200 + valid data |
+| TC-03162 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?empty with invalid input | 400/422 + error message |
+| TC-03163 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?empty at boundary value | Correct boundary handling |
+| TC-03164 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?empty | 401 Unauthorized |
+| TC-03165 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open no-data state in UI | UI renders correctly |
+| TC-03166 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open no-data state with no data | No-data state shown |
+| TC-03167 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?empty | 401 Unauthorized |
+| TC-03168 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?empty | 403 Forbidden |
+| TC-03169 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?salary | 200 + valid data |
+| TC-03170 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?salary with invalid input | 400/422 + error message |
+| TC-03171 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?salary at boundary value | Correct boundary handling |
+| TC-03172 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?salary | 401 Unauthorized |
+| TC-03173 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open salary render in UI | UI renders correctly |
+| TC-03174 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open salary render with no data | No-data state shown |
+| TC-03175 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?salary | 401 Unauthorized |
+| TC-03176 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?salary | 403 Forbidden |
+| TC-03177 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?skills | 200 + valid data |
+| TC-03178 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?skills with invalid input | 400/422 + error message |
+| TC-03179 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?skills at boundary value | Correct boundary handling |
+| TC-03180 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?skills | 401 Unauthorized |
+| TC-03181 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open skills render in UI | UI renders correctly |
+| TC-03182 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open skills render with no data | No-data state shown |
+| TC-03183 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?skills | 401 Unauthorized |
+| TC-03184 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?skills | 403 Forbidden |
+| TC-03185 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?sources | 200 + valid data |
+| TC-03186 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?sources with invalid input | 400/422 + error message |
+| TC-03187 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?sources at boundary value | Correct boundary handling |
+| TC-03188 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?sources | 401 Unauthorized |
+| TC-03189 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open source render in UI | UI renders correctly |
+| TC-03190 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open source render with no data | No-data state shown |
+| TC-03191 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?sources | 401 Unauthorized |
+| TC-03192 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?sources | 403 Forbidden |
+| TC-03193 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?trend | 200 + valid data |
+| TC-03194 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?trend with invalid input | 400/422 + error message |
+| TC-03195 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?trend at boundary value | Correct boundary handling |
+| TC-03196 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?trend | 401 Unauthorized |
+| TC-03197 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open trend render in UI | UI renders correctly |
+| TC-03198 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open trend render with no data | No-data state shown |
+| TC-03199 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?trend | 401 Unauthorized |
+| TC-03200 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?trend | 403 Forbidden |
+| TC-03201 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?mobile | 200 + valid data |
+| TC-03202 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?mobile with invalid input | 400/422 + error message |
+| TC-03203 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?mobile at boundary value | Correct boundary handling |
+| TC-03204 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?mobile | 401 Unauthorized |
+| TC-03205 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open mobile view in UI | UI renders correctly |
+| TC-03206 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open mobile view with no data | No-data state shown |
+| TC-03207 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?mobile | 401 Unauthorized |
+| TC-03208 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?mobile | 403 Forbidden |
+| TC-03209 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?print | 200 + valid data |
+| TC-03210 | API | Analytics salary/skills/sources/trend | Logged in | GET /api/analytics?print with invalid input | 400/422 + error message |
+| TC-03211 | API | Analytics salary/skills/sources/trend | Edge case | GET /api/analytics?print at boundary value | Correct boundary handling |
+| TC-03212 | API | Analytics salary/skills/sources/trend | No auth token | GET /api/analytics?print | 401 Unauthorized |
+| TC-03213 | frontend-UAT | Analytics salary/skills/sources/trend | Logged in | Open print view in UI | UI renders correctly |
+| TC-03214 | frontend-UAT | Analytics salary/skills/sources/trend | No data | Open print view with no data | No-data state shown |
+| TC-03215 | API | Analytics salary/skills/sources/trend | Expired token | GET /api/analytics?print | 401 Unauthorized |
+| TC-03216 | API | Analytics salary/skills/sources/trend | Insufficient role | GET /api/analytics?print | 403 Forbidden |
 ### F28 — KPI goals & streak
 
-| TC-03241 | API | KPI goals & streak | Logged in | PUT /api/kpi/goal | 200 + valid data |
-| TC-03242 | API | KPI goals & streak | Logged in | PUT /api/kpi/goal with invalid input | 400/422 + error message |
-| TC-03243 | API | KPI goals & streak | Edge case | PUT /api/kpi/goal at boundary value | Correct boundary handling |
-| TC-03244 | API | KPI goals & streak | No auth token | PUT /api/kpi/goal | 401 Unauthorized |
-| TC-03245 | frontend-UAT | KPI goals & streak | Logged in | Open set goal in UI | UI renders correctly |
-| TC-03246 | frontend-UAT | KPI goals & streak | No data | Open set goal with no data | No-data state shown |
-| TC-03247 | API | KPI goals & streak | Expired token | PUT /api/kpi/goal | 401 Unauthorized |
-| TC-03248 | API | KPI goals & streak | Insufficient role | PUT /api/kpi/goal | 403 Forbidden |
-| TC-03249 | API | KPI goals & streak | Logged in | GET /api/kpi/goal/progress | 200 + valid data |
-| TC-03250 | API | KPI goals & streak | Logged in | GET /api/kpi/goal/progress with invalid input | 400/422 + error message |
-| TC-03251 | API | KPI goals & streak | Edge case | GET /api/kpi/goal/progress at boundary value | Correct boundary handling |
-| TC-03252 | API | KPI goals & streak | No auth token | GET /api/kpi/goal/progress | 401 Unauthorized |
-| TC-03253 | frontend-UAT | KPI goals & streak | Logged in | Open goal progress in UI | UI renders correctly |
-| TC-03254 | frontend-UAT | KPI goals & streak | No data | Open goal progress with no data | No-data state shown |
-| TC-03255 | API | KPI goals & streak | Expired token | GET /api/kpi/goal/progress | 401 Unauthorized |
-| TC-03256 | API | KPI goals & streak | Insufficient role | GET /api/kpi/goal/progress | 403 Forbidden |
-| TC-03257 | API | KPI goals & streak | Logged in | GET /api/kpi/submitted?week | 200 + valid data |
-| TC-03258 | API | KPI goals & streak | Logged in | GET /api/kpi/submitted?week with invalid input | 400/422 + error message |
-| TC-03259 | API | KPI goals & streak | Edge case | GET /api/kpi/submitted?week at boundary value | Correct boundary handling |
-| TC-03260 | API | KPI goals & streak | No auth token | GET /api/kpi/submitted?week | 401 Unauthorized |
-| TC-03261 | frontend-UAT | KPI goals & streak | Logged in | Open this-week count in UI | UI renders correctly |
-| TC-03262 | frontend-UAT | KPI goals & streak | No data | Open this-week count with no data | No-data state shown |
-| TC-03263 | API | KPI goals & streak | Expired token | GET /api/kpi/submitted?week | 401 Unauthorized |
-| TC-03264 | API | KPI goals & streak | Insufficient role | GET /api/kpi/submitted?week | 403 Forbidden |
-| TC-03265 | API | KPI goals & streak | Logged in | GET /api/kpi/submitted?all | 200 + valid data |
-| TC-03266 | API | KPI goals & streak | Logged in | GET /api/kpi/submitted?all with invalid input | 400/422 + error message |
-| TC-03267 | API | KPI goals & streak | Edge case | GET /api/kpi/submitted?all at boundary value | Correct boundary handling |
-| TC-03268 | API | KPI goals & streak | No auth token | GET /api/kpi/submitted?all | 401 Unauthorized |
-| TC-03269 | frontend-UAT | KPI goals & streak | Logged in | Open all-time count in UI | UI renders correctly |
-| TC-03270 | frontend-UAT | KPI goals & streak | No data | Open all-time count with no data | No-data state shown |
-| TC-03271 | API | KPI goals & streak | Expired token | GET /api/kpi/submitted?all | 401 Unauthorized |
-| TC-03272 | API | KPI goals & streak | Insufficient role | GET /api/kpi/submitted?all | 403 Forbidden |
-| TC-03273 | API | KPI goals & streak | Logged in | GET /api/kpi/streak | 200 + valid data |
-| TC-03274 | API | KPI goals & streak | Logged in | GET /api/kpi/streak with invalid input | 400/422 + error message |
-| TC-03275 | API | KPI goals & streak | Edge case | GET /api/kpi/streak at boundary value | Correct boundary handling |
-| TC-03276 | API | KPI goals & streak | No auth token | GET /api/kpi/streak | 401 Unauthorized |
-| TC-03277 | frontend-UAT | KPI goals & streak | Logged in | Open streak counter in UI | UI renders correctly |
-| TC-03278 | frontend-UAT | KPI goals & streak | No data | Open streak counter with no data | No-data state shown |
-| TC-03279 | API | KPI goals & streak | Expired token | GET /api/kpi/streak | 401 Unauthorized |
-| TC-03280 | API | KPI goals & streak | Insufficient role | GET /api/kpi/streak | 403 Forbidden |
-| TC-03281 | API | KPI goals & streak | Logged in | GET /api/kpi/streak-dots | 200 + valid data |
-| TC-03282 | API | KPI goals & streak | Logged in | GET /api/kpi/streak-dots with invalid input | 400/422 + error message |
-| TC-03283 | API | KPI goals & streak | Edge case | GET /api/kpi/streak-dots at boundary value | Correct boundary handling |
-| TC-03284 | API | KPI goals & streak | No auth token | GET /api/kpi/streak-dots | 401 Unauthorized |
-| TC-03285 | frontend-UAT | KPI goals & streak | Logged in | Open streak dots in UI | UI renders correctly |
-| TC-03286 | frontend-UAT | KPI goals & streak | No data | Open streak dots with no data | No-data state shown |
-| TC-03287 | API | KPI goals & streak | Expired token | GET /api/kpi/streak-dots | 401 Unauthorized |
-| TC-03288 | API | KPI goals & streak | Insufficient role | GET /api/kpi/streak-dots | 403 Forbidden |
-| TC-03289 | API | KPI goals & streak | Logged in | PUT /api/kpi/streak/reset | 200 + valid data |
-| TC-03290 | API | KPI goals & streak | Logged in | PUT /api/kpi/streak/reset with invalid input | 400/422 + error message |
-| TC-03291 | API | KPI goals & streak | Edge case | PUT /api/kpi/streak/reset at boundary value | Correct boundary handling |
-| TC-03292 | API | KPI goals & streak | No auth token | PUT /api/kpi/streak/reset | 401 Unauthorized |
-| TC-03293 | frontend-UAT | KPI goals & streak | Logged in | Open reset streak in UI | UI renders correctly |
-| TC-03294 | frontend-UAT | KPI goals & streak | No data | Open reset streak with no data | No-data state shown |
-| TC-03295 | API | KPI goals & streak | Expired token | PUT /api/kpi/streak/reset | 401 Unauthorized |
-| TC-03296 | API | KPI goals & streak | Insufficient role | PUT /api/kpi/streak/reset | 403 Forbidden |
-| TC-03297 | API | KPI goals & streak | Logged in | PUT /api/kpi/goal/save | 200 + valid data |
-| TC-03298 | API | KPI goals & streak | Logged in | PUT /api/kpi/goal/save with invalid input | 400/422 + error message |
-| TC-03299 | API | KPI goals & streak | Edge case | PUT /api/kpi/goal/save at boundary value | Correct boundary handling |
-| TC-03300 | API | KPI goals & streak | No auth token | PUT /api/kpi/goal/save | 401 Unauthorized |
-| TC-03301 | frontend-UAT | KPI goals & streak | Logged in | Open save goal in UI | UI renders correctly |
-| TC-03302 | frontend-UAT | KPI goals & streak | No data | Open save goal with no data | No-data state shown |
-| TC-03303 | API | KPI goals & streak | Expired token | PUT /api/kpi/goal/save | 401 Unauthorized |
-| TC-03304 | API | KPI goals & streak | Insufficient role | PUT /api/kpi/goal/save | 403 Forbidden |
-| TC-03305 | API | KPI goals & streak | Logged in | GET /api/kpi/how-it-works | 200 + valid data |
-| TC-03306 | API | KPI goals & streak | Logged in | GET /api/kpi/how-it-works with invalid input | 400/422 + error message |
-| TC-03307 | API | KPI goals & streak | Edge case | GET /api/kpi/how-it-works at boundary value | Correct boundary handling |
-| TC-03308 | API | KPI goals & streak | No auth token | GET /api/kpi/how-it-works | 401 Unauthorized |
-| TC-03309 | frontend-UAT | KPI goals & streak | Logged in | Open how it works in UI | UI renders correctly |
-| TC-03310 | frontend-UAT | KPI goals & streak | No data | Open how it works with no data | No-data state shown |
-| TC-03311 | API | KPI goals & streak | Expired token | GET /api/kpi/how-it-works | 401 Unauthorized |
-| TC-03312 | API | KPI goals & streak | Insufficient role | GET /api/kpi/how-it-works | 403 Forbidden |
-| TC-03313 | API | KPI goals & streak | Logged in | PUT /api/kpi/goal/increase | 200 + valid data |
-| TC-03314 | API | KPI goals & streak | Logged in | PUT /api/kpi/goal/increase with invalid input | 400/422 + error message |
-| TC-03315 | API | KPI goals & streak | Edge case | PUT /api/kpi/goal/increase at boundary value | Correct boundary handling |
-| TC-03316 | API | KPI goals & streak | No auth token | PUT /api/kpi/goal/increase | 401 Unauthorized |
-| TC-03317 | frontend-UAT | KPI goals & streak | Logged in | Open increase goal in UI | UI renders correctly |
-| TC-03318 | frontend-UAT | KPI goals & streak | No data | Open increase goal with no data | No-data state shown |
-| TC-03319 | API | KPI goals & streak | Expired token | PUT /api/kpi/goal/increase | 401 Unauthorized |
-| TC-03320 | API | KPI goals & streak | Insufficient role | PUT /api/kpi/goal/increase | 403 Forbidden |
-| TC-03321 | API | KPI goals & streak | Logged in | GET /api/kpi/goal?by_week | 200 + valid data |
-| TC-03322 | API | KPI goals & streak | Logged in | GET /api/kpi/goal?by_week with invalid input | 400/422 + error message |
-| TC-03323 | API | KPI goals & streak | Edge case | GET /api/kpi/goal?by_week at boundary value | Correct boundary handling |
-| TC-03324 | API | KPI goals & streak | No auth token | GET /api/kpi/goal?by_week | 401 Unauthorized |
-| TC-03325 | frontend-UAT | KPI goals & streak | Logged in | Open goal by week in UI | UI renders correctly |
-| TC-03326 | frontend-UAT | KPI goals & streak | No data | Open goal by week with no data | No-data state shown |
-| TC-03327 | API | KPI goals & streak | Expired token | GET /api/kpi/goal?by_week | 401 Unauthorized |
-| TC-03328 | API | KPI goals & streak | Insufficient role | GET /api/kpi/goal?by_week | 403 Forbidden |
-| TC-03329 | API | KPI goals & streak | Logged in | GET /api/kpi/goal?by_source | 200 + valid data |
-| TC-03330 | API | KPI goals & streak | Logged in | GET /api/kpi/goal?by_source with invalid input | 400/422 + error message |
-| TC-03331 | API | KPI goals & streak | Edge case | GET /api/kpi/goal?by_source at boundary value | Correct boundary handling |
-| TC-03332 | API | KPI goals & streak | No auth token | GET /api/kpi/goal?by_source | 401 Unauthorized |
-| TC-03333 | frontend-UAT | KPI goals & streak | Logged in | Open goal by source in UI | UI renders correctly |
-| TC-03334 | frontend-UAT | KPI goals & streak | No data | Open goal by source with no data | No-data state shown |
-| TC-03335 | API | KPI goals & streak | Expired token | GET /api/kpi/goal?by_source | 401 Unauthorized |
-| TC-03336 | API | KPI goals & streak | Insufficient role | GET /api/kpi/goal?by_source | 403 Forbidden |
-| TC-03337 | API | KPI goals & streak | Logged in | GET /api/kpi/goal?by_role | 200 + valid data |
-| TC-03338 | API | KPI goals & streak | Logged in | GET /api/kpi/goal?by_role with invalid input | 400/422 + error message |
-| TC-03339 | API | KPI goals & streak | Edge case | GET /api/kpi/goal?by_role at boundary value | Correct boundary handling |
-| TC-03340 | API | KPI goals & streak | No auth token | GET /api/kpi/goal?by_role | 401 Unauthorized |
-| TC-03341 | frontend-UAT | KPI goals & streak | Logged in | Open goal by role in UI | UI renders correctly |
-| TC-03342 | frontend-UAT | KPI goals & streak | No data | Open goal by role with no data | No-data state shown |
-| TC-03343 | API | KPI goals & streak | Expired token | GET /api/kpi/goal?by_role | 401 Unauthorized |
-| TC-03344 | API | KPI goals & streak | Insufficient role | GET /api/kpi/goal?by_role | 403 Forbidden |
-| TC-03345 | API | KPI goals & streak | Logged in | GET /api/kpi/goal?by_salary | 200 + valid data |
-| TC-03346 | API | KPI goals & streak | Logged in | GET /api/kpi/goal?by_salary with invalid input | 400/422 + error message |
-| TC-03347 | API | KPI goals & streak | Edge case | GET /api/kpi/goal?by_salary at boundary value | Correct boundary handling |
-| TC-03348 | API | KPI goals & streak | No auth token | GET /api/kpi/goal?by_salary | 401 Unauthorized |
-| TC-03349 | frontend-UAT | KPI goals & streak | Logged in | Open goal by salary in UI | UI renders correctly |
-| TC-03350 | frontend-UAT | KPI goals & streak | No data | Open goal by salary with no data | No-data state shown |
-| TC-03351 | API | KPI goals & streak | Expired token | GET /api/kpi/goal?by_salary | 401 Unauthorized |
-| TC-03352 | API | KPI goals & streak | Insufficient role | GET /api/kpi/goal?by_salary | 403 Forbidden |
-| TC-03353 | API | KPI goals & streak | Logged in | GET /api/kpi?empty | 200 + valid data |
-| TC-03354 | API | KPI goals & streak | Logged in | GET /api/kpi?empty with invalid input | 400/422 + error message |
-| TC-03355 | API | KPI goals & streak | Edge case | GET /api/kpi?empty at boundary value | Correct boundary handling |
-| TC-03356 | API | KPI goals & streak | No auth token | GET /api/kpi?empty | 401 Unauthorized |
-| TC-03357 | frontend-UAT | KPI goals & streak | Logged in | Open no-data state in UI | UI renders correctly |
-| TC-03358 | frontend-UAT | KPI goals & streak | No data | Open no-data state with no data | No-data state shown |
-| TC-03359 | API | KPI goals & streak | Expired token | GET /api/kpi?empty | 401 Unauthorized |
-| TC-03360 | API | KPI goals & streak | Insufficient role | GET /api/kpi?empty | 403 Forbidden |
+| TC-03217 | API | KPI goals & streak | Logged in | PUT /api/kpi/goal | 200 + valid data |
+| TC-03218 | API | KPI goals & streak | Logged in | PUT /api/kpi/goal with invalid input | 400/422 + error message |
+| TC-03219 | API | KPI goals & streak | Edge case | PUT /api/kpi/goal at boundary value | Correct boundary handling |
+| TC-03220 | API | KPI goals & streak | No auth token | PUT /api/kpi/goal | 401 Unauthorized |
+| TC-03221 | frontend-UAT | KPI goals & streak | Logged in | Open set goal in UI | UI renders correctly |
+| TC-03222 | frontend-UAT | KPI goals & streak | No data | Open set goal with no data | No-data state shown |
+| TC-03223 | API | KPI goals & streak | Expired token | PUT /api/kpi/goal | 401 Unauthorized |
+| TC-03224 | API | KPI goals & streak | Insufficient role | PUT /api/kpi/goal | 403 Forbidden |
+| TC-03225 | API | KPI goals & streak | Logged in | GET /api/kpi/goal/progress | 200 + valid data |
+| TC-03226 | API | KPI goals & streak | Logged in | GET /api/kpi/goal/progress with invalid input | 400/422 + error message |
+| TC-03227 | API | KPI goals & streak | Edge case | GET /api/kpi/goal/progress at boundary value | Correct boundary handling |
+| TC-03228 | API | KPI goals & streak | No auth token | GET /api/kpi/goal/progress | 401 Unauthorized |
+| TC-03229 | frontend-UAT | KPI goals & streak | Logged in | Open goal progress in UI | UI renders correctly |
+| TC-03230 | frontend-UAT | KPI goals & streak | No data | Open goal progress with no data | No-data state shown |
+| TC-03231 | API | KPI goals & streak | Expired token | GET /api/kpi/goal/progress | 401 Unauthorized |
+| TC-03232 | API | KPI goals & streak | Insufficient role | GET /api/kpi/goal/progress | 403 Forbidden |
+| TC-03233 | API | KPI goals & streak | Logged in | GET /api/kpi/submitted?week | 200 + valid data |
+| TC-03234 | API | KPI goals & streak | Logged in | GET /api/kpi/submitted?week with invalid input | 400/422 + error message |
+| TC-03235 | API | KPI goals & streak | Edge case | GET /api/kpi/submitted?week at boundary value | Correct boundary handling |
+| TC-03236 | API | KPI goals & streak | No auth token | GET /api/kpi/submitted?week | 401 Unauthorized |
+| TC-03237 | frontend-UAT | KPI goals & streak | Logged in | Open this-week count in UI | UI renders correctly |
+| TC-03238 | frontend-UAT | KPI goals & streak | No data | Open this-week count with no data | No-data state shown |
+| TC-03239 | API | KPI goals & streak | Expired token | GET /api/kpi/submitted?week | 401 Unauthorized |
+| TC-03240 | API | KPI goals & streak | Insufficient role | GET /api/kpi/submitted?week | 403 Forbidden |
+| TC-03241 | API | KPI goals & streak | Logged in | GET /api/kpi/submitted?all | 200 + valid data |
+| TC-03242 | API | KPI goals & streak | Logged in | GET /api/kpi/submitted?all with invalid input | 400/422 + error message |
+| TC-03243 | API | KPI goals & streak | Edge case | GET /api/kpi/submitted?all at boundary value | Correct boundary handling |
+| TC-03244 | API | KPI goals & streak | No auth token | GET /api/kpi/submitted?all | 401 Unauthorized |
+| TC-03245 | frontend-UAT | KPI goals & streak | Logged in | Open all-time count in UI | UI renders correctly |
+| TC-03246 | frontend-UAT | KPI goals & streak | No data | Open all-time count with no data | No-data state shown |
+| TC-03247 | API | KPI goals & streak | Expired token | GET /api/kpi/submitted?all | 401 Unauthorized |
+| TC-03248 | API | KPI goals & streak | Insufficient role | GET /api/kpi/submitted?all | 403 Forbidden |
+| TC-03249 | API | KPI goals & streak | Logged in | GET /api/kpi/streak | 200 + valid data |
+| TC-03250 | API | KPI goals & streak | Logged in | GET /api/kpi/streak with invalid input | 400/422 + error message |
+| TC-03251 | API | KPI goals & streak | Edge case | GET /api/kpi/streak at boundary value | Correct boundary handling |
+| TC-03252 | API | KPI goals & streak | No auth token | GET /api/kpi/streak | 401 Unauthorized |
+| TC-03253 | frontend-UAT | KPI goals & streak | Logged in | Open streak counter in UI | UI renders correctly |
+| TC-03254 | frontend-UAT | KPI goals & streak | No data | Open streak counter with no data | No-data state shown |
+| TC-03255 | API | KPI goals & streak | Expired token | GET /api/kpi/streak | 401 Unauthorized |
+| TC-03256 | API | KPI goals & streak | Insufficient role | GET /api/kpi/streak | 403 Forbidden |
+| TC-03257 | API | KPI goals & streak | Logged in | GET /api/kpi/streak-dots | 200 + valid data |
+| TC-03258 | API | KPI goals & streak | Logged in | GET /api/kpi/streak-dots with invalid input | 400/422 + error message |
+| TC-03259 | API | KPI goals & streak | Edge case | GET /api/kpi/streak-dots at boundary value | Correct boundary handling |
+| TC-03260 | API | KPI goals & streak | No auth token | GET /api/kpi/streak-dots | 401 Unauthorized |
+| TC-03261 | frontend-UAT | KPI goals & streak | Logged in | Open streak dots in UI | UI renders correctly |
+| TC-03262 | frontend-UAT | KPI goals & streak | No data | Open streak dots with no data | No-data state shown |
+| TC-03263 | API | KPI goals & streak | Expired token | GET /api/kpi/streak-dots | 401 Unauthorized |
+| TC-03264 | API | KPI goals & streak | Insufficient role | GET /api/kpi/streak-dots | 403 Forbidden |
+| TC-03265 | API | KPI goals & streak | Logged in | PUT /api/kpi/streak/reset | 200 + valid data |
+| TC-03266 | API | KPI goals & streak | Logged in | PUT /api/kpi/streak/reset with invalid input | 400/422 + error message |
+| TC-03267 | API | KPI goals & streak | Edge case | PUT /api/kpi/streak/reset at boundary value | Correct boundary handling |
+| TC-03268 | API | KPI goals & streak | No auth token | PUT /api/kpi/streak/reset | 401 Unauthorized |
+| TC-03269 | frontend-UAT | KPI goals & streak | Logged in | Open reset streak in UI | UI renders correctly |
+| TC-03270 | frontend-UAT | KPI goals & streak | No data | Open reset streak with no data | No-data state shown |
+| TC-03271 | API | KPI goals & streak | Expired token | PUT /api/kpi/streak/reset | 401 Unauthorized |
+| TC-03272 | API | KPI goals & streak | Insufficient role | PUT /api/kpi/streak/reset | 403 Forbidden |
+| TC-03273 | API | KPI goals & streak | Logged in | PUT /api/kpi/goal/save | 200 + valid data |
+| TC-03274 | API | KPI goals & streak | Logged in | PUT /api/kpi/goal/save with invalid input | 400/422 + error message |
+| TC-03275 | API | KPI goals & streak | Edge case | PUT /api/kpi/goal/save at boundary value | Correct boundary handling |
+| TC-03276 | API | KPI goals & streak | No auth token | PUT /api/kpi/goal/save | 401 Unauthorized |
+| TC-03277 | frontend-UAT | KPI goals & streak | Logged in | Open save goal in UI | UI renders correctly |
+| TC-03278 | frontend-UAT | KPI goals & streak | No data | Open save goal with no data | No-data state shown |
+| TC-03279 | API | KPI goals & streak | Expired token | PUT /api/kpi/goal/save | 401 Unauthorized |
+| TC-03280 | API | KPI goals & streak | Insufficient role | PUT /api/kpi/goal/save | 403 Forbidden |
+| TC-03281 | API | KPI goals & streak | Logged in | GET /api/kpi/how-it-works | 200 + valid data |
+| TC-03282 | API | KPI goals & streak | Logged in | GET /api/kpi/how-it-works with invalid input | 400/422 + error message |
+| TC-03283 | API | KPI goals & streak | Edge case | GET /api/kpi/how-it-works at boundary value | Correct boundary handling |
+| TC-03284 | API | KPI goals & streak | No auth token | GET /api/kpi/how-it-works | 401 Unauthorized |
+| TC-03285 | frontend-UAT | KPI goals & streak | Logged in | Open how it works in UI | UI renders correctly |
+| TC-03286 | frontend-UAT | KPI goals & streak | No data | Open how it works with no data | No-data state shown |
+| TC-03287 | API | KPI goals & streak | Expired token | GET /api/kpi/how-it-works | 401 Unauthorized |
+| TC-03288 | API | KPI goals & streak | Insufficient role | GET /api/kpi/how-it-works | 403 Forbidden |
+| TC-03289 | API | KPI goals & streak | Logged in | PUT /api/kpi/goal/increase | 200 + valid data |
+| TC-03290 | API | KPI goals & streak | Logged in | PUT /api/kpi/goal/increase with invalid input | 400/422 + error message |
+| TC-03291 | API | KPI goals & streak | Edge case | PUT /api/kpi/goal/increase at boundary value | Correct boundary handling |
+| TC-03292 | API | KPI goals & streak | No auth token | PUT /api/kpi/goal/increase | 401 Unauthorized |
+| TC-03293 | frontend-UAT | KPI goals & streak | Logged in | Open increase goal in UI | UI renders correctly |
+| TC-03294 | frontend-UAT | KPI goals & streak | No data | Open increase goal with no data | No-data state shown |
+| TC-03295 | API | KPI goals & streak | Expired token | PUT /api/kpi/goal/increase | 401 Unauthorized |
+| TC-03296 | API | KPI goals & streak | Insufficient role | PUT /api/kpi/goal/increase | 403 Forbidden |
+| TC-03297 | API | KPI goals & streak | Logged in | GET /api/kpi/goal?by_week | 200 + valid data |
+| TC-03298 | API | KPI goals & streak | Logged in | GET /api/kpi/goal?by_week with invalid input | 400/422 + error message |
+| TC-03299 | API | KPI goals & streak | Edge case | GET /api/kpi/goal?by_week at boundary value | Correct boundary handling |
+| TC-03300 | API | KPI goals & streak | No auth token | GET /api/kpi/goal?by_week | 401 Unauthorized |
+| TC-03301 | frontend-UAT | KPI goals & streak | Logged in | Open goal by week in UI | UI renders correctly |
+| TC-03302 | frontend-UAT | KPI goals & streak | No data | Open goal by week with no data | No-data state shown |
+| TC-03303 | API | KPI goals & streak | Expired token | GET /api/kpi/goal?by_week | 401 Unauthorized |
+| TC-03304 | API | KPI goals & streak | Insufficient role | GET /api/kpi/goal?by_week | 403 Forbidden |
+| TC-03305 | API | KPI goals & streak | Logged in | GET /api/kpi/goal?by_source | 200 + valid data |
+| TC-03306 | API | KPI goals & streak | Logged in | GET /api/kpi/goal?by_source with invalid input | 400/422 + error message |
+| TC-03307 | API | KPI goals & streak | Edge case | GET /api/kpi/goal?by_source at boundary value | Correct boundary handling |
+| TC-03308 | API | KPI goals & streak | No auth token | GET /api/kpi/goal?by_source | 401 Unauthorized |
+| TC-03309 | frontend-UAT | KPI goals & streak | Logged in | Open goal by source in UI | UI renders correctly |
+| TC-03310 | frontend-UAT | KPI goals & streak | No data | Open goal by source with no data | No-data state shown |
+| TC-03311 | API | KPI goals & streak | Expired token | GET /api/kpi/goal?by_source | 401 Unauthorized |
+| TC-03312 | API | KPI goals & streak | Insufficient role | GET /api/kpi/goal?by_source | 403 Forbidden |
+| TC-03313 | API | KPI goals & streak | Logged in | GET /api/kpi/goal?by_role | 200 + valid data |
+| TC-03314 | API | KPI goals & streak | Logged in | GET /api/kpi/goal?by_role with invalid input | 400/422 + error message |
+| TC-03315 | API | KPI goals & streak | Edge case | GET /api/kpi/goal?by_role at boundary value | Correct boundary handling |
+| TC-03316 | API | KPI goals & streak | No auth token | GET /api/kpi/goal?by_role | 401 Unauthorized |
+| TC-03317 | frontend-UAT | KPI goals & streak | Logged in | Open goal by role in UI | UI renders correctly |
+| TC-03318 | frontend-UAT | KPI goals & streak | No data | Open goal by role with no data | No-data state shown |
+| TC-03319 | API | KPI goals & streak | Expired token | GET /api/kpi/goal?by_role | 401 Unauthorized |
+| TC-03320 | API | KPI goals & streak | Insufficient role | GET /api/kpi/goal?by_role | 403 Forbidden |
+| TC-03321 | API | KPI goals & streak | Logged in | GET /api/kpi/goal?by_salary | 200 + valid data |
+| TC-03322 | API | KPI goals & streak | Logged in | GET /api/kpi/goal?by_salary with invalid input | 400/422 + error message |
+| TC-03323 | API | KPI goals & streak | Edge case | GET /api/kpi/goal?by_salary at boundary value | Correct boundary handling |
+| TC-03324 | API | KPI goals & streak | No auth token | GET /api/kpi/goal?by_salary | 401 Unauthorized |
+| TC-03325 | frontend-UAT | KPI goals & streak | Logged in | Open goal by salary in UI | UI renders correctly |
+| TC-03326 | frontend-UAT | KPI goals & streak | No data | Open goal by salary with no data | No-data state shown |
+| TC-03327 | API | KPI goals & streak | Expired token | GET /api/kpi/goal?by_salary | 401 Unauthorized |
+| TC-03328 | API | KPI goals & streak | Insufficient role | GET /api/kpi/goal?by_salary | 403 Forbidden |
+| TC-03329 | API | KPI goals & streak | Logged in | GET /api/kpi?empty | 200 + valid data |
+| TC-03330 | API | KPI goals & streak | Logged in | GET /api/kpi?empty with invalid input | 400/422 + error message |
+| TC-03331 | API | KPI goals & streak | Edge case | GET /api/kpi?empty at boundary value | Correct boundary handling |
+| TC-03332 | API | KPI goals & streak | No auth token | GET /api/kpi?empty | 401 Unauthorized |
+| TC-03333 | frontend-UAT | KPI goals & streak | Logged in | Open no-data state in UI | UI renders correctly |
+| TC-03334 | frontend-UAT | KPI goals & streak | No data | Open no-data state with no data | No-data state shown |
+| TC-03335 | API | KPI goals & streak | Expired token | GET /api/kpi?empty | 401 Unauthorized |
+| TC-03336 | API | KPI goals & streak | Insufficient role | GET /api/kpi?empty | 403 Forbidden |
 ### F29 — Stats & top jobs
 
-| TC-03361 | API | Stats & top jobs | Logged in | GET /api/stats/overall | 200 + valid data |
-| TC-03362 | API | Stats & top jobs | Logged in | GET /api/stats/overall with invalid input | 400/422 + error message |
-| TC-03363 | API | Stats & top jobs | Edge case | GET /api/stats/overall at boundary value | Correct boundary handling |
-| TC-03364 | API | Stats & top jobs | No auth token | GET /api/stats/overall | 401 Unauthorized |
-| TC-03365 | frontend-UAT | Stats & top jobs | Logged in | Open overall stats in UI | UI renders correctly |
-| TC-03366 | frontend-UAT | Stats & top jobs | No data | Open overall stats with no data | No-data state shown |
-| TC-03367 | API | Stats & top jobs | Expired token | GET /api/stats/overall | 401 Unauthorized |
-| TC-03368 | API | Stats & top jobs | Insufficient role | GET /api/stats/overall | 403 Forbidden |
-| TC-03369 | API | Stats & top jobs | Logged in | GET /api/stats/top-jobs | 200 + valid data |
-| TC-03370 | API | Stats & top jobs | Logged in | GET /api/stats/top-jobs with invalid input | 400/422 + error message |
-| TC-03371 | API | Stats & top jobs | Edge case | GET /api/stats/top-jobs at boundary value | Correct boundary handling |
-| TC-03372 | API | Stats & top jobs | No auth token | GET /api/stats/top-jobs | 401 Unauthorized |
-| TC-03373 | frontend-UAT | Stats & top jobs | Logged in | Open top jobs in UI | UI renders correctly |
-| TC-03374 | frontend-UAT | Stats & top jobs | No data | Open top jobs with no data | No-data state shown |
-| TC-03375 | API | Stats & top jobs | Expired token | GET /api/stats/top-jobs | 401 Unauthorized |
-| TC-03376 | API | Stats & top jobs | Insufficient role | GET /api/stats/top-jobs | 403 Forbidden |
-| TC-03377 | API | Stats & top jobs | Logged in | GET /api/stats/summary | 200 + valid data |
-| TC-03378 | API | Stats & top jobs | Logged in | GET /api/stats/summary with invalid input | 400/422 + error message |
-| TC-03379 | API | Stats & top jobs | Edge case | GET /api/stats/summary at boundary value | Correct boundary handling |
-| TC-03380 | API | Stats & top jobs | No auth token | GET /api/stats/summary | 401 Unauthorized |
-| TC-03381 | frontend-UAT | Stats & top jobs | Logged in | Open stats summary in UI | UI renders correctly |
-| TC-03382 | frontend-UAT | Stats & top jobs | No data | Open stats summary with no data | No-data state shown |
-| TC-03383 | API | Stats & top jobs | Expired token | GET /api/stats/summary | 401 Unauthorized |
-| TC-03384 | API | Stats & top jobs | Insufficient role | GET /api/stats/summary | 403 Forbidden |
-| TC-03385 | API | Stats & top jobs | Logged in | GET /api/stats/top-jobs?detailed | 200 + valid data |
-| TC-03386 | API | Stats & top jobs | Logged in | GET /api/stats/top-jobs?detailed with invalid input | 400/422 + error message |
-| TC-03387 | API | Stats & top jobs | Edge case | GET /api/stats/top-jobs?detailed at boundary value | Correct boundary handling |
-| TC-03388 | API | Stats & top jobs | No auth token | GET /api/stats/top-jobs?detailed | 401 Unauthorized |
-| TC-03389 | frontend-UAT | Stats & top jobs | Logged in | Open detailed top jobs in UI | UI renders correctly |
-| TC-03390 | frontend-UAT | Stats & top jobs | No data | Open detailed top jobs with no data | No-data state shown |
-| TC-03391 | API | Stats & top jobs | Expired token | GET /api/stats/top-jobs?detailed | 401 Unauthorized |
-| TC-03392 | API | Stats & top jobs | Insufficient role | GET /api/stats/top-jobs?detailed | 403 Forbidden |
-| TC-03393 | API | Stats & top jobs | Logged in | GET /api/stats/approval-rate | 200 + valid data |
-| TC-03394 | API | Stats & top jobs | Logged in | GET /api/stats/approval-rate with invalid input | 400/422 + error message |
-| TC-03395 | API | Stats & top jobs | Edge case | GET /api/stats/approval-rate at boundary value | Correct boundary handling |
-| TC-03396 | API | Stats & top jobs | No auth token | GET /api/stats/approval-rate | 401 Unauthorized |
-| TC-03397 | frontend-UAT | Stats & top jobs | Logged in | Open approval rate in UI | UI renders correctly |
-| TC-03398 | frontend-UAT | Stats & top jobs | No data | Open approval rate with no data | No-data state shown |
-| TC-03399 | API | Stats & top jobs | Expired token | GET /api/stats/approval-rate | 401 Unauthorized |
-| TC-03400 | API | Stats & top jobs | Insufficient role | GET /api/stats/approval-rate | 403 Forbidden |
-| TC-03401 | API | Stats & top jobs | Logged in | GET /api/stats?by_source | 200 + valid data |
-| TC-03402 | API | Stats & top jobs | Logged in | GET /api/stats?by_source with invalid input | 400/422 + error message |
-| TC-03403 | API | Stats & top jobs | Edge case | GET /api/stats?by_source at boundary value | Correct boundary handling |
-| TC-03404 | API | Stats & top jobs | No auth token | GET /api/stats?by_source | 401 Unauthorized |
-| TC-03405 | frontend-UAT | Stats & top jobs | Logged in | Open stats by source in UI | UI renders correctly |
-| TC-03406 | frontend-UAT | Stats & top jobs | No data | Open stats by source with no data | No-data state shown |
-| TC-03407 | API | Stats & top jobs | Expired token | GET /api/stats?by_source | 401 Unauthorized |
-| TC-03408 | API | Stats & top jobs | Insufficient role | GET /api/stats?by_source | 403 Forbidden |
-| TC-03409 | API | Stats & top jobs | Logged in | GET /api/stats?by_role | 200 + valid data |
-| TC-03410 | API | Stats & top jobs | Logged in | GET /api/stats?by_role with invalid input | 400/422 + error message |
-| TC-03411 | API | Stats & top jobs | Edge case | GET /api/stats?by_role at boundary value | Correct boundary handling |
-| TC-03412 | API | Stats & top jobs | No auth token | GET /api/stats?by_role | 401 Unauthorized |
-| TC-03413 | frontend-UAT | Stats & top jobs | Logged in | Open stats by role in UI | UI renders correctly |
-| TC-03414 | frontend-UAT | Stats & top jobs | No data | Open stats by role with no data | No-data state shown |
-| TC-03415 | API | Stats & top jobs | Expired token | GET /api/stats?by_role | 401 Unauthorized |
-| TC-03416 | API | Stats & top jobs | Insufficient role | GET /api/stats?by_role | 403 Forbidden |
-| TC-03417 | API | Stats & top jobs | Logged in | GET /api/stats?by_salary | 200 + valid data |
-| TC-03418 | API | Stats & top jobs | Logged in | GET /api/stats?by_salary with invalid input | 400/422 + error message |
-| TC-03419 | API | Stats & top jobs | Edge case | GET /api/stats?by_salary at boundary value | Correct boundary handling |
-| TC-03420 | API | Stats & top jobs | No auth token | GET /api/stats?by_salary | 401 Unauthorized |
-| TC-03421 | frontend-UAT | Stats & top jobs | Logged in | Open stats by salary in UI | UI renders correctly |
-| TC-03422 | frontend-UAT | Stats & top jobs | No data | Open stats by salary with no data | No-data state shown |
-| TC-03423 | API | Stats & top jobs | Expired token | GET /api/stats?by_salary | 401 Unauthorized |
-| TC-03424 | API | Stats & top jobs | Insufficient role | GET /api/stats?by_salary | 403 Forbidden |
-| TC-03425 | API | Stats & top jobs | Logged in | GET /api/stats?by_week | 200 + valid data |
-| TC-03426 | API | Stats & top jobs | Logged in | GET /api/stats?by_week with invalid input | 400/422 + error message |
-| TC-03427 | API | Stats & top jobs | Edge case | GET /api/stats?by_week at boundary value | Correct boundary handling |
-| TC-03428 | API | Stats & top jobs | No auth token | GET /api/stats?by_week | 401 Unauthorized |
-| TC-03429 | frontend-UAT | Stats & top jobs | Logged in | Open stats by week in UI | UI renders correctly |
-| TC-03430 | frontend-UAT | Stats & top jobs | No data | Open stats by week with no data | No-data state shown |
-| TC-03431 | API | Stats & top jobs | Expired token | GET /api/stats?by_week | 401 Unauthorized |
-| TC-03432 | API | Stats & top jobs | Insufficient role | GET /api/stats?by_week | 403 Forbidden |
-| TC-03433 | API | Stats & top jobs | Logged in | GET /api/stats?empty | 200 + valid data |
-| TC-03434 | API | Stats & top jobs | Logged in | GET /api/stats?empty with invalid input | 400/422 + error message |
-| TC-03435 | API | Stats & top jobs | Edge case | GET /api/stats?empty at boundary value | Correct boundary handling |
-| TC-03436 | API | Stats & top jobs | No auth token | GET /api/stats?empty | 401 Unauthorized |
-| TC-03437 | frontend-UAT | Stats & top jobs | Logged in | Open no-data state in UI | UI renders correctly |
-| TC-03438 | frontend-UAT | Stats & top jobs | No data | Open no-data state with no data | No-data state shown |
-| TC-03439 | API | Stats & top jobs | Expired token | GET /api/stats?empty | 401 Unauthorized |
-| TC-03440 | API | Stats & top jobs | Insufficient role | GET /api/stats?empty | 403 Forbidden |
-| TC-03441 | API | Stats & top jobs | Logged in | GET /api/stats?summary | 200 + valid data |
-| TC-03442 | API | Stats & top jobs | Logged in | GET /api/stats?summary with invalid input | 400/422 + error message |
-| TC-03443 | API | Stats & top jobs | Edge case | GET /api/stats?summary at boundary value | Correct boundary handling |
-| TC-03444 | API | Stats & top jobs | No auth token | GET /api/stats?summary | 401 Unauthorized |
-| TC-03445 | frontend-UAT | Stats & top jobs | Logged in | Open summary render in UI | UI renders correctly |
-| TC-03446 | frontend-UAT | Stats & top jobs | No data | Open summary render with no data | No-data state shown |
-| TC-03447 | API | Stats & top jobs | Expired token | GET /api/stats?summary | 401 Unauthorized |
-| TC-03448 | API | Stats & top jobs | Insufficient role | GET /api/stats?summary | 403 Forbidden |
-| TC-03449 | API | Stats & top jobs | Logged in | GET /api/stats?top | 200 + valid data |
-| TC-03450 | API | Stats & top jobs | Logged in | GET /api/stats?top with invalid input | 400/422 + error message |
-| TC-03451 | API | Stats & top jobs | Edge case | GET /api/stats?top at boundary value | Correct boundary handling |
-| TC-03452 | API | Stats & top jobs | No auth token | GET /api/stats?top | 401 Unauthorized |
-| TC-03453 | frontend-UAT | Stats & top jobs | Logged in | Open top jobs render in UI | UI renders correctly |
-| TC-03454 | frontend-UAT | Stats & top jobs | No data | Open top jobs render with no data | No-data state shown |
-| TC-03455 | API | Stats & top jobs | Expired token | GET /api/stats?top | 401 Unauthorized |
-| TC-03456 | API | Stats & top jobs | Insufficient role | GET /api/stats?top | 403 Forbidden |
-| TC-03457 | API | Stats & top jobs | Logged in | GET /api/stats?mobile | 200 + valid data |
-| TC-03458 | API | Stats & top jobs | Logged in | GET /api/stats?mobile with invalid input | 400/422 + error message |
-| TC-03459 | API | Stats & top jobs | Edge case | GET /api/stats?mobile at boundary value | Correct boundary handling |
-| TC-03460 | API | Stats & top jobs | No auth token | GET /api/stats?mobile | 401 Unauthorized |
-| TC-03461 | frontend-UAT | Stats & top jobs | Logged in | Open mobile view in UI | UI renders correctly |
-| TC-03462 | frontend-UAT | Stats & top jobs | No data | Open mobile view with no data | No-data state shown |
-| TC-03463 | API | Stats & top jobs | Expired token | GET /api/stats?mobile | 401 Unauthorized |
-| TC-03464 | API | Stats & top jobs | Insufficient role | GET /api/stats?mobile | 403 Forbidden |
-| TC-03465 | API | Stats & top jobs | Logged in | GET /api/stats?print | 200 + valid data |
-| TC-03466 | API | Stats & top jobs | Logged in | GET /api/stats?print with invalid input | 400/422 + error message |
-| TC-03467 | API | Stats & top jobs | Edge case | GET /api/stats?print at boundary value | Correct boundary handling |
-| TC-03468 | API | Stats & top jobs | No auth token | GET /api/stats?print | 401 Unauthorized |
-| TC-03469 | frontend-UAT | Stats & top jobs | Logged in | Open print view in UI | UI renders correctly |
-| TC-03470 | frontend-UAT | Stats & top jobs | No data | Open print view with no data | No-data state shown |
-| TC-03471 | API | Stats & top jobs | Expired token | GET /api/stats?print | 401 Unauthorized |
-| TC-03472 | API | Stats & top jobs | Insufficient role | GET /api/stats?print | 403 Forbidden |
-| TC-03473 | API | Stats & top jobs | Logged in | GET /api/stats?export | 200 + valid data |
-| TC-03474 | API | Stats & top jobs | Logged in | GET /api/stats?export with invalid input | 400/422 + error message |
-| TC-03475 | API | Stats & top jobs | Edge case | GET /api/stats?export at boundary value | Correct boundary handling |
-| TC-03476 | API | Stats & top jobs | No auth token | GET /api/stats?export | 401 Unauthorized |
-| TC-03477 | frontend-UAT | Stats & top jobs | Logged in | Open export stats in UI | UI renders correctly |
-| TC-03478 | frontend-UAT | Stats & top jobs | No data | Open export stats with no data | No-data state shown |
-| TC-03479 | API | Stats & top jobs | Expired token | GET /api/stats?export | 401 Unauthorized |
-| TC-03480 | API | Stats & top jobs | Insufficient role | GET /api/stats?export | 403 Forbidden |
+| TC-03337 | API | Stats & top jobs | Logged in | GET /api/stats/overall | 200 + valid data |
+| TC-03338 | API | Stats & top jobs | Logged in | GET /api/stats/overall with invalid input | 400/422 + error message |
+| TC-03339 | API | Stats & top jobs | Edge case | GET /api/stats/overall at boundary value | Correct boundary handling |
+| TC-03340 | API | Stats & top jobs | No auth token | GET /api/stats/overall | 401 Unauthorized |
+| TC-03341 | frontend-UAT | Stats & top jobs | Logged in | Open overall stats in UI | UI renders correctly |
+| TC-03342 | frontend-UAT | Stats & top jobs | No data | Open overall stats with no data | No-data state shown |
+| TC-03343 | API | Stats & top jobs | Expired token | GET /api/stats/overall | 401 Unauthorized |
+| TC-03344 | API | Stats & top jobs | Insufficient role | GET /api/stats/overall | 403 Forbidden |
+| TC-03345 | API | Stats & top jobs | Logged in | GET /api/stats/top-jobs | 200 + valid data |
+| TC-03346 | API | Stats & top jobs | Logged in | GET /api/stats/top-jobs with invalid input | 400/422 + error message |
+| TC-03347 | API | Stats & top jobs | Edge case | GET /api/stats/top-jobs at boundary value | Correct boundary handling |
+| TC-03348 | API | Stats & top jobs | No auth token | GET /api/stats/top-jobs | 401 Unauthorized |
+| TC-03349 | frontend-UAT | Stats & top jobs | Logged in | Open top jobs in UI | UI renders correctly |
+| TC-03350 | frontend-UAT | Stats & top jobs | No data | Open top jobs with no data | No-data state shown |
+| TC-03351 | API | Stats & top jobs | Expired token | GET /api/stats/top-jobs | 401 Unauthorized |
+| TC-03352 | API | Stats & top jobs | Insufficient role | GET /api/stats/top-jobs | 403 Forbidden |
+| TC-03353 | API | Stats & top jobs | Logged in | GET /api/stats/summary | 200 + valid data |
+| TC-03354 | API | Stats & top jobs | Logged in | GET /api/stats/summary with invalid input | 400/422 + error message |
+| TC-03355 | API | Stats & top jobs | Edge case | GET /api/stats/summary at boundary value | Correct boundary handling |
+| TC-03356 | API | Stats & top jobs | No auth token | GET /api/stats/summary | 401 Unauthorized |
+| TC-03357 | frontend-UAT | Stats & top jobs | Logged in | Open stats summary in UI | UI renders correctly |
+| TC-03358 | frontend-UAT | Stats & top jobs | No data | Open stats summary with no data | No-data state shown |
+| TC-03359 | API | Stats & top jobs | Expired token | GET /api/stats/summary | 401 Unauthorized |
+| TC-03360 | API | Stats & top jobs | Insufficient role | GET /api/stats/summary | 403 Forbidden |
+| TC-03361 | API | Stats & top jobs | Logged in | GET /api/stats/top-jobs?detailed | 200 + valid data |
+| TC-03362 | API | Stats & top jobs | Logged in | GET /api/stats/top-jobs?detailed with invalid input | 400/422 + error message |
+| TC-03363 | API | Stats & top jobs | Edge case | GET /api/stats/top-jobs?detailed at boundary value | Correct boundary handling |
+| TC-03364 | API | Stats & top jobs | No auth token | GET /api/stats/top-jobs?detailed | 401 Unauthorized |
+| TC-03365 | frontend-UAT | Stats & top jobs | Logged in | Open detailed top jobs in UI | UI renders correctly |
+| TC-03366 | frontend-UAT | Stats & top jobs | No data | Open detailed top jobs with no data | No-data state shown |
+| TC-03367 | API | Stats & top jobs | Expired token | GET /api/stats/top-jobs?detailed | 401 Unauthorized |
+| TC-03368 | API | Stats & top jobs | Insufficient role | GET /api/stats/top-jobs?detailed | 403 Forbidden |
+| TC-03369 | API | Stats & top jobs | Logged in | GET /api/stats/approval-rate | 200 + valid data |
+| TC-03370 | API | Stats & top jobs | Logged in | GET /api/stats/approval-rate with invalid input | 400/422 + error message |
+| TC-03371 | API | Stats & top jobs | Edge case | GET /api/stats/approval-rate at boundary value | Correct boundary handling |
+| TC-03372 | API | Stats & top jobs | No auth token | GET /api/stats/approval-rate | 401 Unauthorized |
+| TC-03373 | frontend-UAT | Stats & top jobs | Logged in | Open approval rate in UI | UI renders correctly |
+| TC-03374 | frontend-UAT | Stats & top jobs | No data | Open approval rate with no data | No-data state shown |
+| TC-03375 | API | Stats & top jobs | Expired token | GET /api/stats/approval-rate | 401 Unauthorized |
+| TC-03376 | API | Stats & top jobs | Insufficient role | GET /api/stats/approval-rate | 403 Forbidden |
+| TC-03377 | API | Stats & top jobs | Logged in | GET /api/stats?by_source | 200 + valid data |
+| TC-03378 | API | Stats & top jobs | Logged in | GET /api/stats?by_source with invalid input | 400/422 + error message |
+| TC-03379 | API | Stats & top jobs | Edge case | GET /api/stats?by_source at boundary value | Correct boundary handling |
+| TC-03380 | API | Stats & top jobs | No auth token | GET /api/stats?by_source | 401 Unauthorized |
+| TC-03381 | frontend-UAT | Stats & top jobs | Logged in | Open stats by source in UI | UI renders correctly |
+| TC-03382 | frontend-UAT | Stats & top jobs | No data | Open stats by source with no data | No-data state shown |
+| TC-03383 | API | Stats & top jobs | Expired token | GET /api/stats?by_source | 401 Unauthorized |
+| TC-03384 | API | Stats & top jobs | Insufficient role | GET /api/stats?by_source | 403 Forbidden |
+| TC-03385 | API | Stats & top jobs | Logged in | GET /api/stats?by_role | 200 + valid data |
+| TC-03386 | API | Stats & top jobs | Logged in | GET /api/stats?by_role with invalid input | 400/422 + error message |
+| TC-03387 | API | Stats & top jobs | Edge case | GET /api/stats?by_role at boundary value | Correct boundary handling |
+| TC-03388 | API | Stats & top jobs | No auth token | GET /api/stats?by_role | 401 Unauthorized |
+| TC-03389 | frontend-UAT | Stats & top jobs | Logged in | Open stats by role in UI | UI renders correctly |
+| TC-03390 | frontend-UAT | Stats & top jobs | No data | Open stats by role with no data | No-data state shown |
+| TC-03391 | API | Stats & top jobs | Expired token | GET /api/stats?by_role | 401 Unauthorized |
+| TC-03392 | API | Stats & top jobs | Insufficient role | GET /api/stats?by_role | 403 Forbidden |
+| TC-03393 | API | Stats & top jobs | Logged in | GET /api/stats?by_salary | 200 + valid data |
+| TC-03394 | API | Stats & top jobs | Logged in | GET /api/stats?by_salary with invalid input | 400/422 + error message |
+| TC-03395 | API | Stats & top jobs | Edge case | GET /api/stats?by_salary at boundary value | Correct boundary handling |
+| TC-03396 | API | Stats & top jobs | No auth token | GET /api/stats?by_salary | 401 Unauthorized |
+| TC-03397 | frontend-UAT | Stats & top jobs | Logged in | Open stats by salary in UI | UI renders correctly |
+| TC-03398 | frontend-UAT | Stats & top jobs | No data | Open stats by salary with no data | No-data state shown |
+| TC-03399 | API | Stats & top jobs | Expired token | GET /api/stats?by_salary | 401 Unauthorized |
+| TC-03400 | API | Stats & top jobs | Insufficient role | GET /api/stats?by_salary | 403 Forbidden |
+| TC-03401 | API | Stats & top jobs | Logged in | GET /api/stats?by_week | 200 + valid data |
+| TC-03402 | API | Stats & top jobs | Logged in | GET /api/stats?by_week with invalid input | 400/422 + error message |
+| TC-03403 | API | Stats & top jobs | Edge case | GET /api/stats?by_week at boundary value | Correct boundary handling |
+| TC-03404 | API | Stats & top jobs | No auth token | GET /api/stats?by_week | 401 Unauthorized |
+| TC-03405 | frontend-UAT | Stats & top jobs | Logged in | Open stats by week in UI | UI renders correctly |
+| TC-03406 | frontend-UAT | Stats & top jobs | No data | Open stats by week with no data | No-data state shown |
+| TC-03407 | API | Stats & top jobs | Expired token | GET /api/stats?by_week | 401 Unauthorized |
+| TC-03408 | API | Stats & top jobs | Insufficient role | GET /api/stats?by_week | 403 Forbidden |
+| TC-03409 | API | Stats & top jobs | Logged in | GET /api/stats?empty | 200 + valid data |
+| TC-03410 | API | Stats & top jobs | Logged in | GET /api/stats?empty with invalid input | 400/422 + error message |
+| TC-03411 | API | Stats & top jobs | Edge case | GET /api/stats?empty at boundary value | Correct boundary handling |
+| TC-03412 | API | Stats & top jobs | No auth token | GET /api/stats?empty | 401 Unauthorized |
+| TC-03413 | frontend-UAT | Stats & top jobs | Logged in | Open no-data state in UI | UI renders correctly |
+| TC-03414 | frontend-UAT | Stats & top jobs | No data | Open no-data state with no data | No-data state shown |
+| TC-03415 | API | Stats & top jobs | Expired token | GET /api/stats?empty | 401 Unauthorized |
+| TC-03416 | API | Stats & top jobs | Insufficient role | GET /api/stats?empty | 403 Forbidden |
+| TC-03417 | API | Stats & top jobs | Logged in | GET /api/stats?summary | 200 + valid data |
+| TC-03418 | API | Stats & top jobs | Logged in | GET /api/stats?summary with invalid input | 400/422 + error message |
+| TC-03419 | API | Stats & top jobs | Edge case | GET /api/stats?summary at boundary value | Correct boundary handling |
+| TC-03420 | API | Stats & top jobs | No auth token | GET /api/stats?summary | 401 Unauthorized |
+| TC-03421 | frontend-UAT | Stats & top jobs | Logged in | Open summary render in UI | UI renders correctly |
+| TC-03422 | frontend-UAT | Stats & top jobs | No data | Open summary render with no data | No-data state shown |
+| TC-03423 | API | Stats & top jobs | Expired token | GET /api/stats?summary | 401 Unauthorized |
+| TC-03424 | API | Stats & top jobs | Insufficient role | GET /api/stats?summary | 403 Forbidden |
+| TC-03425 | API | Stats & top jobs | Logged in | GET /api/stats?top | 200 + valid data |
+| TC-03426 | API | Stats & top jobs | Logged in | GET /api/stats?top with invalid input | 400/422 + error message |
+| TC-03427 | API | Stats & top jobs | Edge case | GET /api/stats?top at boundary value | Correct boundary handling |
+| TC-03428 | API | Stats & top jobs | No auth token | GET /api/stats?top | 401 Unauthorized |
+| TC-03429 | frontend-UAT | Stats & top jobs | Logged in | Open top jobs render in UI | UI renders correctly |
+| TC-03430 | frontend-UAT | Stats & top jobs | No data | Open top jobs render with no data | No-data state shown |
+| TC-03431 | API | Stats & top jobs | Expired token | GET /api/stats?top | 401 Unauthorized |
+| TC-03432 | API | Stats & top jobs | Insufficient role | GET /api/stats?top | 403 Forbidden |
+| TC-03433 | API | Stats & top jobs | Logged in | GET /api/stats?mobile | 200 + valid data |
+| TC-03434 | API | Stats & top jobs | Logged in | GET /api/stats?mobile with invalid input | 400/422 + error message |
+| TC-03435 | API | Stats & top jobs | Edge case | GET /api/stats?mobile at boundary value | Correct boundary handling |
+| TC-03436 | API | Stats & top jobs | No auth token | GET /api/stats?mobile | 401 Unauthorized |
+| TC-03437 | frontend-UAT | Stats & top jobs | Logged in | Open mobile view in UI | UI renders correctly |
+| TC-03438 | frontend-UAT | Stats & top jobs | No data | Open mobile view with no data | No-data state shown |
+| TC-03439 | API | Stats & top jobs | Expired token | GET /api/stats?mobile | 401 Unauthorized |
+| TC-03440 | API | Stats & top jobs | Insufficient role | GET /api/stats?mobile | 403 Forbidden |
+| TC-03441 | API | Stats & top jobs | Logged in | GET /api/stats?print | 200 + valid data |
+| TC-03442 | API | Stats & top jobs | Logged in | GET /api/stats?print with invalid input | 400/422 + error message |
+| TC-03443 | API | Stats & top jobs | Edge case | GET /api/stats?print at boundary value | Correct boundary handling |
+| TC-03444 | API | Stats & top jobs | No auth token | GET /api/stats?print | 401 Unauthorized |
+| TC-03445 | frontend-UAT | Stats & top jobs | Logged in | Open print view in UI | UI renders correctly |
+| TC-03446 | frontend-UAT | Stats & top jobs | No data | Open print view with no data | No-data state shown |
+| TC-03447 | API | Stats & top jobs | Expired token | GET /api/stats?print | 401 Unauthorized |
+| TC-03448 | API | Stats & top jobs | Insufficient role | GET /api/stats?print | 403 Forbidden |
+| TC-03449 | API | Stats & top jobs | Logged in | GET /api/stats?export | 200 + valid data |
+| TC-03450 | API | Stats & top jobs | Logged in | GET /api/stats?export with invalid input | 400/422 + error message |
+| TC-03451 | API | Stats & top jobs | Edge case | GET /api/stats?export at boundary value | Correct boundary handling |
+| TC-03452 | API | Stats & top jobs | No auth token | GET /api/stats?export | 401 Unauthorized |
+| TC-03453 | frontend-UAT | Stats & top jobs | Logged in | Open export stats in UI | UI renders correctly |
+| TC-03454 | frontend-UAT | Stats & top jobs | No data | Open export stats with no data | No-data state shown |
+| TC-03455 | API | Stats & top jobs | Expired token | GET /api/stats?export | 401 Unauthorized |
+| TC-03456 | API | Stats & top jobs | Insufficient role | GET /api/stats?export | 403 Forbidden |
 ### F30 — Feedback & continuous learning
 
-| TC-03481 | API | Feedback & continuous learning | Logged in | POST /api/feedback/{job_id} | 200 + valid data |
-| TC-03482 | API | Feedback & continuous learning | Logged in | POST /api/feedback/{job_id} with invalid input | 400/422 + error message |
-| TC-03483 | API | Feedback & continuous learning | Edge case | POST /api/feedback/{job_id} at boundary value | Correct boundary handling |
-| TC-03484 | API | Feedback & continuous learning | No auth token | POST /api/feedback/{job_id} | 401 Unauthorized |
-| TC-03485 | frontend-UAT | Feedback & continuous learning | Logged in | Open submit feedback in UI | UI renders correctly |
-| TC-03486 | frontend-UAT | Feedback & continuous learning | No data | Open submit feedback with no data | No-data state shown |
-| TC-03487 | API | Feedback & continuous learning | Expired token | POST /api/feedback/{job_id} | 401 Unauthorized |
-| TC-03488 | API | Feedback & continuous learning | Insufficient role | POST /api/feedback/{job_id} | 403 Forbidden |
-| TC-03489 | API | Feedback & continuous learning | Logged in | GET /api/feedback/{job_id} | 200 + valid data |
-| TC-03490 | API | Feedback & continuous learning | Logged in | GET /api/feedback/{job_id} with invalid input | 400/422 + error message |
-| TC-03491 | API | Feedback & continuous learning | Edge case | GET /api/feedback/{job_id} at boundary value | Correct boundary handling |
-| TC-03492 | API | Feedback & continuous learning | No auth token | GET /api/feedback/{job_id} | 401 Unauthorized |
-| TC-03493 | frontend-UAT | Feedback & continuous learning | Logged in | Open feedback recorded in UI | UI renders correctly |
-| TC-03494 | frontend-UAT | Feedback & continuous learning | No data | Open feedback recorded with no data | No-data state shown |
-| TC-03495 | API | Feedback & continuous learning | Expired token | GET /api/feedback/{job_id} | 401 Unauthorized |
-| TC-03496 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback/{job_id} | 403 Forbidden |
-| TC-03497 | API | Feedback & continuous learning | Logged in | GET /api/learning/effect | 200 + valid data |
-| TC-03498 | API | Feedback & continuous learning | Logged in | GET /api/learning/effect with invalid input | 400/422 + error message |
-| TC-03499 | API | Feedback & continuous learning | Edge case | GET /api/learning/effect at boundary value | Correct boundary handling |
-| TC-03500 | API | Feedback & continuous learning | No auth token | GET /api/learning/effect | 401 Unauthorized |
-| TC-03501 | frontend-UAT | Feedback & continuous learning | Logged in | Open feedback effect in UI | UI renders correctly |
-| TC-03502 | frontend-UAT | Feedback & continuous learning | No data | Open feedback effect with no data | No-data state shown |
-| TC-03503 | API | Feedback & continuous learning | Expired token | GET /api/learning/effect | 401 Unauthorized |
-| TC-03504 | API | Feedback & continuous learning | Insufficient role | GET /api/learning/effect | 403 Forbidden |
-| TC-03505 | API | Feedback & continuous learning | Logged in | GET /api/feedback/{job_id}/toast | 200 + valid data |
-| TC-03506 | API | Feedback & continuous learning | Logged in | GET /api/feedback/{job_id}/toast with invalid input | 400/422 + error message |
-| TC-03507 | API | Feedback & continuous learning | Edge case | GET /api/feedback/{job_id}/toast at boundary value | Correct boundary handling |
-| TC-03508 | API | Feedback & continuous learning | No auth token | GET /api/feedback/{job_id}/toast | 401 Unauthorized |
-| TC-03509 | frontend-UAT | Feedback & continuous learning | Logged in | Open confirmation in UI | UI renders correctly |
-| TC-03510 | frontend-UAT | Feedback & continuous learning | No data | Open confirmation with no data | No-data state shown |
-| TC-03511 | API | Feedback & continuous learning | Expired token | GET /api/feedback/{job_id}/toast | 401 Unauthorized |
-| TC-03512 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback/{job_id}/toast | 403 Forbidden |
-| TC-03513 | API | Feedback & continuous learning | Logged in | PUT /api/feedback/{job_id} | 200 + valid data |
-| TC-03514 | API | Feedback & continuous learning | Logged in | PUT /api/feedback/{job_id} with invalid input | 400/422 + error message |
-| TC-03515 | API | Feedback & continuous learning | Edge case | PUT /api/feedback/{job_id} at boundary value | Correct boundary handling |
-| TC-03516 | API | Feedback & continuous learning | No auth token | PUT /api/feedback/{job_id} | 401 Unauthorized |
-| TC-03517 | frontend-UAT | Feedback & continuous learning | Logged in | Open edit feedback in UI | UI renders correctly |
-| TC-03518 | frontend-UAT | Feedback & continuous learning | No data | Open edit feedback with no data | No-data state shown |
-| TC-03519 | API | Feedback & continuous learning | Expired token | PUT /api/feedback/{job_id} | 401 Unauthorized |
-| TC-03520 | API | Feedback & continuous learning | Insufficient role | PUT /api/feedback/{job_id} | 403 Forbidden |
-| TC-03521 | API | Feedback & continuous learning | Logged in | GET /api/feedback/history | 200 + valid data |
-| TC-03522 | API | Feedback & continuous learning | Logged in | GET /api/feedback/history with invalid input | 400/422 + error message |
-| TC-03523 | API | Feedback & continuous learning | Edge case | GET /api/feedback/history at boundary value | Correct boundary handling |
-| TC-03524 | API | Feedback & continuous learning | No auth token | GET /api/feedback/history | 401 Unauthorized |
-| TC-03525 | frontend-UAT | Feedback & continuous learning | Logged in | Open feedback history in UI | UI renders correctly |
-| TC-03526 | frontend-UAT | Feedback & continuous learning | No data | Open feedback history with no data | No-data state shown |
-| TC-03527 | API | Feedback & continuous learning | Expired token | GET /api/feedback/history | 401 Unauthorized |
-| TC-03528 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback/history | 403 Forbidden |
-| TC-03529 | API | Feedback & continuous learning | Logged in | GET /api/feedback?job | 200 + valid data |
-| TC-03530 | API | Feedback & continuous learning | Logged in | GET /api/feedback?job with invalid input | 400/422 + error message |
-| TC-03531 | API | Feedback & continuous learning | Edge case | GET /api/feedback?job at boundary value | Correct boundary handling |
-| TC-03532 | API | Feedback & continuous learning | No auth token | GET /api/feedback?job | 401 Unauthorized |
-| TC-03533 | frontend-UAT | Feedback & continuous learning | Logged in | Open feedback by job in UI | UI renders correctly |
-| TC-03534 | frontend-UAT | Feedback & continuous learning | No data | Open feedback by job with no data | No-data state shown |
-| TC-03535 | API | Feedback & continuous learning | Expired token | GET /api/feedback?job | 401 Unauthorized |
-| TC-03536 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?job | 403 Forbidden |
-| TC-03537 | API | Feedback & continuous learning | Logged in | GET /api/feedback?by_source | 200 + valid data |
-| TC-03538 | API | Feedback & continuous learning | Logged in | GET /api/feedback?by_source with invalid input | 400/422 + error message |
-| TC-03539 | API | Feedback & continuous learning | Edge case | GET /api/feedback?by_source at boundary value | Correct boundary handling |
-| TC-03540 | API | Feedback & continuous learning | No auth token | GET /api/feedback?by_source | 401 Unauthorized |
-| TC-03541 | frontend-UAT | Feedback & continuous learning | Logged in | Open feedback by source in UI | UI renders correctly |
-| TC-03542 | frontend-UAT | Feedback & continuous learning | No data | Open feedback by source with no data | No-data state shown |
-| TC-03543 | API | Feedback & continuous learning | Expired token | GET /api/feedback?by_source | 401 Unauthorized |
-| TC-03544 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?by_source | 403 Forbidden |
-| TC-03545 | API | Feedback & continuous learning | Logged in | GET /api/feedback?by_role | 200 + valid data |
-| TC-03546 | API | Feedback & continuous learning | Logged in | GET /api/feedback?by_role with invalid input | 400/422 + error message |
-| TC-03547 | API | Feedback & continuous learning | Edge case | GET /api/feedback?by_role at boundary value | Correct boundary handling |
-| TC-03548 | API | Feedback & continuous learning | No auth token | GET /api/feedback?by_role | 401 Unauthorized |
-| TC-03549 | frontend-UAT | Feedback & continuous learning | Logged in | Open feedback by role in UI | UI renders correctly |
-| TC-03550 | frontend-UAT | Feedback & continuous learning | No data | Open feedback by role with no data | No-data state shown |
-| TC-03551 | API | Feedback & continuous learning | Expired token | GET /api/feedback?by_role | 401 Unauthorized |
-| TC-03552 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?by_role | 403 Forbidden |
-| TC-03553 | API | Feedback & continuous learning | Logged in | GET /api/feedback?by_salary | 200 + valid data |
-| TC-03554 | API | Feedback & continuous learning | Logged in | GET /api/feedback?by_salary with invalid input | 400/422 + error message |
-| TC-03555 | API | Feedback & continuous learning | Edge case | GET /api/feedback?by_salary at boundary value | Correct boundary handling |
-| TC-03556 | API | Feedback & continuous learning | No auth token | GET /api/feedback?by_salary | 401 Unauthorized |
-| TC-03557 | frontend-UAT | Feedback & continuous learning | Logged in | Open feedback by salary in UI | UI renders correctly |
-| TC-03558 | frontend-UAT | Feedback & continuous learning | No data | Open feedback by salary with no data | No-data state shown |
-| TC-03559 | API | Feedback & continuous learning | Expired token | GET /api/feedback?by_salary | 401 Unauthorized |
-| TC-03560 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?by_salary | 403 Forbidden |
-| TC-03561 | API | Feedback & continuous learning | Logged in | GET /api/feedback?by_week | 200 + valid data |
-| TC-03562 | API | Feedback & continuous learning | Logged in | GET /api/feedback?by_week with invalid input | 400/422 + error message |
-| TC-03563 | API | Feedback & continuous learning | Edge case | GET /api/feedback?by_week at boundary value | Correct boundary handling |
-| TC-03564 | API | Feedback & continuous learning | No auth token | GET /api/feedback?by_week | 401 Unauthorized |
-| TC-03565 | frontend-UAT | Feedback & continuous learning | Logged in | Open feedback by week in UI | UI renders correctly |
-| TC-03566 | frontend-UAT | Feedback & continuous learning | No data | Open feedback by week with no data | No-data state shown |
-| TC-03567 | API | Feedback & continuous learning | Expired token | GET /api/feedback?by_week | 401 Unauthorized |
-| TC-03568 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?by_week | 403 Forbidden |
-| TC-03569 | API | Feedback & continuous learning | Logged in | GET /api/feedback?empty | 200 + valid data |
-| TC-03570 | API | Feedback & continuous learning | Logged in | GET /api/feedback?empty with invalid input | 400/422 + error message |
-| TC-03571 | API | Feedback & continuous learning | Edge case | GET /api/feedback?empty at boundary value | Correct boundary handling |
-| TC-03572 | API | Feedback & continuous learning | No auth token | GET /api/feedback?empty | 401 Unauthorized |
-| TC-03573 | frontend-UAT | Feedback & continuous learning | Logged in | Open no-data state in UI | UI renders correctly |
-| TC-03574 | frontend-UAT | Feedback & continuous learning | No data | Open no-data state with no data | No-data state shown |
-| TC-03575 | API | Feedback & continuous learning | Expired token | GET /api/feedback?empty | 401 Unauthorized |
-| TC-03576 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?empty | 403 Forbidden |
-| TC-03577 | API | Feedback & continuous learning | Logged in | GET /api/feedback?toast | 200 + valid data |
-| TC-03578 | API | Feedback & continuous learning | Logged in | GET /api/feedback?toast with invalid input | 400/422 + error message |
-| TC-03579 | API | Feedback & continuous learning | Edge case | GET /api/feedback?toast at boundary value | Correct boundary handling |
-| TC-03580 | API | Feedback & continuous learning | No auth token | GET /api/feedback?toast | 401 Unauthorized |
-| TC-03581 | frontend-UAT | Feedback & continuous learning | Logged in | Open toast render in UI | UI renders correctly |
-| TC-03582 | frontend-UAT | Feedback & continuous learning | No data | Open toast render with no data | No-data state shown |
-| TC-03583 | API | Feedback & continuous learning | Expired token | GET /api/feedback?toast | 401 Unauthorized |
-| TC-03584 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?toast | 403 Forbidden |
-| TC-03585 | API | Feedback & continuous learning | Logged in | GET /api/feedback?edit | 200 + valid data |
-| TC-03586 | API | Feedback & continuous learning | Logged in | GET /api/feedback?edit with invalid input | 400/422 + error message |
-| TC-03587 | API | Feedback & continuous learning | Edge case | GET /api/feedback?edit at boundary value | Correct boundary handling |
-| TC-03588 | API | Feedback & continuous learning | No auth token | GET /api/feedback?edit | 401 Unauthorized |
-| TC-03589 | frontend-UAT | Feedback & continuous learning | Logged in | Open edit render in UI | UI renders correctly |
-| TC-03590 | frontend-UAT | Feedback & continuous learning | No data | Open edit render with no data | No-data state shown |
-| TC-03591 | API | Feedback & continuous learning | Expired token | GET /api/feedback?edit | 401 Unauthorized |
-| TC-03592 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?edit | 403 Forbidden |
-| TC-03593 | API | Feedback & continuous learning | Logged in | GET /api/feedback?export | 200 + valid data |
-| TC-03594 | API | Feedback & continuous learning | Logged in | GET /api/feedback?export with invalid input | 400/422 + error message |
-| TC-03595 | API | Feedback & continuous learning | Edge case | GET /api/feedback?export at boundary value | Correct boundary handling |
-| TC-03596 | API | Feedback & continuous learning | No auth token | GET /api/feedback?export | 401 Unauthorized |
-| TC-03597 | frontend-UAT | Feedback & continuous learning | Logged in | Open export feedback in UI | UI renders correctly |
-| TC-03598 | frontend-UAT | Feedback & continuous learning | No data | Open export feedback with no data | No-data state shown |
-| TC-03599 | API | Feedback & continuous learning | Expired token | GET /api/feedback?export | 401 Unauthorized |
-| TC-03600 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?export | 403 Forbidden |
+| TC-03457 | API | Feedback & continuous learning | Logged in | POST /api/feedback/{job_id} | 200 + valid data |
+| TC-03458 | API | Feedback & continuous learning | Logged in | POST /api/feedback/{job_id} with invalid input | 400/422 + error message |
+| TC-03459 | API | Feedback & continuous learning | Edge case | POST /api/feedback/{job_id} at boundary value | Correct boundary handling |
+| TC-03460 | API | Feedback & continuous learning | No auth token | POST /api/feedback/{job_id} | 401 Unauthorized |
+| TC-03461 | frontend-UAT | Feedback & continuous learning | Logged in | Open submit feedback in UI | UI renders correctly |
+| TC-03462 | frontend-UAT | Feedback & continuous learning | No data | Open submit feedback with no data | No-data state shown |
+| TC-03463 | API | Feedback & continuous learning | Expired token | POST /api/feedback/{job_id} | 401 Unauthorized |
+| TC-03464 | API | Feedback & continuous learning | Insufficient role | POST /api/feedback/{job_id} | 403 Forbidden |
+| TC-03465 | API | Feedback & continuous learning | Logged in | GET /api/feedback/{job_id} | 200 + valid data |
+| TC-03466 | API | Feedback & continuous learning | Logged in | GET /api/feedback/{job_id} with invalid input | 400/422 + error message |
+| TC-03467 | API | Feedback & continuous learning | Edge case | GET /api/feedback/{job_id} at boundary value | Correct boundary handling |
+| TC-03468 | API | Feedback & continuous learning | No auth token | GET /api/feedback/{job_id} | 401 Unauthorized |
+| TC-03469 | frontend-UAT | Feedback & continuous learning | Logged in | Open feedback recorded in UI | UI renders correctly |
+| TC-03470 | frontend-UAT | Feedback & continuous learning | No data | Open feedback recorded with no data | No-data state shown |
+| TC-03471 | API | Feedback & continuous learning | Expired token | GET /api/feedback/{job_id} | 401 Unauthorized |
+| TC-03472 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback/{job_id} | 403 Forbidden |
+| TC-03473 | API | Feedback & continuous learning | Logged in | GET /api/learning/effect | 200 + valid data |
+| TC-03474 | API | Feedback & continuous learning | Logged in | GET /api/learning/effect with invalid input | 400/422 + error message |
+| TC-03475 | API | Feedback & continuous learning | Edge case | GET /api/learning/effect at boundary value | Correct boundary handling |
+| TC-03476 | API | Feedback & continuous learning | No auth token | GET /api/learning/effect | 401 Unauthorized |
+| TC-03477 | frontend-UAT | Feedback & continuous learning | Logged in | Open feedback effect in UI | UI renders correctly |
+| TC-03478 | frontend-UAT | Feedback & continuous learning | No data | Open feedback effect with no data | No-data state shown |
+| TC-03479 | API | Feedback & continuous learning | Expired token | GET /api/learning/effect | 401 Unauthorized |
+| TC-03480 | API | Feedback & continuous learning | Insufficient role | GET /api/learning/effect | 403 Forbidden |
+| TC-03481 | API | Feedback & continuous learning | Logged in | GET /api/feedback/{job_id}/toast | 200 + valid data |
+| TC-03482 | API | Feedback & continuous learning | Logged in | GET /api/feedback/{job_id}/toast with invalid input | 400/422 + error message |
+| TC-03483 | API | Feedback & continuous learning | Edge case | GET /api/feedback/{job_id}/toast at boundary value | Correct boundary handling |
+| TC-03484 | API | Feedback & continuous learning | No auth token | GET /api/feedback/{job_id}/toast | 401 Unauthorized |
+| TC-03485 | frontend-UAT | Feedback & continuous learning | Logged in | Open confirmation in UI | UI renders correctly |
+| TC-03486 | frontend-UAT | Feedback & continuous learning | No data | Open confirmation with no data | No-data state shown |
+| TC-03487 | API | Feedback & continuous learning | Expired token | GET /api/feedback/{job_id}/toast | 401 Unauthorized |
+| TC-03488 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback/{job_id}/toast | 403 Forbidden |
+| TC-03489 | API | Feedback & continuous learning | Logged in | PUT /api/feedback/{job_id} | 200 + valid data |
+| TC-03490 | API | Feedback & continuous learning | Logged in | PUT /api/feedback/{job_id} with invalid input | 400/422 + error message |
+| TC-03491 | API | Feedback & continuous learning | Edge case | PUT /api/feedback/{job_id} at boundary value | Correct boundary handling |
+| TC-03492 | API | Feedback & continuous learning | No auth token | PUT /api/feedback/{job_id} | 401 Unauthorized |
+| TC-03493 | frontend-UAT | Feedback & continuous learning | Logged in | Open edit feedback in UI | UI renders correctly |
+| TC-03494 | frontend-UAT | Feedback & continuous learning | No data | Open edit feedback with no data | No-data state shown |
+| TC-03495 | API | Feedback & continuous learning | Expired token | PUT /api/feedback/{job_id} | 401 Unauthorized |
+| TC-03496 | API | Feedback & continuous learning | Insufficient role | PUT /api/feedback/{job_id} | 403 Forbidden |
+| TC-03497 | API | Feedback & continuous learning | Logged in | GET /api/feedback/history | 200 + valid data |
+| TC-03498 | API | Feedback & continuous learning | Logged in | GET /api/feedback/history with invalid input | 400/422 + error message |
+| TC-03499 | API | Feedback & continuous learning | Edge case | GET /api/feedback/history at boundary value | Correct boundary handling |
+| TC-03500 | API | Feedback & continuous learning | No auth token | GET /api/feedback/history | 401 Unauthorized |
+| TC-03501 | frontend-UAT | Feedback & continuous learning | Logged in | Open feedback history in UI | UI renders correctly |
+| TC-03502 | frontend-UAT | Feedback & continuous learning | No data | Open feedback history with no data | No-data state shown |
+| TC-03503 | API | Feedback & continuous learning | Expired token | GET /api/feedback/history | 401 Unauthorized |
+| TC-03504 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback/history | 403 Forbidden |
+| TC-03505 | API | Feedback & continuous learning | Logged in | GET /api/feedback?job | 200 + valid data |
+| TC-03506 | API | Feedback & continuous learning | Logged in | GET /api/feedback?job with invalid input | 400/422 + error message |
+| TC-03507 | API | Feedback & continuous learning | Edge case | GET /api/feedback?job at boundary value | Correct boundary handling |
+| TC-03508 | API | Feedback & continuous learning | No auth token | GET /api/feedback?job | 401 Unauthorized |
+| TC-03509 | frontend-UAT | Feedback & continuous learning | Logged in | Open feedback by job in UI | UI renders correctly |
+| TC-03510 | frontend-UAT | Feedback & continuous learning | No data | Open feedback by job with no data | No-data state shown |
+| TC-03511 | API | Feedback & continuous learning | Expired token | GET /api/feedback?job | 401 Unauthorized |
+| TC-03512 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?job | 403 Forbidden |
+| TC-03513 | API | Feedback & continuous learning | Logged in | GET /api/feedback?by_source | 200 + valid data |
+| TC-03514 | API | Feedback & continuous learning | Logged in | GET /api/feedback?by_source with invalid input | 400/422 + error message |
+| TC-03515 | API | Feedback & continuous learning | Edge case | GET /api/feedback?by_source at boundary value | Correct boundary handling |
+| TC-03516 | API | Feedback & continuous learning | No auth token | GET /api/feedback?by_source | 401 Unauthorized |
+| TC-03517 | frontend-UAT | Feedback & continuous learning | Logged in | Open feedback by source in UI | UI renders correctly |
+| TC-03518 | frontend-UAT | Feedback & continuous learning | No data | Open feedback by source with no data | No-data state shown |
+| TC-03519 | API | Feedback & continuous learning | Expired token | GET /api/feedback?by_source | 401 Unauthorized |
+| TC-03520 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?by_source | 403 Forbidden |
+| TC-03521 | API | Feedback & continuous learning | Logged in | GET /api/feedback?by_role | 200 + valid data |
+| TC-03522 | API | Feedback & continuous learning | Logged in | GET /api/feedback?by_role with invalid input | 400/422 + error message |
+| TC-03523 | API | Feedback & continuous learning | Edge case | GET /api/feedback?by_role at boundary value | Correct boundary handling |
+| TC-03524 | API | Feedback & continuous learning | No auth token | GET /api/feedback?by_role | 401 Unauthorized |
+| TC-03525 | frontend-UAT | Feedback & continuous learning | Logged in | Open feedback by role in UI | UI renders correctly |
+| TC-03526 | frontend-UAT | Feedback & continuous learning | No data | Open feedback by role with no data | No-data state shown |
+| TC-03527 | API | Feedback & continuous learning | Expired token | GET /api/feedback?by_role | 401 Unauthorized |
+| TC-03528 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?by_role | 403 Forbidden |
+| TC-03529 | API | Feedback & continuous learning | Logged in | GET /api/feedback?by_salary | 200 + valid data |
+| TC-03530 | API | Feedback & continuous learning | Logged in | GET /api/feedback?by_salary with invalid input | 400/422 + error message |
+| TC-03531 | API | Feedback & continuous learning | Edge case | GET /api/feedback?by_salary at boundary value | Correct boundary handling |
+| TC-03532 | API | Feedback & continuous learning | No auth token | GET /api/feedback?by_salary | 401 Unauthorized |
+| TC-03533 | frontend-UAT | Feedback & continuous learning | Logged in | Open feedback by salary in UI | UI renders correctly |
+| TC-03534 | frontend-UAT | Feedback & continuous learning | No data | Open feedback by salary with no data | No-data state shown |
+| TC-03535 | API | Feedback & continuous learning | Expired token | GET /api/feedback?by_salary | 401 Unauthorized |
+| TC-03536 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?by_salary | 403 Forbidden |
+| TC-03537 | API | Feedback & continuous learning | Logged in | GET /api/feedback?by_week | 200 + valid data |
+| TC-03538 | API | Feedback & continuous learning | Logged in | GET /api/feedback?by_week with invalid input | 400/422 + error message |
+| TC-03539 | API | Feedback & continuous learning | Edge case | GET /api/feedback?by_week at boundary value | Correct boundary handling |
+| TC-03540 | API | Feedback & continuous learning | No auth token | GET /api/feedback?by_week | 401 Unauthorized |
+| TC-03541 | frontend-UAT | Feedback & continuous learning | Logged in | Open feedback by week in UI | UI renders correctly |
+| TC-03542 | frontend-UAT | Feedback & continuous learning | No data | Open feedback by week with no data | No-data state shown |
+| TC-03543 | API | Feedback & continuous learning | Expired token | GET /api/feedback?by_week | 401 Unauthorized |
+| TC-03544 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?by_week | 403 Forbidden |
+| TC-03545 | API | Feedback & continuous learning | Logged in | GET /api/feedback?empty | 200 + valid data |
+| TC-03546 | API | Feedback & continuous learning | Logged in | GET /api/feedback?empty with invalid input | 400/422 + error message |
+| TC-03547 | API | Feedback & continuous learning | Edge case | GET /api/feedback?empty at boundary value | Correct boundary handling |
+| TC-03548 | API | Feedback & continuous learning | No auth token | GET /api/feedback?empty | 401 Unauthorized |
+| TC-03549 | frontend-UAT | Feedback & continuous learning | Logged in | Open no-data state in UI | UI renders correctly |
+| TC-03550 | frontend-UAT | Feedback & continuous learning | No data | Open no-data state with no data | No-data state shown |
+| TC-03551 | API | Feedback & continuous learning | Expired token | GET /api/feedback?empty | 401 Unauthorized |
+| TC-03552 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?empty | 403 Forbidden |
+| TC-03553 | API | Feedback & continuous learning | Logged in | GET /api/feedback?toast | 200 + valid data |
+| TC-03554 | API | Feedback & continuous learning | Logged in | GET /api/feedback?toast with invalid input | 400/422 + error message |
+| TC-03555 | API | Feedback & continuous learning | Edge case | GET /api/feedback?toast at boundary value | Correct boundary handling |
+| TC-03556 | API | Feedback & continuous learning | No auth token | GET /api/feedback?toast | 401 Unauthorized |
+| TC-03557 | frontend-UAT | Feedback & continuous learning | Logged in | Open toast render in UI | UI renders correctly |
+| TC-03558 | frontend-UAT | Feedback & continuous learning | No data | Open toast render with no data | No-data state shown |
+| TC-03559 | API | Feedback & continuous learning | Expired token | GET /api/feedback?toast | 401 Unauthorized |
+| TC-03560 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?toast | 403 Forbidden |
+| TC-03561 | API | Feedback & continuous learning | Logged in | GET /api/feedback?edit | 200 + valid data |
+| TC-03562 | API | Feedback & continuous learning | Logged in | GET /api/feedback?edit with invalid input | 400/422 + error message |
+| TC-03563 | API | Feedback & continuous learning | Edge case | GET /api/feedback?edit at boundary value | Correct boundary handling |
+| TC-03564 | API | Feedback & continuous learning | No auth token | GET /api/feedback?edit | 401 Unauthorized |
+| TC-03565 | frontend-UAT | Feedback & continuous learning | Logged in | Open edit render in UI | UI renders correctly |
+| TC-03566 | frontend-UAT | Feedback & continuous learning | No data | Open edit render with no data | No-data state shown |
+| TC-03567 | API | Feedback & continuous learning | Expired token | GET /api/feedback?edit | 401 Unauthorized |
+| TC-03568 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?edit | 403 Forbidden |
+| TC-03569 | API | Feedback & continuous learning | Logged in | GET /api/feedback?export | 200 + valid data |
+| TC-03570 | API | Feedback & continuous learning | Logged in | GET /api/feedback?export with invalid input | 400/422 + error message |
+| TC-03571 | API | Feedback & continuous learning | Edge case | GET /api/feedback?export at boundary value | Correct boundary handling |
+| TC-03572 | API | Feedback & continuous learning | No auth token | GET /api/feedback?export | 401 Unauthorized |
+| TC-03573 | frontend-UAT | Feedback & continuous learning | Logged in | Open export feedback in UI | UI renders correctly |
+| TC-03574 | frontend-UAT | Feedback & continuous learning | No data | Open export feedback with no data | No-data state shown |
+| TC-03575 | API | Feedback & continuous learning | Expired token | GET /api/feedback?export | 401 Unauthorized |
+| TC-03576 | API | Feedback & continuous learning | Insufficient role | GET /api/feedback?export | 403 Forbidden |
 
 ---
 
-**Total test cases:** 3600
+**Total test cases:** 3576

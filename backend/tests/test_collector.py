@@ -43,12 +43,14 @@ class CollectorTests(unittest.TestCase):
         jobs = [
             {  # India-based remote -> rejected
                 "title": "BA India", "company": "Acme", "url": "https://x/1",
+                "application_url": "https://x/1/apply",
                 "work_mode": "remote", "employer_country": "IN", "job_country": "IN",
                 "worldwide_remote": True, "candidate_required_location": None,
                 "description": "sql excel", "skills": ["SQL"], "source": "fake",
             },
             {  # US-based worldwide remote -> eligible
                 "title": "BA US", "company": "Globex", "url": "https://x/2",
+                "application_url": "https://x/2/apply",
                 "work_mode": "remote", "employer_country": "US", "job_country": None,
                 "worldwide_remote": True, "candidate_required_location": None,
                 "description": "sql excel reporting", "skills": ["SQL", "Excel"], "source": "fake",
@@ -66,6 +68,7 @@ class CollectorTests(unittest.TestCase):
     def test_dedup_across_runs(self):
         jobs = [
             {"title": "BA US", "company": "Globex", "url": "https://x/2",
+             "application_url": "https://x/2/apply",
              "work_mode": "remote", "employer_country": "US", "job_country": None,
              "worldwide_remote": True, "candidate_required_location": None,
              "description": "sql", "skills": ["SQL"], "source": "fake"},
@@ -80,6 +83,7 @@ class CollectorTests(unittest.TestCase):
     def test_explicit_restriction_rejects_user_country(self):
         jobs = [
             {"title": "BA US-only", "company": "Globex", "url": "https://x/3",
+             "application_url": "https://x/3/apply",
              "work_mode": "remote", "employer_country": "US", "job_country": None,
              "worldwide_remote": False, "candidate_required_location": ["US"],
              "description": "sql", "skills": ["SQL"], "source": "fake"},

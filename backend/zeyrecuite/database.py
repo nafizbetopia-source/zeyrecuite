@@ -1,6 +1,7 @@
 """SQLAlchemy engine/session setup for ZEYRECUITE (SQLite, local-first)."""
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 
 from sqlalchemy import create_engine
@@ -8,14 +9,34 @@ from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from .config import AppConfig, database_url_for
 
+logger = logging.getLogger(__name__)
+
 
 class Base(DeclarativeBase):
     """Declarative base for all ORM models."""
 
 
 def _make_engine(url: str):
+    from sqlalchemy import event
+
     connect_args = {"check_same_thread": False} if url.startswith("sqlite") else {}
-    return create_engine(url, connect_args=connect_args, future=True)
+    engine = create_engine(url, connect_args=connect_args, future=True)
+
+    if url.startswith("sqlite"):
+
+        @event.listens_for(engine, "connect")
+        def _set_sqlite_pragmas(dbapi_connection, _record):  # pragma: no cover
+            cursor = dbapi_connection.cursor()
+            cursor.execute("PRAGMA journal_mode=WAL")
+            cursor.execute("PRAGMA busy_timeout=5000")
+            # SQLite leaves foreign keys OFF by default; the models declare FKs
+            # (Job → Application/Feedback, User → Session) and they must be
+            # enforced so deletes cascade instead of leaving orphaned rows that
+            # skew learning weights / run analytics.
+            cursor.execute("PRAGMA foreign_keys=ON")
+            cursor.close()
+
+    return engine
 
 
 class Database:
@@ -62,6 +83,75 @@ class Database:
             cols = {c["name"]: c for c in inspector.get_columns("profiles")}
             if cols.get("current_country", {}).get("nullable") is False:
                 self._make_profile_columns_nullable()
+
+        # Reconcile constraints/indexes so an upgraded database behaves like a
+        # fresh one (bug #13): SQLite's ALTER-based column migration never adds
+        # them retroactively, so without this pass feedback rows multiply and a
+        # concurrent scan can race jobs.fingerprint undetected.
+        from sqlalchemy.schema import CreateIndex
+
+        # 1. Purge rows that violate the (now connection-enforced) foreign keys —
+        #    legacy databases allowed orphans because FKs were off by default.
+        for child, fk_col, parent in (
+            ("feedback", "job_id", "jobs"),
+            ("applications", "job_id", "jobs"),
+            ("sessions", "user_id", "users"),
+        ):
+            if child in existing_tables and parent in existing_tables:
+                with self.engine.begin() as conn:
+                    conn.execute(text(
+                        f"DELETE FROM {child} WHERE {fk_col} IS NULL OR {fk_col} "
+                        f"NOT IN (SELECT id FROM {parent})"
+                    ))
+
+        # 2. Collapse duplicate feedback down to the newest row per job so the
+        #    unique index below can be created.
+        if "feedback" in existing_tables:
+            with self.engine.begin() as conn:
+                conn.execute(text(
+                    "DELETE FROM feedback WHERE id NOT IN "
+                    "(SELECT MAX(id) FROM feedback GROUP BY job_id)"
+                ))
+
+        # 3. Create any indexes the models declare but the legacy DB predates
+        #    (table.indexes + column-level unique=True), idempotently.
+        inspector = inspect(self.engine)
+        for table in Base.metadata.sorted_tables:
+            if table.name not in existing_tables:
+                continue
+            have = {ix["name"] for ix in inspector.get_indexes(table.name)}
+            cols_now = {c["name"] for c in inspector.get_columns(table.name)}
+            for col in table.columns:
+                if not col.unique or col.name not in cols_now:
+                    continue
+                covered = any(
+                    ix.get("unique") and ix.get("column_names") == [col.name]
+                    for ix in inspector.get_indexes(table.name)
+                )
+                if covered:
+                    continue
+                stmt = (
+                    f'CREATE UNIQUE INDEX IF NOT EXISTS "uq_{table.name}_{col.name}" '
+                    f'ON "{table.name}" ("{col.name}")'
+                )
+                try:
+                    with self.engine.begin() as conn:
+                        conn.execute(text(stmt))
+                except Exception as exc:  # noqa: BLE001 — legacy duplicate rows
+                    logger.warning("could not create unique index on %s.%s: %s",
+                                   table.name, col.name, exc)
+            for idx in table.indexes:
+                if idx.name in have:
+                    continue
+                stmt = str(CreateIndex(idx).compile(dialect=self.engine.dialect))
+                if "IF NOT EXISTS" not in stmt:
+                    parts = stmt.split(" ", 2)  # CREATE [UNIQUE] INDEX <name> ...
+                    stmt = f"{parts[0]} {parts[1]} IF NOT EXISTS {parts[2]}"
+                try:
+                    with self.engine.begin() as conn:
+                        conn.execute(text(stmt))
+                except Exception as exc:  # noqa: BLE001 — legacy duplicate rows
+                    logger.warning("could not create index %s: %s", idx.name, exc)
 
     def _make_profile_columns_nullable(self) -> None:
         """Rebuild the profiles table so role/current_country are nullable.

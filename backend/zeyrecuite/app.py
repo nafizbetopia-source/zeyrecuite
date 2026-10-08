@@ -4,12 +4,15 @@ A local-first, authenticated morning-review dashboard. The SPA (static/index.htm
 handles login/logout and all views; this module exposes the JSON API.
 
 Auth: a bearer token (or ``zr_token`` cookie) identifies the user. A default
-account (admin / zeyrecuite) is seeded on first run.
+account (admin) is seeded on first run; its password comes from the
+``ZEYRECUITE_ADMIN_PASSWORD`` env var (or a random one-time password logged at
+startup) — never a hardcoded credential.
 """
 from __future__ import annotations
 
 import csv
 import io
+import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
@@ -20,10 +23,17 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from . import auth, models  # noqa: F401  (register models)
-from .collector import _clean_raw, _clean_skills, run_all
+from . import auth, models, notify  # noqa: F401  (register models)
+from .collector import (
+    _clean_raw,
+    _clean_skills,
+    is_auto_applicable,
+    purge_unsubmittable_jobs,
+    run_all,
+)
 from .companies import get_company_info
 from .config import AppConfig, load_config
+from .daily_submit import build_daily_submitter
 from .database import build_database
 from .dedup import fingerprint
 from .enrich import enrich_company, normalize_skills
@@ -42,10 +52,15 @@ from .scoring import (
     assess_job,
     confidence,
 )
+from .weekly_report import build_weekly_report
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 DATA_DIR = BASE_DIR.parent / "data"
+# Single dedicated folder for ALL screenshots (proof shots from Playwright).
+SCREENSHOTS_DIR = BASE_DIR.parent.parent / "screenshots"
+
+logger = logging.getLogger("zeyrecuite.app")
 
 
 def _is_valid_score(value: Any) -> bool:
@@ -74,6 +89,10 @@ class LoginIn(BaseModel):
 class PasswordIn(BaseModel):
     current_password: str
     new_password: str
+
+
+class SiteProbeIn(BaseModel):
+    url: str
 
 
 class ProfileIn(BaseModel):
@@ -179,7 +198,17 @@ def _blank_profile(profile: Profile) -> None:
 
 
 def create_app(config: AppConfig | None = None) -> FastAPI:
+    global DATA_DIR
+
     config = config or load_config()
+    # data_dir (config.yaml): resolve relative paths against the backend root
+    # so tailored resumes land wherever the user configured, not a fixed "data".
+    _configured_data_dir = Path(config.data_dir)
+    DATA_DIR = (
+        _configured_data_dir
+        if _configured_data_dir.is_absolute()
+        else BASE_DIR.parent / _configured_data_dir
+    )
     db = build_database(config)
     db.create_all()
 
@@ -189,18 +218,47 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
             auth.seed_default_user(session)
             profile = session.get(Profile, 1)
             if profile is None:
-                session.add(_default_profile())
+                profile = _default_profile()
+                session.add(profile)
             elif _is_fake_seed(profile):
                 # One-time cleanup: the app previously seeded a fake profile.
                 # Clear it so the user works only with their real data.
                 _blank_profile(profile)
+            if config.resume_path and not profile.resume_path:
+                # resume_path (config.yaml): pre-fill the master resume pointer
+                # so the app can pre-fill materials without manual upload.
+                profile.resume_path = config.resume_path
             session.commit()
+        # Auto-apply-only gate: purge legacy jobs Playwright cannot submit
+        # (no direct application_url) together with their dependent
+        # Feedback/Application rows. Idempotent; no-op when the flag is off.
+        if config.auto_apply_only:
+            purged = purge_unsubmittable_jobs(db)
+            if purged:
+                logger.info("purged %d link-less job(s) (auto_apply_only)", purged)
         # F17: start the background scan scheduler if enabled in config.
         scheduler = build_scheduler(db, config)
         app.state.scheduler = scheduler
         if config.scheduler.enabled:
             scheduler.start()
+        # Daily auto-submit (off by default): each day pick the top-scored
+        # directly-submittable job, run the Phase 4 pipeline, notify Discord.
+        # The submitter is injected so this module stays import-cycle free.
+        daily = build_daily_submitter(
+            db, config, submitter=lambda job: _submit_application(db, job)
+        )
+        app.state.daily_submit = daily
+        if config.daily_auto_submit.enabled:
+            daily.start()
+        # Weekly Discord progress report (off by default): one 7-day digest
+        # per configured local time via the same webhook as daily submit.
+        weekly = build_weekly_report(db, config)
+        app.state.weekly_report = weekly
+        if config.weekly_report.enabled:
+            weekly.start()
         yield
+        weekly.stop()
+        daily.stop()
         scheduler.stop()
 
     app = FastAPI(title="ZEYRECUITE", version="2.0.0", lifespan=lifespan)
@@ -224,12 +282,27 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
         return user
 
     # ---------- Auth endpoints ----------
+    # In-memory failed-login throttle, keyed by username (successes reset it).
+    _login_failures: dict[str, list[float]] = {}
+    _LOGIN_FAIL_LIMIT = 10
+    _LOGIN_FAIL_WINDOW_SECONDS = 300.0
+
     @app.post("/api/auth/login")
     def login(payload: LoginIn):
+        import time as _time
+
+        now = _time.monotonic()
+        key = (payload.username or "").strip().lower()
+        recent = [t for t in _login_failures.get(key, []) if now - t < _LOGIN_FAIL_WINDOW_SECONDS]
+        if len(recent) >= _LOGIN_FAIL_LIMIT:
+            raise HTTPException(429, "Too many failed attempts. Try again in a few minutes.")
         with db.session() as session:
             user = auth.authenticate(session, payload.username, payload.password)
             if not user:
+                recent.append(now)
+                _login_failures[key] = recent
                 raise HTTPException(401, "Invalid username or password")
+            _login_failures.pop(key, None)
             token = auth.create_session(session, user)
             return {"token": token, "user": {"id": user.id, "username": user.username, "display_name": user.display_name}}
 
@@ -267,12 +340,19 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
             return profile.to_dict()
 
     @app.post("/api/profile/password")
-    def change_password(payload: PasswordIn, user: User = Depends(current_user)):
+    def change_password(payload: PasswordIn, request: Request, user: User = Depends(current_user)):
         with db.session() as session:
             db_user = session.get(User, user.id)
             if not auth.verify_password(payload.current_password, db_user.password_hash, db_user.password_salt):
                 raise HTTPException(400, "Current password is incorrect")
-            auth.change_password(session, db_user, payload.new_password)
+            # Keep *this* session alive; every other token for the user is
+            # revoked, so a stolen/lost session dies on password change.
+            auth.change_password(
+                session,
+                db_user,
+                payload.new_password,
+                keep_token=_token_from_request(request),
+            )
         return {"ok": True}
 
     # ---------- Saved filters (F10) ----------
@@ -336,13 +416,14 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
             with db.session() as session:
                 profile = session.get(Profile, 1)
                 weekly_goal = profile.weekly_goal if profile else None
-                kpi_state = profile.kpi_state if profile else None
 
                 apps = session.query(Application).all()
-                submitted = [
-                    a for a in apps
-                    if a.status == "submitted" and a.submitted_at
-                ]
+
+                def _stage(a: Application) -> str:
+                    # The manual stage wins when set; fall back to the pipeline field.
+                    return a.application_status or a.status or ""
+
+                submitted = [a for a in apps if _stage(a) == "submitted" and a.submitted_at]
                 now = datetime.now(timezone.utc)
                 week_ago = now - timedelta(days=7)
 
@@ -354,23 +435,34 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
                     if ts >= week_ago:
                         this_week += 1
 
-                # Streak: consecutive calendar days (up to 7) ending today with >=1
-                # submission. Computed server-side and cached in kpi_state.
-                streak = kpi_state.get("streak") if isinstance(kpi_state, dict) else None
-                if streak not in (0, None):
-                    last_day = (kpi_state.get("streak_end") or "").split("T")[0] if kpi_state else None
-                    if last_day:
-                        try:
-                            from datetime import date
-                            d = date.fromisoformat(last_day)
-                            if (now.date() - d).days > 1:
-                                streak = None
-                        except ValueError:
-                            streak = None
+                # Streak: consecutive calendar days (up to 7) ending today — or
+                # yesterday, so a streak survives until the day rolls over —
+                # with >= 1 submission. Derived straight from the data so it
+                # can never go stale or be wiped by a partial profile update.
+                days = set()
+                for a in submitted:
+                    ts = a.submitted_at
+                    if ts.tzinfo is None:
+                        ts = ts.replace(tzinfo=timezone.utc)
+                    days.add(ts.date())
+                today = now.date()
+                yesterday = today - timedelta(days=1)
+                anchor = today if today in days else (yesterday if yesterday in days else None)
+                streak = 0
+                streak_end = None
+                if anchor is not None:
+                    day = anchor
+                    while day in days and streak < 7:
+                        streak += 1
+                        day -= timedelta(days=1)
+                    streak_end = anchor.isoformat()
+                elif days:
+                    streak_end = max(days).isoformat()
 
+                stage_col = func.coalesce(Application.application_status, Application.status)
                 stages = dict(
-                    session.query(Application.status, func.count(Application.id))
-                    .group_by(Application.status).all()
+                    session.query(stage_col, func.count(Application.id))
+                    .group_by(stage_col).all()
                 )
                 total_apps = len(apps)
                 submitted_total = stages.get("submitted", 0)
@@ -383,14 +475,14 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
                     "submitted_this_week": this_week,
                     "progress": progress,
                     "streak": streak,
-                    "streak_end": (kpi_state.get("streak_end") if isinstance(kpi_state, dict) else None),
+                    "streak_end": streak_end,
                     "stages": stages,
                     "total_apps": total_apps,
                     "submitted_total": submitted_total,
                 }
         except Exception as e:
             logger.exception("KPI status error")
-            raise HTTPException(status_code=500, detail=str(e))
+            raise HTTPException(status_code=500, detail="failed to load KPI status") from e
 
     @app.put("/api/kpi")
     def kpi_update(payload: dict, user: User = Depends(current_user)):
@@ -400,20 +492,24 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
             if not profile:
                 raise HTTPException(404, "profile not found")
 
-            goal = (payload or {}).get("weekly_goal")
-            if goal is not None:
-                try:
-                    goal = int(goal)
-                except (TypeError, ValueError):
-                    raise HTTPException(422, "weekly_goal must be an integer")
-                if goal < 0:
-                    raise HTTPException(422, "weekly_goal must be >= 0")
-            profile.weekly_goal = goal
+            # Only overwrite fields that are actually present in the payload so
+            # a partial update (e.g. just {weekly_goal}) cannot wipe the rest.
+            if "weekly_goal" in (payload or {}):
+                goal = (payload or {}).get("weekly_goal")
+                if goal is not None:
+                    try:
+                        goal = int(goal)
+                    except (TypeError, ValueError):
+                        raise HTTPException(422, "weekly_goal must be an integer")
+                    if goal < 0:
+                        raise HTTPException(422, "weekly_goal must be >= 0")
+                profile.weekly_goal = goal
 
-            state = (payload or {}).get("kpi_state")
-            if state is not None and not isinstance(state, dict):
-                raise HTTPException(422, "kpi_state must be an object")
-            profile.kpi_state = state
+            if "kpi_state" in (payload or {}):
+                state = (payload or {}).get("kpi_state")
+                if state is not None and not isinstance(state, dict):
+                    raise HTTPException(422, "kpi_state must be an object")
+                profile.kpi_state = state
 
             session.commit()
             return {
@@ -437,20 +533,24 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
                 .filter(func.lower(Job.company) == func.lower(company))
                 .all()
             )
+            # Batch-load applications once — a per-job query here was an N+1
+            # (and referenced the session after it had already been closed).
+            app_by_job = {a.job_id: a for a in session.query(Application).all()}
 
-        jobs = []
-        salaries = []
-        sources: dict[str, int] = {}
-        stages: dict[str, int] = {}
-        for j in rows:
-            jobs.append(_list_item(j))
-            sources[j.source] = sources.get(j.source, 0) + 1
-            v = _salary_value(j.salary)
-            if v is not None:
-                salaries.append(v)
-            app = session.query(Application).filter(Application.job_id == j.id).first()
-            if app:
-                stages[app.status] = stages.get(app.status, 0) + 1
+            jobs = []
+            salaries = []
+            sources: dict[str, int] = {}
+            stages: dict[str, int] = {}
+            for j in rows:
+                jobs.append(_list_item(j, app_record=app_by_job.get(j.id)))
+                sources[j.source] = sources.get(j.source, 0) + 1
+                v = _salary_value(j.salary)
+                if v is not None:
+                    salaries.append(v)
+                app = app_by_job.get(j.id)
+                if app:
+                    stage = app.application_status or app.status
+                    stages[stage] = stages.get(stage, 0) + 1
 
         info = get_company_info(company)
         facts = {
@@ -492,11 +592,32 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
         prepared = _auto_generate_top(db, limit=10)
         return {"runs": [s.__dict__ for s in summaries], "prepared_top": prepared}
 
+    # ---------- Weekly Discord report (opt-in) ----------
+    @app.get("/api/weekly-report/status")
+    def weekly_report_status(user: User = Depends(current_user)):
+        """Schedule/state of the weekly Discord report cron."""
+        return app.state.weekly_report.status()
+
+    @app.post("/api/weekly-report/run")
+    def weekly_report_run(user: User = Depends(current_user)):
+        """Build + send one weekly report immediately (debugging / manual runs)."""
+        return app.state.weekly_report.run_now()
+
     # ---------- F17: scheduler + enrichment ----------
     @app.get("/api/scheduler")
     def scheduler_status(user: User = Depends(current_user)):
         """Report the background scan scheduler state (F17)."""
         return app.state.scheduler.status()
+
+    @app.post("/api/notifications/discord/test")
+    def discord_test(user: User = Depends(current_user)):
+        """Send a one-off test message to the configured Discord webhook."""
+        url = config.discord_webhook_url
+        if not url:
+            raise HTTPException(409, "discord_webhook_url is not set in config.yaml")
+        if not notify.send(url, "ZEYRECUITE test message — notifications are working ✅"):
+            raise HTTPException(502, "Discord webhook rejected the message (check the URL)")
+        return {"sent": True}
 
     @app.get("/api/sources")
     def sources_registry(user: User = Depends(current_user)):
@@ -556,20 +677,11 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
             # Compute additive learning multipliers from feedback history so a
             # re-score reflects what the user has approved / rejected / selected.
             feedback_rows = session.query(Feedback).all()
-            learning = compute_learning_weights(
-                (
-                    {
-                        "job_id": f.job_id,
-                        "signal": f.signal,
-                        "skills": job_map[f.job_id].skills,
-                        "company": job_map[f.job_id].company,
-                        "source": job_map[f.job_id].source,
-                        "work_mode": job_map[f.job_id].work_mode,
-                    }
-                    for f in feedback_rows
-                ),
-                jobs_by_id=job_map,
-            ) if feedback_rows else None
+            learning = (
+                compute_learning_weights(feedback_rows, jobs_by_id=job_map)
+                if feedback_rows
+                else None
+            )
             updated = 0
             for job in jobs:
                 company_overall = get_company_info(job.company).overall
@@ -633,28 +745,26 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
                     status_code=422,
                     detail="signal must be one of: approve, reject, select",
                 )
-            feedback = Feedback(
-                job_id=job_id,
-                signal=signal,
-                source=body.get("source", "manual"),
-            )
-            session.add(feedback)
+            # Upsert: exactly one feedback row per job (unique index
+            # uq_feedback_job_id). Re-sending a signal — double-click, changed
+            # mind, corrected mistake — updates the existing row instead of
+            # appending duplicates that would double-count in
+            # compute_learning_weights and inflate the insights totals.
+            feedback = session.query(Feedback).filter(Feedback.job_id == job_id).first()
+            if feedback is None:
+                feedback = Feedback(
+                    job_id=job_id,
+                    signal=signal,
+                    source=body.get("source", "manual"),
+                )
+                session.add(feedback)
+            else:
+                feedback.signal = signal
+                feedback.source = body.get("source", "manual")
             session.commit()
 
             learning = compute_learning_weights(
-                (
-                    {
-                        "job_id": f.job_id,
-                        "signal": f.signal,
-                        "skills": j.skills,
-                        "company": j.company,
-                        "source": j.source,
-                        "work_mode": j.work_mode,
-                    }
-                    for f in session.query(Feedback).all()
-                    for j in (session.get(Job, f.job_id),)
-                    if j is not None
-                ),
+                session.query(Feedback).all(),
                 jobs_by_id={j.id: j for j in session.query(Job).all()},
             )
             return {
@@ -662,6 +772,18 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
                 "job_id": job_id,
                 "learning": learning.to_dict(),
             }
+
+    @app.delete("/api/jobs/{job_id}/feedback")
+    def delete_feedback(job_id: int, user: User = Depends(current_user)):
+        """Remove the recorded signal for a job (lets the user correct mistakes)."""
+        with db.session() as session:
+            removed = (
+                session.query(Feedback)
+                .filter(Feedback.job_id == job_id)
+                .delete(synchronize_session=False)
+            )
+            session.commit()
+            return {"removed": removed, "job_id": job_id}
 
     @app.get("/api/learning/insights")
     def learning_insights(user: User = Depends(current_user)):
@@ -687,20 +809,7 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
                     "pref_mult": 1.0,
                 }
             job_map = {j.id: j for j in session.query(Job).all()}
-            learning = compute_learning_weights(
-                (
-                    {
-                        "job_id": f.job_id,
-                        "signal": f.signal,
-                        "skills": job_map[f.job_id].skills,
-                        "company": job_map[f.job_id].company,
-                        "source": job_map[f.job_id].source,
-                        "work_mode": job_map[f.job_id].work_mode,
-                    }
-                    for f in feedback_rows
-                ),
-                jobs_by_id=job_map,
-            )
+            learning = compute_learning_weights(feedback_rows, jobs_by_id=job_map)
             return learning.to_dict()
 
     # ---------- Enrichment ----------
@@ -785,7 +894,11 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
             })
 
         def _best(key, reverse=True):
-            vals = [(r[key], r["id"]) for r in rows if r.get(key) is not None]
+            vals = []
+            for r in rows:
+                v = key(r) if callable(key) else r.get(key)
+                if v is not None:
+                    vals.append((v, r["id"]))
             if not vals:
                 return None
             vals.sort(reverse=reverse)
@@ -796,7 +909,9 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
             "eligibility": _best("eligibility"),
             "salary": _best("salary_value"),
             "company": _best("company_overall"),
-            "skills": _best("missing_skills", reverse=False),
+            # Fewest missing skills is best — compare by count, not by the
+            # lexicographic ordering of the skill list itself.
+            "skills": _best(lambda r: len(r["missing_skills"] or []), reverse=False),
         }
         return {"jobs": rows, "best": best}
 
@@ -807,6 +922,13 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
 
         with db.session() as session:
             query = session.query(Job)
+            if config.auto_apply_only:
+                # Mirror collector.is_auto_applicable: only jobs Playwright
+                # can submit (non-empty application_url) are listed. This feeds
+                # the Jobs, Search, and Top-10 views that read this endpoint.
+                query = query.filter(
+                    Job.application_url.isnot(None), Job.application_url != ""
+                )
             if status:
                 query = query.filter(Job.status == status)
             status_rank = case(
@@ -964,6 +1086,8 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
         Used when no email is connected so the user can still track where each
         application stands: draft → ready → submitting → submitted | failed.
         """
+        from datetime import datetime, timezone
+
         status = (payload or {}).get("status")
         if status not in _APPLICATION_STATUSES:
             raise HTTPException(422, f"invalid status; must be one of {sorted(_APPLICATION_STATUSES)}")
@@ -976,6 +1100,10 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
                 app_record = Application(job_id=job_id, status="draft")
                 session.add(app_record)
             app_record.application_status = status
+            if status == "submitted" and not app_record.submitted_at:
+                # KPI/streak/analytics count submissions by submitted_at, so a
+                # manual move to "submitted" must stamp it too.
+                app_record.submitted_at = datetime.now(timezone.utc)
             session.commit()
             return _detail(job)
 
@@ -1169,9 +1297,34 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
                 raise HTTPException(404, "resume file missing")
             return FileResponse(path, media_type="application/pdf", filename=path.name)
 
+    @app.get("/api/jobs/{job_id}/screenshot")
+    def job_screenshot(job_id: int, user: User = Depends(current_user)):
+        """Proof screenshot captured when the browser submitted this job (Phase 4)."""
+        with db.session() as session:
+            app_record = session.query(Application).filter(Application.job_id == job_id).first()
+            if not app_record or not app_record.screenshot_path:
+                raise HTTPException(404, "no screenshot for this job")
+            path = Path(app_record.screenshot_path)
+            if not path.exists():
+                raise HTTPException(404, "screenshot file missing")
+            return FileResponse(path, media_type="image/png")
+
+    @app.post("/api/company-sites/probe")
+    def probe_company_site(payload: SiteProbeIn, user: User = Depends(current_user)):
+        """Probe a company's careers page: the ATS behind it plus how many jobs a
+        scan would pick up (Phase 4). Never raises — errors come back in-band."""
+        from .adapters import probe_careers_page
+
+        url = (payload.url or "").strip()
+        if not url.startswith(("http://", "https://")):
+            raise HTTPException(422, "A full careers URL (https://...) is required.")
+        return probe_careers_page(url)
+
     # ---------- Stats & runs ----------
     @app.get("/api/stats")
     def stats(user: User = Depends(current_user)):
+        from sqlalchemy import func
+
         with db.session() as session:
             total = session.query(Job).count()
             eligible = session.query(Job).filter(Job.status == "new").count()
@@ -1179,8 +1332,9 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
             rejected = session.query(Job).filter(Job.status == "rejected").count()
             review = session.query(Job).filter(Job.status == "review").count()
             sources = session.query(Job.source).distinct().count()
-            submitted = session.query(Application).filter(Application.status == "submitted").count()
-            ready = session.query(Application).filter(Application.status == "ready").count()
+            stage = func.coalesce(Application.application_status, Application.status)
+            submitted = session.query(Application).filter(stage == "submitted").count()
+            ready = session.query(Application).filter(stage == "ready").count()
             return {
                 "total": total,
                 "eligible": eligible,
@@ -1247,9 +1401,10 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
                 else:
                     buckets["85-100"] += 1
 
-            # Application pipeline.
+            # Application pipeline (manual stage wins over the pipeline field).
+            app_stage = func.coalesce(Application.application_status, Application.status)
             app_by_status = dict(
-                session.query(Application.status, func.count(Application.id)).group_by(Application.status).all()
+                session.query(app_stage, func.count(Application.id)).group_by(app_stage).all()
             )
 
             # Submissions over the last 14 days.
@@ -1664,11 +1819,19 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
     def _rows_to_csv(rows: list[dict]) -> str:
         if not rows:
             return ""
+
+        def _cell(v):
+            # Neutralize spreadsheet formula injection (cells beginning with
+            # =, +, -, @, tab or CR are prefixed with an apostrophe).
+            if isinstance(v, str) and v[:1] in ("=", "+", "-", "@", "\t", "\r"):
+                return "'" + v
+            return "" if v is None else v
+
         buf = io.StringIO()
         writer = csv.DictWriter(buf, fieldnames=list(rows[0].keys()))
         writer.writeheader()
         for row in rows:
-            writer.writerow({k: ("" if v is None else v) for k, v in row.items()})
+            writer.writerow({k: _cell(v) for k, v in row.items()})
         return buf.getvalue()
 
     @app.get("/api/export/jobs")
@@ -1759,6 +1922,15 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
                     skipped += 1
                     continue
                 existing.add(fp)
+                # Auto-apply-only gate: rows Playwright cannot submit are
+                # skipped with an explicit reason (dedup still wins above so
+                # its counters keep their exact meaning).
+                if config.auto_apply_only and not is_auto_applicable(raw):
+                    skipped += 1
+                    errors.append(
+                        f"row {i}: no application_url — cannot auto-apply (auto_apply_only)"
+                    )
+                    continue
 
                 # Score the job if the export did not carry a valid score.
                 confidence_val = raw.get("confidence")
@@ -1798,7 +1970,13 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
                     confidence_label = assessment.confidence_label
                     eligibility_label = assessment.eligibility_label
                 else:
-                    score_val = raw.get("score")
+                    # Guard a missing/garbage score: Job.score is NOT NULL, so
+                    # passing None would abort the whole import with an
+                    # IntegrityError (the column default only applies when the
+                    # field is omitted entirely — an explicit None overrides it).
+                    score_val = (
+                        raw.get("score") if _is_valid_score(raw.get("score")) else 0.0
+                    )
                     score_breakdown = raw.get("score_breakdown")
                     confidence_breakdown = raw.get("confidence_breakdown")
                     confidence_label = raw.get("confidence_label")
@@ -1819,6 +1997,7 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
                     skills=raw.get("skills"),
                     url=url,
                     source=raw.get("source") or "import",
+                    ats=raw.get("ats"),
                     posted_date=raw.get("posted_date"),
                     application_url=raw.get("application_url"),
                     application_method=raw.get("application_method"),
@@ -1831,7 +2010,11 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
                     eligibility=eligibility_val,
                     eligibility_label=eligibility_label,
                     confidence_breakdown=confidence_breakdown,
-                    status=raw.get("status") or "new",
+                    status=(
+                        raw.get("status")
+                        if raw.get("status") in _JOB_STATUSES
+                        else "new"
+                    ),
                 ))
                 imported += 1
             session.commit()
@@ -1892,6 +2075,8 @@ def _ensure_materials(db, job: Job, force: bool = False, variant: str | None = N
                 app_record.personalization_score = score
                 if app_record.status == "draft":
                     app_record.status = "ready"
+                if not app_record.application_status or app_record.application_status == "draft":
+                    app_record.application_status = "ready"
         session.commit()
         return app_record
 
@@ -1923,36 +2108,120 @@ def _auto_generate_top(db, limit: int = 10, force: bool = False) -> int:
     return prepared
 
 
-def _submit_application(db, job: Job) -> dict:
+def _submit_application(db, job: Job, auto_submit: bool | None = None) -> dict:
     """Run the submission pipeline for an approved job.
 
-    The MVP never auto-fills third-party ATS forms (that would be brittle and
-    against most sites' terms). Instead it prepares everything, records a
-    verifiable submission record, and returns a clear status the UI can show:
-    "submitted" when a direct apply link exists, otherwise "ready" with the
-    exact next step. This is honest, auditable, and error-free.
+    Phase 4: when the job has a direct apply URL, browser automation is
+    available, and ``auto_submit`` (config.yaml, default on) allows it, apply
+    directly on the company's own page with Playwright — fill the form from the
+    profile + prepared materials, upload the tailored resume PDF, submit, and
+    save a proof screenshot.
+
+    Whatever the browser does (or when it cannot run at all), this always
+    writes an honest, auditable record and never raises: "submitted" + auto-web
+    when the browser confirmed a receipt page; the legacy "submitted" wording
+    when a direct apply link exists; otherwise "ready" with the exact next step.
     """
     from datetime import datetime, timezone
 
+    from . import apply as apply_mod
+
     now = datetime.now(timezone.utc)
     app_record = _ensure_materials(db, job)
+
+    if auto_submit is None:
+        try:
+            from .config import load_config
+
+            auto_submit = load_config().auto_submit
+        except Exception:
+            auto_submit = True
+
+    # daily_cap (config.yaml): bound how many applications are pushed through
+    # the browser per UTC day. Once the cap is reached, fall back to the
+    # prepare-materials-and-link flow instead of auto-submitting.
+    if auto_submit:
+        try:
+            from .config import load_config
+
+            daily_cap = load_config().daily_cap
+        except Exception:
+            daily_cap = 10
+        if daily_cap > 0:
+            start_of_day = now.replace(hour=0, minute=0, second=0, microsecond=0)
+            with db.session() as session:
+                # Only browser-driven submissions consume the cap — manual
+                # submissions are not "pushed through the browser" and must
+                # not lock the user out of auto-submit for the rest of the day.
+                submitted_today = (
+                    session.query(Application)
+                    .filter(Application.submitted_at >= start_of_day)
+                    .filter(Application.submission_method == "auto-web")
+                    .count()
+                )
+            if submitted_today >= daily_cap:
+                auto_submit = False
+
+    browser: dict | None = None
+    if auto_submit and job.application_url and apply_mod.browser_available():
+        with db.session() as session:
+            rec = session.get(Application, app_record.id)
+            profile = session.get(Profile, 1)
+            form = dict(rec.application_form or {})
+            for noisy in ("cover_letter", "completeness", "saved"):
+                form.pop(noisy, None)
+            context = {
+                "profile": profile.to_dict() if profile else {},
+                "cover_letter": rec.cover_letter or "",
+                "answers": {k: v for k, v in form.items() if isinstance(v, str)},
+                "resume": rec.resume_pdf_path,
+            }
+        browser = apply_mod.submit_on_company_site(
+            url=job.application_url,
+            profile=context["profile"],
+            cover_letter=context["cover_letter"],
+            answers=context["answers"],
+            resume_path=context["resume"],
+            screenshot_path=SCREENSHOTS_DIR / f"job_{job.id}.png",
+        )
     with db.session() as session:
         app_record = session.get(Application, app_record.id)
         app_record.attempts = (app_record.attempts or 0) + 1
         app_record.last_attempt_at = now
-        app_record.submission_method = job.application_method or "manual"
+        if browser and browser.get("ok"):
+            app_record.submission_method = "auto-web"
+        else:
+            app_record.submission_method = job.application_method or "manual"
+        if browser and browser.get("screenshot"):
+            app_record.screenshot_path = browser["screenshot"]
 
-        if job.application_url:
+        if browser and browser.get("ok"):
+            # The browser confirmed a receipt page on the company's own site.
             app_record.status = "submitted"
+            app_record.application_status = "submitted"
+            app_record.submitted_at = now
+            app_record.submission_status = "submitted"
+            app_record.submission_url = browser.get("final_url") or job.application_url
+            app_record.submission_message = (
+                "Submitted directly on the company's site via browser automation. "
+                "A proof screenshot was saved — open it to verify."
+            )
+        elif job.application_url:
+            app_record.status = "submitted"
+            app_record.application_status = "submitted"
             app_record.submitted_at = now
             app_record.submission_status = "submitted"
             app_record.submission_url = job.application_url
-            app_record.submission_message = (
+            message = (
                 "Application package prepared and routed to the employer's apply link. "
                 "Open the link to confirm submission."
             )
+            if browser:
+                message += f" Browser attempt: {browser.get('message')}"
+            app_record.submission_message = message
         else:
             app_record.status = "ready"
+            app_record.application_status = "ready"
             app_record.submission_status = "ready"
             app_record.submission_message = (
                 "No direct apply link on this listing. Your tailored resume and cover "

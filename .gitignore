@@ -21,6 +21,7 @@ htmlcov/
 *.db-journal
 *.db-wal
 *.db-shm
+*.db.bak*
 
 # Runtime output
 graphify-out/

@@ -1,5 +1,5 @@
 {
-  "_comment": "ZEYRECUITE source registry (F15). Set enabled=true and fill in slugs/keys to turn a source on. Company career pages (lever/ashby/workable/smartrecruiters/workday) need at least one slug. Adzuna needs a free api_key + api_id. The Muse needs a search query.",
+  "_comment": "ZEYRECUITE source registry (F15). Set enabled=true and fill in slugs/keys to turn a source on. Company career pages (lever/ashby/workable/smartrecruiters/workday) need at least one slug. Adzuna needs a free api_key + api_id. The Muse needs a search query. companysite (Phase 4) scans the career pages of the companies you list; edit `sites` below to the companies you actually target.",
   "remoteok": { "enabled": true },
   "weworkremotely": { "enabled": true },
   "themuse": { "enabled": true, "query": "business analyst" },
@@ -8,5 +8,15 @@
   "workable": { "enabled": false, "accounts": [] },
   "smartrecruiters": { "enabled": false, "companies": [] },
   "workday": { "enabled": false, "tenants": [] },
-  "adzuna": { "enabled": false, "api_key": "", "api_id": "" }
+  "adzuna": { "enabled": false, "api_key": "", "api_id": "" },
+  "companysite": {
+    "enabled": true,
+    "_comment": "Phase 4 — company career pages. Replace these with the companies you target: the engine detects the ATS behind each page (Greenhouse/Lever/Ashby/Workable/SmartRecruiters/Workday) and applications submit directly on the company site.",
+    "sites": [
+      { "name": "Stripe", "careers_url": "https://stripe.com/jobs" },
+      { "name": "Datadog", "careers_url": "https://careers.datadoghq.com/all-jobs/" },
+      { "name": "Figma", "careers_url": "https://www.figma.com/careers/" },
+      { "name": "Airtable", "careers_url": "https://airtable.com/careers" }
+    ]
+  }
 }

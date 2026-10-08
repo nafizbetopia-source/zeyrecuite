@@ -34,6 +34,9 @@ class ScanScheduler:
         self.db = db
         self.config = config
         self._scheduler = scheduler or BackgroundScheduler(daemon=True)
+        # The interval actually given to APScheduler (may differ from the config
+        # value when start(interval_hours=...) overrides it). None when not started.
+        self._interval_hours: float | None = None
 
     @property
     def running(self) -> bool:
@@ -51,6 +54,7 @@ class ScanScheduler:
         if self.running:
             return
         hours = interval_hours if interval_hours is not None else self.config.scheduler.interval_hours
+        self._interval_hours = hours
         self._scheduler.add_job(
             self._scan_job,
             trigger=IntervalTrigger(hours=hours),
@@ -66,14 +70,25 @@ class ScanScheduler:
         if self.running:
             self._scheduler.shutdown(wait=False)
             logger.info("scheduler stopped")
+        self._interval_hours = None
 
     def status(self) -> dict[str, Any]:
-        """Return scheduler state for the API/UI."""
+        """Return scheduler state for the API/UI.
+
+        ``interval_hours`` reports the interval the job was *actually* started
+        with (the config value only until start() runs), so the UI never shows
+        a stale/incorrect schedule.
+        """
         job = self._scheduler.get_job(_JOB_ID)
+        interval = (
+            self._interval_hours
+            if self._interval_hours is not None
+            else self.config.scheduler.interval_hours
+        )
         return {
             "enabled": self.config.scheduler.enabled,
             "running": self.running,
-            "interval_hours": self.config.scheduler.interval_hours,
+            "interval_hours": interval,
             "next_run": job.next_run_time.isoformat() if job and job.next_run_time else None,
         }
 

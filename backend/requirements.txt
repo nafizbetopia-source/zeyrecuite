@@ -12,3 +12,7 @@ pytest>=8.0
 APScheduler>=3.10
 tenacity>=8.2
 trafilatura>=1.12
+
+# Phase 4: browser submission on company career sites.
+# After install, run once: playwright install chromium
+playwright>=1.40

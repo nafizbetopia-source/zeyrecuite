@@ -1,0 +1,221 @@
+id,job_id,status,application_status,resume_pdf,cover_letter,application_form,personalization_score,submitted_at,submission_method,submission_url,submission_status,submission_message,attempts,last_attempt_at
+1,297,ready,,/api/jobs/297/resume.pdf,"Dear Hiring Team,
+
+I am writing to express my interest in the Program Manager, GTM Planning role at Stripe. As a Business Analyst with hands-on experience in SQL, Excel, Power BI, Stakeholder Management, Requirements Analysis, I am confident I can contribute to your team.
+
+My background in requirements analysis, stakeholder communication, and data-driven reporting aligns well with the responsibilities of this position. I am available to start immediately and am flexible on time zones.
+
+Thank you for your consideration.
+
+Best regards,
+Your Name",,,,,,,,,
+2,238,ready,,/api/jobs/238/resume.pdf,"Dear Hiring Team,
+
+I am writing to express my interest in the Operations Insights, Tax role at Stripe. As a Business Analyst with hands-on experience in SQL, Excel, Power BI, Stakeholder Management, Requirements Analysis, I am confident I can contribute to your team.
+
+My background in requirements analysis, stakeholder communication, and data-driven reporting aligns well with the responsibilities of this position. I am available to start immediately and am flexible on time zones.
+
+Thank you for your consideration.
+
+Best regards,
+Your Name",,,,,,,,,
+3,93,ready,,/api/jobs/93/resume.pdf,"Dear Hiring Team,
+
+I am writing to express my interest in the Business Partner Analyst role at Stripe. As a Business Analyst with hands-on experience in SQL, Excel, Power BI, Stakeholder Management, UAT-Skill, I am confident I can contribute to your team.
+
+My background in requirements analysis, stakeholder communication, and data-driven reporting aligns well with the responsibilities of this position. I am available to start immediately and am flexible on time zones.
+
+Thank you for your consideration.
+
+Best regards,
+Nafiz UAT Test",,,,,,,,,
+4,167,submitted,,/api/jobs/167/resume.pdf,"Dear Hiring Team,
+
+I am writing to express my interest in the Fraud Patterns Analyst role at Stripe. As a Business Analyst with hands-on experience in SQL, Excel, Power BI, Stakeholder Management, UAT-Skill, I am confident I can contribute to your team.
+
+My background in requirements analysis, stakeholder communication, and data-driven reporting aligns well with the responsibilities of this position. I am available to start immediately and am flexible on time zones.
+
+Thank you for your consideration.
+
+Best regards,
+Nafiz UAT Test",,,2026-10-01T06:51:47.968009,web,https://stripe.com/jobs/search?gh_jid=7913410,submitted,Application package prepared and routed to the employer's apply link. Open the link to confirm submission.,1,2026-10-01T06:51:47.968009
+5,78,ready,,/api/jobs/78/resume.pdf,"Dear Stripe team, I would love to bring my data storytelling to your marketing org.","{'expected_salary': '$95k', 'notice_period': '2 weeks', 'cover_letter': 'Dear Stripe team, I would love to bring my data storytelling to your marketing org.'}",,,,,,,0,
+6,140,ready,,/api/jobs/140/resume.pdf,"Dear Hiring Team,
+
+I am writing to express my interest in the Engineering Manager, Data Transformation role at Stripe. As a Senior Business Analyst with hands-on experience in SQL, Excel, Power BI, Stakeholder Management, I am confident I can contribute to your team. Data-driven business analyst with 5 years of experience turning complex data into decisions.
+
+I am available to start per my stated notice period and am flexible on time zones.
+
+Thank you for your consideration.
+
+Best regards,
+Nafiz Ahmed",,,,,,,,0,
+7,166,ready,ready,/api/jobs/166/resume.pdf,"Dear Hiring Team,
+
+I am writing to express my interest in the Fraud Operations Manager role at Stripe. As a Business Analyst with hands-on experience in SQL, Excel, Power BI, Stakeholder Management, Data Analysis, I am confident I can contribute to your team. Business analyst with 4 years of experience in data analysis, SQL reporting and stakeholder management.
+
+Reading the listing, I was drawn to the focus on with — an area where I have delivered measurable results.
+
+I have followed Stripe's work and am excited by the opportunity to contribute to the Fraud Operations Manager team.
+
+I am available to start per my stated notice period and am flexible on time zones.
+
+Thank you for your consideration.
+
+Best regards,
+Nafiz Ahmed",,80,,,,,,0,
+8,262,ready,ready,/api/jobs/262/resume.pdf,"Dear Hiring Team,
+
+I am writing to express my interest in the Portfolio Pricing Strategist role at Stripe. As a Business Analyst with hands-on experience in SQL, Excel, Power BI, Stakeholder Management, Data Analysis, I am confident I can contribute to your team. Business analyst with 4 years of experience in data analysis, SQL reporting and stakeholder management.
+
+Reading the listing, I was drawn to the focus on with — an area where I have delivered measurable results.
+
+I have followed Stripe's work and am excited by the opportunity to contribute to the Portfolio Pricing Strategist team.
+
+I am available to start per my stated notice period and am flexible on time zones.
+
+Thank you for your consideration.
+
+Best regards,
+Nafiz Ahmed",,80,,,,,,0,
+9,138,ready,ready,/api/jobs/138/resume.pdf,"Dear Hiring Team,
+
+I am writing to express my interest in the Engineering Manager, Billing Products role at Stripe. As a Business Analyst with hands-on experience in SQL, Excel, Power BI, Stakeholder Management, Data Analysis, I am confident I can contribute to your team. Business analyst with 4 years of experience in data analysis, SQL reporting and stakeholder management.
+
+Reading the listing, I was drawn to the focus on with — an area where I have delivered measurable results.
+
+I have followed Stripe's work and am excited by the opportunity to contribute to the Engineering Manager, Billing Products team.
+
+I am available to start per my stated notice period and am flexible on time zones.
+
+Thank you for your consideration.
+
+Best regards,
+Nafiz Ahmed",,80,,,,,,0,
+10,243,ready,ready,/api/jobs/243/resume.pdf,"Dear Hiring Team,
+
+I am writing to express my interest in the Partner Development Manager, AMER Bank Partnerships role at Stripe. As a Business Analyst with hands-on experience in SQL, Excel, Power BI, Stakeholder Management, Data Analysis, I am confident I can contribute to your team. Business analyst with 4 years of experience in data analysis, SQL reporting and stakeholder management.
+
+Reading the listing, I was drawn to the focus on years — an area where I have delivered measurable results.
+
+I have followed Stripe's work and am excited by the opportunity to contribute to the Partner Development Manager, AMER Bank Partnerships team.
+
+I am available to start per my stated notice period and am flexible on time zones.
+
+Thank you for your consideration.
+
+Best regards,
+Nafiz Ahmed",,80,,,,,,0,
+11,308,ready,ready,/api/jobs/308/resume.pdf,"Dear Hiring Team,
+
+I am writing to express my interest in the Risk Operations Analyst - SSO role at Stripe. As a Business Analyst with hands-on experience in SQL, Excel, Power BI, Stakeholder Management, Data Analysis, I am confident I can contribute to your team. Business analyst with 4 years of experience in data analysis, SQL reporting and stakeholder management.
+
+Reading the listing, I was drawn to the focus on with — an area where I have delivered measurable results.
+
+I have followed Stripe's work and am excited by the opportunity to contribute to the Risk Operations Analyst - SSO team.
+
+I am available to start per my stated notice period and am flexible on time zones.
+
+Thank you for your consideration.
+
+Best regards,
+Nafiz Ahmed",,80,,,,,,0,
+12,12,ready,ready,/api/jobs/12/resume.pdf,"Dear Hiring Team,
+
+I am writing to express my interest in the Abuse Research Engineer role at Stripe. As a Business Analyst with hands-on experience in SQL, Excel, Power BI, Stakeholder Management, Data Analysis, I am confident I can contribute to your team. Business analyst with 4 years of experience in data analysis, SQL reporting and stakeholder management.
+
+Reading the listing, I was drawn to the focus on with — an area where I have delivered measurable results.
+
+I have followed Stripe's work and am excited by the opportunity to contribute to the Abuse Research Engineer team.
+
+I am available to start per my stated notice period and am flexible on time zones.
+
+Thank you for your consideration.
+
+Best regards,
+Nafiz Ahmed",,80,,,,,,0,
+13,209,ready,ready,/api/jobs/209/resume.pdf,"Dear Hiring Team,
+
+I am writing to express my interest in the Investigator role at Stripe. As a Business Analyst with hands-on experience in SQL, Excel, Power BI, Stakeholder Management, Data Analysis, I am confident I can contribute to your team. Business analyst with 4 years of experience in data analysis, SQL reporting and stakeholder management.
+
+Reading the listing, I was drawn to the focus on with — an area where I have delivered measurable results.
+
+I have followed Stripe's work and am excited by the opportunity to contribute to the Investigator team.
+
+I am available to start per my stated notice period and am flexible on time zones.
+
+Thank you for your consideration.
+
+Best regards,
+Nafiz Ahmed",,80,,,,,,0,
+14,261,ready,ready,/api/jobs/261/resume.pdf,"Dear Hiring Team,
+
+I am writing to express my interest in the PMM Lead, Executive Content & Experiences role at Stripe. As a Business Analyst with hands-on experience in SQL, Excel, Power BI, Stakeholder Management, Data Analysis, I am confident I can contribute to your team. Business analyst with 4 years of experience in data analysis, SQL reporting and stakeholder management.
+
+Reading the listing, I was drawn to the focus on years — an area where I have delivered measurable results.
+
+I have followed Stripe's work and am excited by the opportunity to contribute to the PMM Lead, Executive Content & Experiences team.
+
+I am available to start per my stated notice period and am flexible on time zones.
+
+Thank you for your consideration.
+
+Best regards,
+Nafiz Ahmed",,80,,,,,,0,
+15,504,ready,ready,/api/jobs/504/resume.pdf,"Dear Hiring Team,
+
+I am writing to express my interest in the U.S. Banking Regulatory Compliance Lead role at Stripe. As a Business Analyst with hands-on experience in SQL, Excel, Power BI, Stakeholder Management, Data Analysis, I am confident I can contribute to your team. Business analyst with 4 years of experience in data analysis, SQL reporting and stakeholder management.
+
+Reading the listing, I was drawn to the focus on with — an area where I have delivered measurable results.
+
+I have followed Stripe's work and am excited by the opportunity to contribute to the U.S. Banking Regulatory Compliance Lead team.
+
+I am available to start per my stated notice period and am flexible on time zones.
+
+Thank you for your consideration.
+
+Best regards,
+Nafiz Ahmed",,80,,,,,,0,
+16,506,ready,,/api/jobs/506/resume.pdf,"Dear Hiring Team,
+
+I am writing to express my interest in the Senior Business Analyst role at Stripe. As a Business Analyst with hands-on experience in SQL, Excel, Power BI, Stakeholder Management, Data Analysis, I am confident I can contribute to your team. Business analyst with 4 years of experience in data analysis, SQL reporting and stakeholder management.
+
+Reading the listing, I was drawn to the focus on stakeholder — an area where I have delivered measurable results.
+
+I have followed Stripe's work and am excited by the opportunity to contribute to the Senior Business Analyst team.
+
+I am available to start per my stated notice period and am flexible on time zones.
+
+Thank you for your consideration.
+
+Best regards,
+Nafiz Ahmed",,80,,manual,,ready,No direct apply link on this listing. Your tailored resume and cover letter are ready — open the job page and upload them to submit.,1,2026-10-03T04:55:24.073071
+17,1,submitted,draft,/api/jobs/1/resume.pdf,"Dear Hiring Team,
+
+I am writing to express my interest in the Senior Shopify Developer role at Sanctuary Computer Inc. As a Business Analyst with hands-on experience in SQL, Excel, Power BI, Stakeholder Management, Data Analysis, I am confident I can contribute to your team. Business analyst with 4 years of experience in data analysis, SQL reporting and stakeholder management.
+
+Reading the listing, I was drawn to the focus on years — an area where I have delivered measurable results.
+
+I have followed Sanctuary Computer Inc's work and am excited by the opportunity to contribute to the Senior Shopify Developer team.
+
+I am available to start per my stated notice period and am flexible on time zones.
+
+Thank you for your consideration.
+
+Best regards,
+Nafiz Ahmed",,80,2026-10-05T09:52:29.343584,web,https://remotive.com/remote-jobs/software-development/senior-shopify-developer-2091140,submitted,Application package prepared and routed to the employer's apply link. Open the link to confirm submission.,6,2026-10-05T09:52:29.343584
+18,115,ready,ready,/api/jobs/115/resume.pdf,"Dear Hiring Team,
+
+I am writing to express my interest in the Crypto Controls and Compliance Lead role at Stripe. As a Business Analyst with hands-on experience in SQL, Excel, Power BI, Stakeholder Management, Data Analysis, I am confident I can contribute to your team. Business analyst with 4 years of experience in data analysis, SQL reporting and stakeholder management.
+
+Reading the listing, I was drawn to the focus on reporting — an area where I have delivered measurable results.
+
+I have followed Stripe's work and am excited by the opportunity to contribute to the Crypto Controls and Compliance Lead team.
+
+I am available to start per my stated notice period and am flexible on time zones.
+
+Thank you for your consideration.
+
+Best regards,
+Nafiz Ahmed",,80,,,,,,0,
+19,567,draft,ready,,,,,,,,,,0,

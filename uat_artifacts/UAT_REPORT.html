@@ -1,0 +1,312 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>ZEYRECUITE UAT Report - 2026-10-06 19:08:24</title><style>
+body{font:14px/1.5 Segoe UI,system-ui,sans-serif;margin:0;background:#0f1115;color:#e7e9ee}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 20px 80px}
+h1{font-size:26px;margin:0 0 4px} h2{margin:38px 0 12px;font-size:19px;
+border-bottom:1px solid #262a33;padding-bottom:7px}
+.sub{color:#98a0ad;margin-bottom:20px}
+.cards{display:flex;gap:12px;flex-wrap:wrap}
+.card{background:#171a21;border:1px solid #262a33;border-radius:10px;
+padding:14px 18px;min-width:130px}
+.card .n{font-size:26px;font-weight:700}
+.card .l{color:#98a0ad;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+.rec{background:#171a21;border:1px solid #262a33;border-left:4px solid #e05252;
+border-radius:8px;padding:12px 14px;margin:10px 0}
+.rec.expected{border-left-color:#c9a227} .rec.info{border-left-color:#4a90d9}
+.rec-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+margin-bottom:6px}
+.kind{font-weight:700} .meta{color:#98a0ad;font-size:12.5px}
+pre{white-space:pre-wrap;word-break:break-word;background:#0f1115;color:#cfd4dd;
+padding:9px 11px;border-radius:6px;font-size:12.5px;margin:0 0 8px}
+.rec img,.thumb img{max-width:340px;border:1px solid #262a33;border-radius:6px;
+display:block;margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{border-bottom:1px solid #262a33;padding:8px 9px;text-align:left;
+vertical-align:top}
+th{color:#98a0ad;font-size:12px;text-transform:uppercase}
+td.notes{color:#b9c0cc;font-size:12.5px;max-width:430px}
+.badge{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:700}
+.badge.ok{background:#12331f;color:#5fd39a} .badge.issue{background:#3a1414;color:#ff8a8a}
+.badge.fail{background:#3a1414;color:#ff8a8a}
+details{background:#141821;border:1px solid #262a33;border-radius:8px;
+padding:10px 14px;margin:10px 0} summary{cursor:pointer;font-weight:600}
+a{color:#79b8ff} .verdict{font-size:17px;font-weight:700;margin-top:14px}
+.pass{color:#5fd39a} .fail{color:#ff8a8a}
+</style></head>
+<body><div class="wrap">
+<h1>ZEYRECUITE UAT Report</h1>
+<div class="sub">Run 2026-10-06 19:08:24 &middot; headed Chromium &middot; desktop
+1440x900 + mobile 390x844</div>
+<div class="cards">
+<div class="card"><div class="n">41</div><div class="l">Steps</div></div>
+<div class="card"><div class="n">33</div><div class="l">Steps OK</div></div>
+<div class="card"><div class="n">8</div><div class="l">Steps with issues</div></div>
+<div class="card"><div class="n">14</div><div class="l">Real defects</div></div>
+<div class="card"><div class="n">3</div>
+<div class="l">Expected (negative tests)</div></div>
+<div class="card"><div class="n">4</div><div class="l">Info events</div></div>
+</div>
+<div class="verdict fail">
+FAIL - 14 defect(s) found</div>
+<h2>1. Real defects (14)</h2><div class="rec"><div class="rec-head"><span class="kind">JS console error</span><span class="meta">Open login page &middot; 19:08:30</span></div><pre>Failed to load resource: the server responded with a status of 404 (Not Found)</pre><a href="../screenshots/002_ISSUE_JS_console_error_Open_login_page.png" target="_blank"><img src="../screenshots/002_ISSUE_JS_console_error_Open_login_page.png" loading="lazy" alt="screenshot"></a></div>
+<div class="rec"><div class="rec-head"><span class="kind">Step failed</span><span class="meta">View: Dashboard &middot; 19:10:44</span></div><pre>View: Dashboard: Page.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator(&quot;.nav-item[data-view=\&quot;dashboard\&quot;]&quot;)
+    - locator resolved to &lt;a data-view=&quot;dashboard&quot; class=&quot;nav-item active&quot;&gt;…&lt;/a&gt;
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - &lt;div id=&quot;jobModal&quot; class=&quot;modal&quot;&gt;…&lt;/div&gt; intercepts pointer events
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - &lt;div id=&quot;jobModal&quot; class=&quot;modal&quot;&gt;…&lt;/div&gt; intercepts pointer events
+    - retrying click action
+      - waiting 100ms
+    56 × waiting for element to be visible, enabled and stable
+       - eleme</pre><a href="../screenshots/007_ISSUE_Step_failed_View_Dashboard.png" target="_blank"><img src="../screenshots/007_ISSUE_Step_failed_View_Dashboard.png" loading="lazy" alt="screenshot"></a></div>
+<div class="rec"><div class="rec-head"><span class="kind">Step failed</span><span class="meta">Dashboard: export jobs/applications/analytics &middot; 19:10:48</span></div><pre>Dashboard: export jobs/applications/analytics: ElementHandle.click: Timeout 3000ms exceeded.
+Call log:
+  - attempting click action
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - &lt;div class=&quot;detail-col&quot;&gt;…&lt;/div&gt; from &lt;div id=&quot;jobModal&quot; class=&quot;modal&quot;&gt;…&lt;/div&gt; subtree intercepts pointer events
+  - retrying click action
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - &lt;div class=&quot;desc-box&quot;&gt;Who we are Financial Crimes Compliance Risk Overs…&lt;/div&gt; from &lt;div id=&quot;jobModal&quot; class=&quot;modal&quot;&gt;…&lt;/div&gt; subtree intercepts pointer events
+  - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, e</pre><a href="../screenshots/008_ISSUE_Step_failed_Dashboard_export_jobs_applications.png" target="_blank"><img src="../screenshots/008_ISSUE_Step_failed_Dashboard_export_jobs_applications.png" loading="lazy" alt="screenshot"></a></div>
+<div class="rec"><div class="rec-head"><span class="kind">Step failed</span><span class="meta">Job detail: feedback (Like) &middot; 19:11:24</span></div><pre>Job detail: feedback (Like): Page.wait_for_function: Timeout 10000ms exceeded.</pre><a href="../screenshots/011_ISSUE_Step_failed_Job_detail_feedback_Like.png" target="_blank"><img src="../screenshots/011_ISSUE_Step_failed_Job_detail_feedback_Like.png" loading="lazy" alt="screenshot"></a></div>
+<div class="rec"><div class="rec-head"><span class="kind">Step failed</span><span class="meta">Job detail: Approve &amp; submit &middot; 19:12:07</span></div><pre>Job detail: Approve &amp; submit: Page.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator(&quot;#dApprove&quot;)
+    - locator resolved to &lt;button id=&quot;dApprove&quot; class=&quot;btn ok&quot;&gt;✓ Approve &amp; submit&lt;/button&gt;
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    54 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+</pre><a href="../screenshots/012_ISSUE_Step_failed_Job_detail_Approve_submit.png" target="_blank"><img src="../screenshots/012_ISSUE_Step_failed_Job_detail_Approve_submit.png" loading="lazy" alt="screenshot"></a></div>
+<div class="rec"><div class="rec-head"><span class="kind">Step failed</span><span class="meta">Jobs: compare two jobs (FAB + modal) &middot; 19:12:59</span></div><pre>Jobs: compare two jobs (FAB + modal): Page.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator(&quot;#closeCompare&quot;)
+    - locator resolved to &lt;button id=&quot;closeCompare&quot; class=&quot;modal-close&quot;&gt;×&lt;/button&gt;
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    56 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+</pre></div>
+<div class="rec"><div class="rec-head"><span class="kind">Uncaught page error</span><span class="meta">Analytics: button sweep &middot; 19:13:51</span></div><pre>Cannot set properties of null (setting &#x27;innerHTML&#x27;)</pre><a href="../screenshots/019_ISSUE_Uncaught_page_error_Analytics_button_sweep.png" target="_blank"><img src="../screenshots/019_ISSUE_Uncaught_page_error_Analytics_button_sweep.png" loading="lazy" alt="screenshot"></a></div>
+<div class="rec"><div class="rec-head"><span class="kind">UI state</span><span class="meta">Profile: dynamic block add/remove (cert/project/exp/edu) &middot; 19:14:05</span></div><pre>cert: remove did not restore card count (0 -&gt; 1)</pre><a href="../screenshots/022_ISSUE_UI_state_Profile_dynamic_block_add_remove_cert.png" target="_blank"><img src="../screenshots/022_ISSUE_UI_state_Profile_dynamic_block_add_remove_cert.png" loading="lazy" alt="screenshot"></a></div>
+<div class="rec"><div class="rec-head"><span class="kind">UI state</span><span class="meta">Profile: dynamic block add/remove (cert/project/exp/edu) &middot; 19:14:09</span></div><pre>project: remove did not restore card count (0 -&gt; 1)</pre><a href="../screenshots/023_ISSUE_UI_state_Profile_dynamic_block_add_remove_cert.png" target="_blank"><img src="../screenshots/023_ISSUE_UI_state_Profile_dynamic_block_add_remove_cert.png" loading="lazy" alt="screenshot"></a></div>
+<div class="rec"><div class="rec-head"><span class="kind">UI state</span><span class="meta">Profile: dynamic block add/remove (cert/project/exp/edu) &middot; 19:14:14</span></div><pre>exp: remove did not restore card count (0 -&gt; 1)</pre><a href="../screenshots/024_ISSUE_UI_state_Profile_dynamic_block_add_remove_cert.png" target="_blank"><img src="../screenshots/024_ISSUE_UI_state_Profile_dynamic_block_add_remove_cert.png" loading="lazy" alt="screenshot"></a></div>
+<div class="rec"><div class="rec-head"><span class="kind">UI state</span><span class="meta">Profile: dynamic block add/remove (cert/project/exp/edu) &middot; 19:14:18</span></div><pre>edu: remove did not restore card count (0 -&gt; 1)</pre><a href="../screenshots/025_ISSUE_UI_state_Profile_dynamic_block_add_remove_cert.png" target="_blank"><img src="../screenshots/025_ISSUE_UI_state_Profile_dynamic_block_add_remove_cert.png" loading="lazy" alt="screenshot"></a></div>
+<div class="rec"><div class="rec-head"><span class="kind">Step failed</span><span class="meta">[mobile] hamburger menu opens &middot; 19:15:50</span></div><pre>[mobile] hamburger menu opens: ElementHandle.click: Timeout 30000ms exceeded.
+Call log:
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - &lt;div id=&quot;sidebarOverlay&quot; class=&quot;sidebar-overlay&quot;&gt;&lt;/div&gt; intercepts pointer events
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - &lt;div id=&quot;sidebarOverlay&quot; class=&quot;sidebar-overlay&quot;&gt;&lt;/div&gt; intercepts pointer events
+    - retrying click action
+      - waiting 100ms
+    56 × waiting for element to be visible, enabled and stable
+       - element is visible, enabled and stable
+       - scrolling into view if needed
+       - done scr</pre><a href="../screenshots/028_ISSUE_Step_failed_mobile_hamburger_menu_opens.png" target="_blank"><img src="../screenshots/028_ISSUE_Step_failed_mobile_hamburger_menu_opens.png" loading="lazy" alt="screenshot"></a></div>
+<div class="rec"><div class="rec-head"><span class="kind">Step failed</span><span class="meta">[mobile] visit all views + overflow audit &middot; 19:16:20</span></div><pre>[mobile] visit all views + overflow audit: ElementHandle.click: Timeout 30000ms exceeded.
+Call log:
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - &lt;div id=&quot;sidebarOverlay&quot; class=&quot;sidebar-overlay&quot;&gt;&lt;/div&gt; intercepts pointer events
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - &lt;div id=&quot;sidebarOverlay&quot; class=&quot;sidebar-overlay&quot;&gt;&lt;/div&gt; intercepts pointer events
+    - retrying click action
+      - waiting 100ms
+    56 × waiting for element to be visible, enabled and stable
+       - element is visible, enabled and stable
+       - scrolling into view if needed
+     </pre><a href="../screenshots/029_ISSUE_Step_failed_mobile_visit_all_views_overflow_au.png" target="_blank"><img src="../screenshots/029_ISSUE_Step_failed_mobile_visit_all_views_overflow_au.png" loading="lazy" alt="screenshot"></a></div>
+<div class="rec"><div class="rec-head"><span class="kind">Step failed</span><span class="meta">[mobile] logout &middot; 19:16:50</span></div><pre>[mobile] logout: ElementHandle.click: Timeout 30000ms exceeded.
+Call log:
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - &lt;div id=&quot;sidebarOverlay&quot; class=&quot;sidebar-overlay&quot;&gt;&lt;/div&gt; intercepts pointer events
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - &lt;div id=&quot;sidebarOverlay&quot; class=&quot;sidebar-overlay&quot;&gt;&lt;/div&gt; intercepts pointer events
+    - retrying click action
+      - waiting 100ms
+    56 × waiting for element to be visible, enabled and stable
+       - element is visible, enabled and stable
+       - scrolling into view if needed
+       - done scrolling
+       </pre><a href="../screenshots/030_ISSUE_Step_failed_mobile_logout.png" target="_blank"><img src="../screenshots/030_ISSUE_Step_failed_mobile_logout.png" loading="lazy" alt="screenshot"></a></div>
+<h2>2. Steps (41)</h2>
+<table><tr><th>Step</th><th>Status</th><th>Notes</th><th>Screenshot</th></tr>
+<tr class="ok"><td>Open login page</td><td><span class="badge ok">ok</span></td><td class="notes">-</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Negative: wrong password rejected</td><td><span class="badge ok">ok</span></td><td class="notes">error shown: &quot;Invalid username or password&quot;</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Login (valid credentials)</td><td><span class="badge ok">ok</span></td><td class="notes">-</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Topbar: Refresh</td><td><span class="badge ok">ok</span></td><td class="notes">data refreshed</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Topbar: Re-score</td><td><span class="badge ok">ok</span></td><td class="notes">toast: &quot;Re-scored 611 jobs&quot;</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Topbar: Enrich</td><td><span class="badge ok">ok</span></td><td class="notes">toast: &quot;Enriched 4 job(s)&quot;</td><td class="thumb"></td></tr>
+<tr class="fail"><td>View: Dashboard</td><td><span class="badge fail">fail</span></td><td class="notes">EXCEPTION: Page.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator(&quot;.nav-item[data-view=\&quot;dashboard\&quot;]&quot;)
+    - locator resolved to &lt;a data-view=&quot;dashboard&quot; class=&quot;nav-item active&quot;&gt;…&lt;/a&gt;
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+</td><td class="thumb"></td></tr>
+<tr class="fail"><td>Dashboard: export jobs/applications/analytics</td><td><span class="badge fail">fail</span></td><td class="notes">EXCEPTION: ElementHandle.click: Timeout 3000ms exceeded.
+Call log:
+  - attempting click action
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - &lt;div class=&quot;detail-col&quot;&gt;…&lt;/div&gt; from &lt;div id=&quot;jobModal&quot; class=&quot;modal&quot;&gt;…&lt;/div&gt; subtree intercepts pointer events
+  - retrying click action</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Dashboard: import jobs (JSON probe)</td><td><span class="badge ok">ok</span></td><td class="notes">toast: &quot;Imported 0, skipped 2&quot;</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Dashboard: remaining buttons sweep</td><td><span class="badge ok">ok</span></td><td class="notes">-</td><td class="thumb"></td></tr>
+<tr class="ok"><td>View: Jobs</td><td><span class="badge ok">ok</span></td><td class="notes">-</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Jobs: search / sort / chips / save+remove filter</td><td><span class="badge ok">ok</span></td><td class="notes">&quot;business&quot; -&gt; 21 cards<br>toast: &quot;Filter saved&quot;</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Jobs: open job detail modal</td><td><span class="badge ok">ok</span></td><td class="notes">opened job id=506</td><td class="thumb"></td></tr>
+<tr class="fail"><td>Job detail: feedback (Like)</td><td><span class="badge fail">fail</span></td><td class="notes">EXCEPTION: Page.wait_for_function: Timeout 10000ms exceeded.</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Job detail: Generate resume + letter</td><td><span class="badge ok">ok</span></td><td class="notes">toast: &quot;Resume + cover letter generated&quot;</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Job detail: download resume PDF (ctrl+click)</td><td><span class="badge ok">ok</span></td><td class="notes">resume link found: ⬇ Download resume PDF</td><td class="thumb"></td></tr>
+<tr class="fail"><td>Job detail: Approve &amp; submit</td><td><span class="badge fail">fail</span></td><td class="notes">EXCEPTION: Page.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator(&quot;#dApprove&quot;)
+    - locator resolved to &lt;button id=&quot;dApprove&quot; class=&quot;btn ok&quot;&gt;✓ Approve &amp; submit&lt;/button&gt;
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, en</td><td class="thumb"></td></tr>
+<tr class="fail"><td>Jobs: compare two jobs (FAB + modal)</td><td><span class="badge fail">fail</span></td><td class="notes">611 compare checkboxes available<br>EXCEPTION: Page.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator(&quot;#closeCompare&quot;)
+    - locator resolved to &lt;button id=&quot;closeCompare&quot; class=&quot;modal-close&quot;&gt;×&lt;/button&gt;
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enable</td><td class="thumb"></td></tr>
+<tr class="ok"><td>View: Pipeline (kanban + open card)</td><td><span class="badge ok">ok</span></td><td class="notes">-</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Pipeline: drag card (same-lane, no mutation)</td><td><span class="badge ok">ok</span></td><td class="notes">dragged card onto its own &#x27;new&#x27; lane (status unchanged)</td><td class="thumb"></td></tr>
+<tr class="ok"><td>View: Applications</td><td><span class="badge ok">ok</span></td><td class="notes">-</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Applications: open / generate / stage change</td><td><span class="badge ok">ok</span></td><td class="notes">toast: &quot;Generated&quot;<br>toast: &quot;Application moved to &quot;Ready to submit&quot;&quot;<br>toast: &quot;Application moved to &quot;draft&quot;&quot;<br>stage transition tested: draft -&gt; ready -&gt; draft</td><td class="thumb"></td></tr>
+<tr class="ok"><td>View: Search &amp; Submit</td><td><span class="badge ok">ok</span></td><td class="notes">-</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Search: filters + submit application + sweep</td><td><span class="badge ok">ok</span></td><td class="notes">filter select #0: all -&gt; new<br>filter select #1: confidence -&gt; score<br>toast: &quot;Application submitted — link opened&quot;</td><td class="thumb"></td></tr>
+<tr class="ok"><td>View: Analytics</td><td><span class="badge ok">ok</span></td><td class="notes">-</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Analytics: button sweep</td><td><span class="badge ok">ok</span></td><td class="notes">clicked: + Add to my skills</td><td class="thumb"></td></tr>
+<tr class="ok"><td>View: Goals</td><td><span class="badge ok">ok</span></td><td class="notes">-</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Goals: save weekly target</td><td><span class="badge ok">ok</span></td><td class="notes">toast: &quot;Goal saved&quot;<br>weekly target saved: 10</td><td class="thumb"></td></tr>
+<tr class="ok"><td>View: Profile</td><td><span class="badge ok">ok</span></td><td class="notes">-</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Profile: dynamic block add/remove (cert/project/exp/edu)</td><td><span class="badge ok">ok</span></td><td class="notes">cert: add/remove ok (baseline 0)<br>project: add/remove ok (baseline 0)<br>exp: add/remove ok (baseline 0)<br>edu: add/remove ok (baseline 0)</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Profile: resume variant add/remove</td><td><span class="badge ok">ok</span></td><td class="notes">resume variant add/remove tested (baseline 1)</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Profile: Save (PUT profile + re-score)</td><td><span class="badge ok">ok</span></td><td class="notes">toast: &quot;Profile saved — re-scoring…&quot;<br>profile saved and jobs re-scored</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Profile: change password (same value)</td><td><span class="badge ok">ok</span></td><td class="notes">toast: &quot;Password updated&quot;<br>password change result: Password updated</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Job detail: Reject a job</td><td><span class="badge ok">ok</span></td><td class="notes">toast: &quot;Rejected&quot;<br>job rejected</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Applications: follow-up modal lifecycle</td><td><span class="badge ok">ok</span></td><td class="notes">no submitted application with Follow up button found</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Topbar: Scan now (full collector run)</td><td><span class="badge ok">ok</span></td><td class="notes">toast: &quot;Scan complete&quot;<br>scan cycle finished</td><td class="thumb"></td></tr>
+<tr class="ok"><td>Logout</td><td><span class="badge ok">ok</span></td><td class="notes">-</td><td class="thumb"></td></tr>
+<tr class="ok"><td>[mobile] login</td><td><span class="badge ok">ok</span></td><td class="notes">-</td><td class="thumb"></td></tr>
+<tr class="fail"><td>[mobile] hamburger menu opens</td><td><span class="badge fail">fail</span></td><td class="notes">EXCEPTION: ElementHandle.click: Timeout 30000ms exceeded.
+Call log:
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - &lt;div id=&quot;sidebarOverlay&quot; class=&quot;sidebar-overlay&quot;&gt;&lt;/div&gt; intercepts pointer events
+    - retrying click action
+    - waiting 20</td><td class="thumb"></td></tr>
+<tr class="fail"><td>[mobile] visit all views + overflow audit</td><td><span class="badge fail">fail</span></td><td class="notes">EXCEPTION: ElementHandle.click: Timeout 30000ms exceeded.
+Call log:
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - &lt;div id=&quot;sidebarOverlay&quot; class=&quot;sidebar-overlay&quot;&gt;&lt;/div&gt; intercepts pointer events
+    - retrying click action
+    - waiting 20</td><td class="thumb"></td></tr>
+<tr class="fail"><td>[mobile] logout</td><td><span class="badge fail">fail</span></td><td class="notes">EXCEPTION: ElementHandle.click: Timeout 30000ms exceeded.
+Call log:
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - &lt;div id=&quot;sidebarOverlay&quot; class=&quot;sidebar-overlay&quot;&gt;&lt;/div&gt; intercepts pointer events
+    - retrying click action
+    - waiting 20</td><td class="thumb"></td></tr></table>
+<h2>3. Expected errors (deliberate negative tests)</h2>
+<details open><summary>3 expected record(s)</summary>
+<div class="rec"><div class="rec-head"><span class="kind">Expected error (negative test)</span><span class="meta">Negative: wrong password rejected &middot; 19:08:30</span></div><pre>wrong password rejected: Invalid username or password</pre><a href="../screenshots/003_NEG_Expected_error_negative_test_Negative_wrong_pa.png" target="_blank"><img src="../screenshots/003_NEG_Expected_error_negative_test_Negative_wrong_pa.png" loading="lazy" alt="screenshot"></a></div>
+<div class="rec"><div class="rec-head"><span class="kind">HTTP 401</span><span class="meta">Negative: wrong password rejected &middot; 19:08:31</span></div><pre>POST /api/auth/login</pre><a href="../screenshots/004_NEG_HTTP_401_Negative_wrong_password_rejected.png" target="_blank"><img src="../screenshots/004_NEG_HTTP_401_Negative_wrong_password_rejected.png" loading="lazy" alt="screenshot"></a></div>
+<div class="rec"><div class="rec-head"><span class="kind">JS console error</span><span class="meta">Negative: wrong password rejected &middot; 19:08:31</span></div><pre>Failed to load resource: the server responded with a status of 401 (Unauthorized)</pre><a href="../screenshots/005_NEG_JS_console_error_Negative_wrong_password_rejec.png" target="_blank"><img src="../screenshots/005_NEG_JS_console_error_Negative_wrong_password_rejec.png" loading="lazy" alt="screenshot"></a></div></details>
+<h2>4. Info events (popups / downloads / observations)</h2>
+<details><summary>4 record(s)</summary><div class="rec"><div class="rec-head"><span class="kind">Popup opened</span><span class="meta">Topbar: Enrich &middot; 19:10:14</span></div><pre>https://stripe.com/careers/listing/u-s-banking-regulatory-compliance-lead/8188323?gh_jid=8188323</pre></div>
+<div class="rec"><div class="rec-head"><span class="kind">Popup opened</span><span class="meta">Topbar: Enrich &middot; 19:10:14</span></div><pre>https://stripe.com/careers/listing/fraud-operations-manager/8175832?gh_jid=8175832</pre></div>
+<div class="rec"><div class="rec-head"><span class="kind">Popup opened</span><span class="meta">Topbar: Enrich &middot; 19:10:14</span></div><pre>https://stripe.com/careers/listing/crypto-controls-and-compliance-lead/8188326?gh_jid=8188326</pre></div>
+<div class="rec"><div class="rec-head"><span class="kind">Popup opened</span><span class="meta">Search: filters + submit application + sweep &middot; 19:13:42</span></div><pre>https://remoteok.com/remote-jobs/remote-brand-protection-marketplace-compliance-analyst-multiplymii-1136687</pre></div></details>
+</div></body></html>

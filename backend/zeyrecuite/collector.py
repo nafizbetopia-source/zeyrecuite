@@ -8,11 +8,14 @@ from __future__ import annotations
 
 import html as html_module
 import re
+import threading
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any
 
 import httpx
+from sqlalchemy import delete, or_, select
+from sqlalchemy.exc import IntegrityError
 
 from .adapters import BaseAdapter, build_adapters
 from .companies import get_company_info
@@ -21,7 +24,7 @@ from .database import Database
 from .dedup import fingerprint
 from .location_policy import DecisionStatus, evaluate_location
 from .learning import compute_learning_weights
-from .models import Feedback, Job, Profile, ScrapeRun
+from .models import Application, Feedback, Job, Profile, ScrapeRun
 from .scoring import assess_job
 
 
@@ -33,6 +36,8 @@ class RunSummary:
     rejected: int
     review: int
     duplicates: int
+    # Jobs skipped by the auto-apply-only gate (no application_url to submit).
+    skipped: int = 0
     error: str | None = None
 
 
@@ -180,12 +185,18 @@ def _clean_raw(raw: dict[str, Any]) -> dict[str, Any]:
     return raw
 
 
-def _profile_context(db: Database) -> tuple[str, list[str]]:
+def _profile_context(db: Database, fallback_country: str = "Bangladesh") -> tuple[str, list[str]]:
+    """Profile skills + current country, falling back to location.current.
+
+    ``fallback_country`` carries ``config.location.current`` so a fresh install
+    (no profile row yet, or a cleared country field) gates against the
+    country the user configured instead of a hardcoded literal.
+    """
     with db.session() as session:
         profile = session.get(Profile, 1)
         if profile:
-            return profile.current_country or "Bangladesh", list(profile.skills or [])
-    return "Bangladesh", []
+            return profile.current_country or fallback_country, list(profile.skills or [])
+    return fallback_country, []
 
 
 def _existing_fingerprints(db: Database) -> set[str]:
@@ -194,7 +205,11 @@ def _existing_fingerprints(db: Database) -> set[str]:
     return {row[0] for row in rows}
 
 
-def _apply_gate(raw: dict[str, Any], current_country: str) -> tuple[str, str]:
+def _apply_gate(
+    raw: dict[str, Any],
+    current_country: str,
+    excluded_countries: list[str] | None = None,
+) -> tuple[str, str]:
     decision = evaluate_location(
         employer_country=raw.get("employer_country"),
         job_country=raw.get("job_country"),
@@ -202,8 +217,52 @@ def _apply_gate(raw: dict[str, Any], current_country: str) -> tuple[str, str]:
         current_country=current_country,
         worldwide_remote=bool(raw.get("worldwide_remote")),
         allowed_applicant_countries=raw.get("candidate_required_location"),
+        excluded_countries=excluded_countries,
     )
     return decision.status.value, decision.reason
+
+
+def is_auto_applicable(raw: Any) -> bool:
+    """True when Playwright can actually submit this job.
+
+    Single source of truth for the auto-apply-only gate: a job is
+    auto-applicable **iff** it carries a non-empty ``application_url``. (Every
+    adapter emits ``application_method: "web"`` — the pipeline only ever
+    submits through the company's own page — so no method check is needed.)
+    Accepts a raw record dict or an ORM ``Job``.
+    """
+    if isinstance(raw, dict):
+        url = raw.get("application_url")
+    else:
+        url = getattr(raw, "application_url", None)
+    return bool(str(url or "").strip())
+
+
+def purge_unsubmittable_jobs(db: Database) -> int:
+    """Delete every job Playwright cannot submit (no ``application_url``).
+
+    Runs at startup while ``auto_apply_only`` is ON so legacy link-less rows
+    never reach the UI. Dependent Feedback/Application rows are deleted
+    explicitly first (SQLite does not enforce ``ON DELETE CASCADE`` unless
+    ``PRAGMA foreign_keys=ON``), all inside one transaction. Idempotent: a
+    second call finds nothing and returns 0.
+    """
+    with db.session() as session:
+        ids = [
+            row[0]
+            for row in session.execute(
+                select(Job.id).where(
+                    or_(Job.application_url.is_(None), Job.application_url == "")
+                )
+            ).all()
+        ]
+        if not ids:
+            return 0
+        session.execute(delete(Application).where(Application.job_id.in_(ids)))
+        session.execute(delete(Feedback).where(Feedback.job_id.in_(ids)))
+        session.execute(delete(Job).where(Job.id.in_(ids)))
+        session.commit()
+        return len(ids)
 
 
 def run_source(
@@ -221,104 +280,151 @@ def run_source(
         run_id = run.id
 
     summary = RunSummary(source=adapter.name, fetched=0, eligible=0, rejected=0, review=0, duplicates=0)
-    try:
-        raw_jobs = adapter.fetch(client=client)
-    except Exception as exc:  # noqa: BLE001
-        summary.error = f"{type(exc).__name__}: {exc}"
-        _finish_run(db, run_id, summary)
-        return summary
-
-    current_country, profile_skills = _profile_context(db)
-    seen = _existing_fingerprints(db)
-    # Compute learning multipliers once per run from the user's feedback
-    # history so every job in this scan is scored with the same additive
-    # reweights derived from what the user has approved / rejected / selected.
-    learning = _learning_weights(db)
-    summary.fetched = len(raw_jobs)
     run_confidences: list[float] = []
     run_eligibilities: list[float] = []
+    # Everything below must leave the run in a terminal state: an exception
+    # escaping this function used to strand the ScrapeRun in "running" forever,
+    # which then blocked the scheduler and the UI. The finally block guarantees
+    # the outcome (success, fetch failure, or crash) is always persisted.
+    try:
+        try:
+            raw_jobs = adapter.fetch(client=client)
+        except Exception as exc:  # noqa: BLE001
+            summary.error = f"{type(exc).__name__}: {exc}"
+            return summary
 
-    with db.session() as session:
-        for raw in raw_jobs:
-            raw = _clean_raw(raw)
-            fp = fingerprint(raw.get("title"), raw.get("company"), raw.get("url"))
-            if fp in seen:
-                summary.duplicates += 1
-                continue
-            seen.add(fp)
+        current_country, profile_skills = _profile_context(db, config.location.current)
+        seen = _existing_fingerprints(db)
+        # Compute learning multipliers once per run from the user's feedback
+        # history so every job in this scan is scored with the same additive
+        # reweights derived from what the user has approved / rejected / selected.
+        learning = _learning_weights(db)
+        summary.fetched = len(raw_jobs)
 
-            status, reason = _apply_gate(raw, current_country)
-            if status == DecisionStatus.REJECTED.value:
-                summary.rejected += 1
-                continue
+        with db.session() as session:
+            pending: list[tuple[Job, str, float, float]] = []
+            for raw in raw_jobs:
+                raw = _clean_raw(raw)
+                fp = fingerprint(raw.get("title"), raw.get("company"), raw.get("url"))
+                if fp in seen:
+                    summary.duplicates += 1
+                    continue
+                seen.add(fp)
 
-            company_overall = get_company_info(raw.get("company", "")).overall
-            assessment = assess_job(
-                title=raw.get("title", ""),
-                description=raw.get("description"),
-                job_skills=raw.get("skills"),
-                profile_skills=profile_skills,
-                target_role=config.role,
-                location_status=status,
-                work_mode=raw.get("work_mode", "remote"),
-                salary=raw.get("salary"),
-                min_salary=config.min_salary,
-                company_overall=company_overall,
-                posted_date=raw.get("posted_date"),
-                application_url=raw.get("application_url"),
-                preferred_remote=True,
-                learning=learning,
-            )
-            job = Job(
-                fingerprint=fp,
-                title=raw.get("title", ""),
-                company=raw.get("company", ""),
-                location=raw.get("location"),
-                work_mode=raw.get("work_mode", "remote"),
-                employer_country=raw.get("employer_country"),
-                job_country=raw.get("job_country"),
-                candidate_required_location=raw.get("candidate_required_location"),
-                worldwide_remote=bool(raw.get("worldwide_remote")),
-                salary=raw.get("salary"),
-                description=raw.get("description"),
-                skills=raw.get("skills"),
-                url=raw.get("url", ""),
-                source=raw.get("source", adapter.name),
-                posted_date=raw.get("posted_date"),
-                application_url=raw.get("application_url"),
-                application_method=raw.get("application_method"),
-                location_status=status,
-                location_reason=reason,
-                score=assessment.fit_score,
-                score_breakdown=assessment.breakdown,
-                confidence=assessment.confidence,
-                confidence_label=assessment.confidence_label,
-                eligibility=assessment.eligibility,
-                eligibility_label=assessment.eligibility_label,
-                confidence_breakdown={
-                    "factors": [
-                        {"key": f.key, "label": f.label, "value": f.value,
-                         "weight": f.weight, "detail": f.detail}
-                        for f in assessment.factors
-                    ],
-                    "matched_skills": assessment.matched_skills,
-                    "missing_skills": assessment.missing_skills,
-                    "must_have_present": assessment.must_have_present,
-                    "must_have_missing": assessment.must_have_missing,
-                    "reasons": assessment.reasons,
-                },
-                status="new" if status == DecisionStatus.ELIGIBLE.value else "review",
-            )
-            session.add(job)
-            run_confidences.append(assessment.confidence)
-            run_eligibilities.append(assessment.eligibility)
-            if status == DecisionStatus.ELIGIBLE.value:
-                summary.eligible += 1
-            else:
-                summary.review += 1
-        session.commit()
+                status, reason = _apply_gate(
+                    raw, current_country, config.location.excluded_countries
+                )
+                if status == DecisionStatus.REJECTED.value:
+                    summary.rejected += 1
+                    continue
 
-    _finish_run(db, run_id, summary, run_confidences, run_eligibilities)
+                # Auto-apply-only gate: nothing can be auto-submitted without a
+                # direct apply URL, so skip before spending time on scoring.
+                # (Runs after dedup + the location gate so their counters keep
+                # their exact meaning.)
+                if config.auto_apply_only and not is_auto_applicable(raw):
+                    summary.skipped += 1
+                    continue
+
+                company_overall = get_company_info(raw.get("company", "")).overall
+                assessment = assess_job(
+                    title=raw.get("title", ""),
+                    description=raw.get("description"),
+                    job_skills=raw.get("skills"),
+                    profile_skills=profile_skills,
+                    target_role=config.role,
+                    location_status=status,
+                    work_mode=raw.get("work_mode", "remote"),
+                    salary=raw.get("salary"),
+                    min_salary=config.min_salary,
+                    company_overall=company_overall,
+                    posted_date=raw.get("posted_date"),
+                    application_url=raw.get("application_url"),
+                    preferred_remote=True,
+                    learning=learning,
+                )
+                job = Job(
+                    fingerprint=fp,
+                    title=raw.get("title", ""),
+                    company=raw.get("company", ""),
+                    location=raw.get("location"),
+                    work_mode=raw.get("work_mode", "remote"),
+                    employer_country=raw.get("employer_country"),
+                    job_country=raw.get("job_country"),
+                    candidate_required_location=raw.get("candidate_required_location"),
+                    worldwide_remote=bool(raw.get("worldwide_remote")),
+                    salary=raw.get("salary"),
+                    description=raw.get("description"),
+                    skills=raw.get("skills"),
+                    url=raw.get("url", ""),
+                    source=raw.get("source", adapter.name),
+                    ats=raw.get("ats"),
+                    posted_date=raw.get("posted_date"),
+                    application_url=raw.get("application_url"),
+                    application_method=raw.get("application_method"),
+                    location_status=status,
+                    location_reason=reason,
+                    score=assessment.fit_score,
+                    score_breakdown=assessment.breakdown,
+                    confidence=assessment.confidence,
+                    confidence_label=assessment.confidence_label,
+                    eligibility=assessment.eligibility,
+                    eligibility_label=assessment.eligibility_label,
+                    confidence_breakdown={
+                        "factors": [
+                            {"key": f.key, "label": f.label, "value": f.value,
+                             "weight": f.weight, "detail": f.detail}
+                            for f in assessment.factors
+                        ],
+                        "matched_skills": assessment.matched_skills,
+                        "missing_skills": assessment.missing_skills,
+                        "must_have_present": assessment.must_have_present,
+                        "must_have_missing": assessment.must_have_missing,
+                        "reasons": assessment.reasons,
+                    },
+                    status="new" if status == DecisionStatus.ELIGIBLE.value else "review",
+                )
+                pending.append((job, status, assessment.confidence, assessment.eligibility))
+                session.add(job)
+                run_confidences.append(assessment.confidence)
+                run_eligibilities.append(assessment.eligibility)
+                if status == DecisionStatus.ELIGIBLE.value:
+                    summary.eligible += 1
+                else:
+                    summary.review += 1
+            try:
+                session.commit()
+            except IntegrityError:
+                # A concurrent scan (scheduler vs. manual click) won the
+                # jobs.fingerprint race and the whole batch rolled back. Replay
+                # job-by-job under savepoints so the winner's rows survive, only
+                # the conflicting duplicates are skipped, and this run still
+                # records exactly what it stored — never a stuck "running" row.
+                session.rollback()
+                summary.eligible = 0
+                summary.review = 0
+                run_confidences.clear()
+                run_eligibilities.clear()
+                for job, status, conf, elig in pending:
+                    try:
+                        with session.begin_nested():
+                            session.add(job)
+                    except IntegrityError:
+                        summary.duplicates += 1
+                        continue
+                    run_confidences.append(conf)
+                    run_eligibilities.append(elig)
+                    if status == DecisionStatus.ELIGIBLE.value:
+                        summary.eligible += 1
+                    else:
+                        summary.review += 1
+                session.commit()
+
+    except Exception as exc:  # noqa: BLE001 — never strand the run
+        if not summary.error:
+            summary.error = f"{type(exc).__name__}: {exc}"
+    finally:
+        _finish_run(db, run_id, summary, run_confidences, run_eligibilities)
     return summary
 
 
@@ -333,20 +439,7 @@ def _learning_weights(db: Database):
         if not rows:
             return None
         jobs_by_id = {j.id: j for j in session.query(Job).all()}
-        return compute_learning_weights(
-            (
-                {
-                    "job_id": r.job_id,
-                    "signal": r.signal,
-                    "skills": jobs_by_id[r.job_id].skills,
-                    "company": jobs_by_id[r.job_id].company,
-                    "source": jobs_by_id[r.job_id].source,
-                    "work_mode": jobs_by_id[r.job_id].work_mode,
-                }
-                for r in rows
-            ),
-            jobs_by_id=jobs_by_id,
-        )
+        return compute_learning_weights(rows, jobs_by_id=jobs_by_id)
 
 
 def _finish_run(
@@ -373,9 +466,19 @@ def _finish_run(
             session.commit()
 
 
+# Serialises full scans: a manual scan clicking while the scheduler is mid-run
+# used to race on jobs.fingerprint (stuck ScrapeRuns, lost batches).
+_RUN_LOCK = threading.Lock()
+
+
 def run_all(db: Database, config: AppConfig, *, client: httpx.Client | None = None) -> list[RunSummary]:
-    """Run every enabled source and return per-source summaries."""
-    summaries: list[RunSummary] = []
-    for adapter in build_adapters(config):
-        summaries.append(run_source(db, config, adapter, client=client))
-    return summaries
+    """Run every enabled source and return per-source summaries.
+
+    One scan at a time: the scheduler and the POST /api/scan endpoint share
+    this lock so concurrent scans cannot interleave inserts.
+    """
+    with _RUN_LOCK:
+        summaries: list[RunSummary] = []
+        for adapter in build_adapters(config):
+            summaries.append(run_source(db, config, adapter, client=client))
+        return summaries
